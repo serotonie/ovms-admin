@@ -1,0 +1,114 @@
+services:
+    nginx:
+        image: 'nginx:latest'
+        ports:
+            - '${HTTP_PORT:-80}:80'
+            - '${SSL_PORT:-443}:443'
+        environment:
+            - SSL_PORT=${SSL_PORT:-443}
+            - APP_SERVICE=${APP_SERVICE:-laravel.test}
+            - SERVER_NAME=${SERVER_NAME:-localhost}
+        volumes:
+            - 'sail-nginx:/etc/nginx/certs'
+            - '../nginx/templates:/etc/nginx/templates'
+            - '../vendor/ryoluo/sail-ssl/nginx/generate-ssl-cert.sh:/docker-entrypoint.d/99-generate-ssl-cert.sh'
+        depends_on:
+            - ${APP_SERVICE:-laravel.test}
+    laravel.test:
+        build:
+            context: ../vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+#            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '../:/var/www/html'
+        depends_on:
+            - mariadb
+            - redis
+    mariadb:
+        image: 'mariadb:10'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - 'sail-mariadb:/var/lib/mysql'
+            - '../vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            retries: 3
+            timeout: 5s
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+
+    mosquitto:
+        image: 'iegomez/mosquitto-go-auth'
+        ports:
+            - '${MOSQUITTO_MQTT_PORT:-1883}:1883'
+            - '${MOSQUITTO_WS_PORT:-9001}:9001'
+        volumes:
+            - '../mosquitto:/etc/mosquitto'
+        environment:
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
+            - DB_DATABASE=${DB_DATABASE}
+            - REDIS_HOST=${REDIS_HOST}
+            - REDIS_PORT=${REDIS_PORT}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        depends_on:
+            - mariadb
+            - redis
+
+    pma:
+        image: 'phpmyadmin'
+        ports:
+            - '${PMA_PORT:-8001}:80'
+        environment:
+            - PMA_ARBITRARY=1
+#            - PMA_HOST='${DB_HOST}'
+#            - PMA_USER='${DB_USERNAME}'
+#            - PMA_PASSWORD='${DB_PASSWORD}'
+        depends_on:
+            - mariadb
+
+volumes:
+    sail-nginx:
+        driver: local
+    sail-mariadb:
+        driver: local
+    sail-redis:
+        driver: local

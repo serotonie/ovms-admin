@@ -1,0 +1,30 @@
+// https://aka.ms/devcontainer.json
+{
+	"name": "Existing Docker Compose (Extend)",
+	"dockerComposeFile": [
+		"./docker-compose.yml"
+	],
+	"service": "laravel.test",
+	"workspaceFolder": "/var/www/html",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"mikestead.dotenv",
+				"vuetifyjs.vuetify-vscode",
+				"yzhang.markdown-all-in-one",
+				"bmewburn.vscode-intelephense-client",
+				"MehediDracula.php-namespace-resolver",
+				"Vue.volar",
+				"onecentlin.laravel-extension-pack"
+			],
+			"settings": {}
+		}
+	},
+	"remoteUser": "sail",
+	"postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true",
+	"postStartCommand": "npm run dev"
+	
+	// "runServices": [],
+	// "shutdownAction": "none",
+}
