@@ -1,0 +1,138 @@
+persistence true
+persistence_location /var/lib/mosquitto/
+
+per_listener_settings true
+
+#####################################
+#  local listener for healthcheck   #
+#####################################
+
+listener 1880 localhost
+allow_anonymous true
+
+#####################################
+#   MQTT listener for coordinator   #
+# and for OVMS Modules if no certs  #
+#####################################
+
+listener 1883
+allow_anonymous false
+
+# Go Auth plugin for OVMS Modules
+#####################################
+
+auth_plugin /mosquitto/go-auth_mqtt.so
+
+auth_opt_log_level ${LOG_LEVEL:-info}
+${BROKER_NO_SSL:-}auth_opt_backends redis
+${BROKER_SSL:-}auth_opt_backends files, mysql, redis
+
+auth_opt_hasher bcrypt
+auth_opt_cost 12
+
+auth_opt_cache true
+auth_opt_cache_type redis
+auth_opt_auth_jitter_seconds 3
+auth_opt_acl_jitter_seconds 3
+auth_opt_cache_host ${REDIS_HOST:-redis}
+auth_opt_cache_port ${REDIS_PORT:-6379}
+auth_opt_cache_password ${REDIS_PASSWORD}
+auth_opt_cache_db ${REDIS_DB:-3}
+
+${BROKER_SSL:-}auth_opt_files_register acl
+${BROKER_SSL:-}auth_opt_files_acl_path /mosquitto/config/acls.conf
+
+${BROKER_SSL:-}auth_opt_mysql_register user, superuser
+${BROKER_SSL:-}auth_opt_mysql_host ${DB_HOST:-mariadb}
+${BROKER_SSL:-}auth_opt_mysql_port ${DB_PORT:-3306}
+${BROKER_SSL:-}auth_opt_mysql_user ${DB_USERNAME}
+${BROKER_SSL:-}auth_opt_mysql_password ${DB_PASSWORD}
+${BROKER_SSL:-}auth_opt_mysql_dbname ${DB_DATABASE:-ovms-admin}
+${BROKER_SSL:-}auth_opt_mysql_allow_native_passwords true
+${BROKER_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
+
+auth_opt_redis_register user, superuser
+auth_opt_redis_disable_superuser false
+auth_opt_redis_host ${REDIS_HOST:-redis}
+auth_opt_redis_post ${REDIS_PORT:-6379}
+auth_opt_redis_db ${REDIS_DB:-2}
+auth_opt_redis_password ${REDIS_PASSWORD}
+
+#####################################
+#       MQTTS for OVMS Modules      #
+#        if certs are mounted       #
+#####################################
+
+${BROKER_NO_SSL:-}listener 8883
+${BROKER_NO_SSL:-}allow_anonymous false
+
+${BROKER_NO_SSL:-}cafile /mosquitto/certs/live/example.com/chain.pem
+${BROKER_NO_SSL:-}certfile /mosquitto/certs/live/example.com/cert.pem
+${BROKER_NO_SSL:-}keyfile /mosquitto/certs/live/example.com/privkey.pem
+
+# Go Auth plugin for OVMS Modules
+#####################################
+
+${BROKER_NO_SSL:-}auth_plugin /mosquitto/go-auth_mqtts.so
+
+${BROKER_NO_SSL:-}auth_opt_log_level ${LOG_LEVEL:-info}
+${BROKER_NO_SSL:-}auth_opt_backends files, mysql
+
+${BROKER_NO_SSL:-}auth_opt_hasher bcrypt
+${BROKER_NO_SSL:-}auth_opt_cost 12
+
+${BROKER_NO_SSL:-}auth_opt_cache true
+${BROKER_NO_SSL:-}auth_opt_cache_type redis
+${BROKER_NO_SSL:-}auth_opt_auth_jitter_seconds 3
+${BROKER_NO_SSL:-}auth_opt_acl_jitter_seconds 3
+${BROKER_NO_SSL:-}auth_opt_cache_host ${REDIS_HOST:-redis}
+${BROKER_NO_SSL:-}auth_opt_cache_port ${REDIS_PORT:-6379}
+${BROKER_NO_SSL:-}auth_opt_cache_password ${REDIS_PASSWORD}
+${BROKER_NO_SSL:-}auth_opt_cache_db ${REDIS_DB:-3}
+
+${BROKER_NO_SSL:-}auth_opt_files_register acl
+${BROKER_NO_SSL:-}auth_opt_files_acl_path /mosquitto/config/acls.conf
+
+${BROKER_NO_SSL:-}auth_opt_mysql_register user, superuser
+${BROKER_NO_SSL:-}auth_opt_mysql_host ${DB_HOST:-mariadb}
+${BROKER_NO_SSL:-}auth_opt_mysql_port ${DB_PORT:-3306}
+${BROKER_NO_SSL:-}auth_opt_mysql_user ${DB_USERNAME}
+${BROKER_NO_SSL:-}auth_opt_mysql_password ${DB_PASSWORD}
+${BROKER_NO_SSL:-}auth_opt_mysql_dbname ${DB_DATABASE:-ovms-admin}
+${BROKER_NO_SSL:-}auth_opt_mysql_allow_native_passwords true
+${BROKER_NO_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
+
+#####################################
+#   WSS listener for Admin Client   #
+#####################################
+
+listener 9001
+protocol websockets
+allow_anonymous false
+
+
+# Go Auth plugin for Admin Client
+#####################################
+
+auth_plugin /mosquitto/go-auth_wss.so
+
+auth_opt_log_level ${LOG_LEVEL:-info}
+auth_opt_backends redis
+
+auth_opt_hasher bcrypt
+auth_opt_cost 12
+
+auth_opt_cache true
+auth_opt_cache_type redis
+auth_opt_auth_jitter_seconds 3
+auth_opt_acl_jitter_seconds 3
+auth_opt_cache_host ${REDIS_HOST:-redis}
+auth_opt_cache_port ${REDIS_PORT:-6379}
+auth_opt_cache_password ${REDIS_PASSWORD}
+auth_opt_cache_db ${REDIS_DB:-3}
+
+auth_opt_redis_register user, acl
+auth_opt_redis_host ${REDIS_HOST:-redis}
+auth_opt_redis_post ${REDIS_PORT:-6379}
+auth_opt_redis_db ${REDIS_DB:-2}
+auth_opt_redis_password ${REDIS_PASSWORD}

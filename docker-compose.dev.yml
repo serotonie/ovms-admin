@@ -1,0 +1,63 @@
+services:
+
+    laravel.test:
+        build:
+            context: ./laravel/vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - './laravel:/var/www/html'
+            - '.env:/var/www/html/.env'
+            - '.gitignore:/var/www/html/.gitignore'
+        depends_on:
+            mariadb:
+                condition: service_healthy
+            redis: 
+                condition: service_healthy
+
+    mariadb:
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        volumes: !override
+            - 'sail-mariadb:/var/lib/mysql'
+
+    redis:
+        volumes: !override
+            - 'sail-redis:/data'
+
+    mosquitto:
+        build: 
+            context: mosquitto
+            dockerfile: Dockerfile
+        image: 'serotonie/ovms-admin_mosquitto'
+        environment:
+            - LOG_LEVEL=${MQTT_LOG_LEVEL}
+        volumes: !override
+            - 'sail-mosquitto:/var/lib/mosquitto'
+
+    mqtt_bridge:
+        build: 
+            context: mqtt_bridge
+            dockerfile: Dockerfile
+        volumes:
+            - './mqtt_bridge:/home/worker'
+            - '.gitignore:/home/worker/.gitignore'
+        entrypoint: ["tail", "-f", "/dev/null" ]
+
+volumes:
+    sail-mariadb:
+    sail-redis:
+    sail-mosquitto:
