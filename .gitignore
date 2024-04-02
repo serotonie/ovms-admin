@@ -26,3 +26,4 @@
 /mqtt_bridge/.devcontainer
 /mqtt_bridge/.cache
 /mqtt_bridge/app/__pycache__
+/redis
