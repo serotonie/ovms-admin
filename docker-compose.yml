@@ -20,6 +20,8 @@ services:
                     "--connect",
                     "--innodb_initialized"
                 ]
+            start_period: 10s
+            start_interval: 2s
         restart: always
     
     redis:
@@ -33,6 +35,8 @@ services:
                 - CMD
                 - redis-cli
                 - ping
+            start_period: 10s
+            start_interval: 2s
         command: 
             redis-server --requirepass password --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
         restart: always
@@ -53,23 +57,11 @@ services:
                                                 #  keyfile /mosquitto/certs/live/example.com/privkey.pem
         healthcheck:
             test: ["CMD", "mosquitto_sub", "-p", "1880", "-t", "$$SYS/broker/version", "-C", "1", "-i", "healthcheck", "-W", "3"]
+            start_period: 10s
+            start_interval: 2s
         depends_on:
             mariadb:
                 condition: service_healthy
             redis: 
                 condition: service_healthy
         restart: always
-
-    mqtt_bridge:
-        image: 'serotonie/ovms-admin_mqtt_bridge'
-        environment:
-            - TZ='Europe/Zurich'
-            - REDIS_PASSWORD=${REDIS_PASSWORD}
-            - APP_ENV=${APP_ENV:-production}
-        depends_on:
-            redis: 
-                condition: service_healthy
-            mosquitto:
-                condition: service_healthy   
-        restart: always     
-

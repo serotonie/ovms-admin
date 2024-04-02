@@ -48,15 +48,6 @@ services:
         volumes: !override
             - 'sail-mosquitto:/var/lib/mosquitto'
 
-    mqtt_bridge:
-        build: 
-            context: mqtt_bridge
-            dockerfile: Dockerfile
-        volumes:
-            - './mqtt_bridge:/home/worker'
-            - '.gitignore:/home/worker/.gitignore'
-        entrypoint: ["tail", "-f", "/dev/null" ]
-
 volumes:
     sail-mariadb:
     sail-redis:

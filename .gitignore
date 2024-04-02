@@ -19,9 +19,5 @@
 /laravel/yarn-error.log
 /laravel/.fleet
 /laravel/.idea
-/mqtt_bridge/.vscode-server
-/mqtt_bridge/.dotnet
-/mqtt_bridge/.bash_history
-/mqtt_bridge/.local
-/mqtt_bridge/.devcontainer
-/mqtt_bridge/.cache
+/redis
+/mosquitto/mosquitto.db

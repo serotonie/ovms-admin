@@ -1,5 +1,0 @@
-redis
-paho-mqtt
-bcrypt
-pytz
-resettabletimer
