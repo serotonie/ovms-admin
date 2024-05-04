@@ -1,1 +1,5 @@
-../.dockerignore
+.env
+.env.example
+Dockerfile
+node_modules
+vendor

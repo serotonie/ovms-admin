@@ -8,7 +8,7 @@ ARG ENVSUBST_VERSION
 
 WORKDIR /
 RUN set -ex; \
-    git clone https://github.com/a8m/envsubst.git --branch ${ENVSUBST_VERSION} envsubst
+  git clone https://github.com/a8m/envsubst.git --branch ${ENVSUBST_VERSION} envsubst
 WORKDIR /envsubst/cmd/envsubst
 
 ENV CGO_CFLAGS="-I/usr/local/include -fPIC"
@@ -26,21 +26,21 @@ RUN go env
 # Install needed libc and gcc for target platform.
 RUN set -ex; \
   if [ ! -z "$TARGETPLATFORM" ]; then \
-    case "$TARGETPLATFORM" in \
+  case "$TARGETPLATFORM" in \
   "linux/arm64") \
-    apt update && apt install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross \
-    ;; \
+  apt update && apt install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross \
+  ;; \
   "linux/arm/v7") \
-    apt update && apt install -y gcc-arm-linux-gnueabihf libc6-dev-armhf-cross \
-    ;; \
+  apt update && apt install -y gcc-arm-linux-gnueabihf libc6-dev-armhf-cross \
+  ;; \
   "linux/arm/v6") \
-    apt update && apt install -y gcc-arm-linux-gnueabihf libc6-dev-armel-cross libc6-dev-armhf-cross \
-    ;; \
+  apt update && apt install -y gcc-arm-linux-gnueabihf libc6-dev-armel-cross libc6-dev-armhf-cross \
+  ;; \
   esac \
   fi
 
 RUN set -ex; \
-    go build -o ../../envsubst
+  go build -o ../../envsubst
 
 FROM iegomez/mosquitto-go-auth
 COPY --from=envsubst_builder /envsubst/envsubst /usr/local/bin
@@ -49,10 +49,10 @@ COPY ./template ./template
 COPY docker-entrypoint.sh .
 
 RUN set -ex; \
-  mkdir -p /mosquitto/config/conf.d/acls /mosquitto/data /mosquitto/log && \
+  mkdir -p /mosquitto/config /mosquitto/data /mosquitto/log && \
   chown -R mosquitto:mosquitto /mosquitto && \
   cd mosquitto && \
-  rm -r auth conf.d pw && \
+  rm -r auth conf.d && \
   cp go-auth.so go-auth_mqtt.so && \
   cp go-auth.so go-auth_mqtts.so && \
   mv go-auth.so go-auth_wss.so

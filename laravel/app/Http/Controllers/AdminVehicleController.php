@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Vehicle;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class AdminVehicleController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $query = Vehicle::query()->when($request->get('search'), function ($query, $search) {
+            $search = strtolower(trim($search));
+
+            return $query->whereRaw('LOWER(vehicles.name) LIKE ?', ["%$search%"]);
+        })->when($request->get('sort'), function ($query, $sortBy) {
+            return $query->orderBy($sortBy['key'], $sortBy['order']);
+        });
+
+        $data = $query->paginate($request->get('limit', 10));
+        foreach ($data as $item) {
+            $item['owner'] = $item->owner()->get()->select('id', 'name')->toArray()[0];
+            $item['main_user'] = $item->main_user()->get()->select('id', 'name')->toArray()[0];
+            $item['users'] = $item->users()->get()->select('id', 'name')->toArray();
+        }
+
+        return Inertia::render('Vehicles/Index', [
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return Inertia::render('Vehicles/Create', [
+            'system_users' => User::all('id', 'name'),
+            'mqtt' => [
+                'hostname' => 'mqtt.host.name', //TODO add config
+                'tls' => true,
+                'port' => 8883,
+            ],
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'max:32'],
+            'owner' => ['required', 'exists:users,id'],
+            'main_user' => ['exists:users,id'],
+            'users' => ['array', 'exists:users,id'],
+            'module_id' => ['required', 'max:32', 'unique:vehicles,module_id'],
+            'module_username' => ['required', 'max:32', 'unique:vehicles,module_username'],
+            'module_pwd' => ['required', 'max:255'],
+        ]);
+
+        $vehicle = Vehicle::create([
+            'name' => $validated['name'],
+            'module_id' => $validated['module_id'],
+            'module_username' => $validated['module_username'],
+            'module_pwd' => $validated['module_username'],
+            'owner_id' => $validated['owner'],
+            'main_user_id' => $validated['main_user'],
+        ]);
+
+        $vehicle->users()->attach($validated['users']);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Vehicle $vehicle)
+    {
+        $vehicle['owner'] = $vehicle->owner()->get()->select('id', 'name')->toArray()[0];
+        $vehicle['main_user'] = $vehicle->main_user()->get()->select('id', 'name')->toArray()[0];
+        $vehicle['users'] = $vehicle->users()->get()->select('id', 'name')->toArray();
+
+        return Inertia::render('Vehicles/Edit', [
+            'system_users' => User::all('id', 'name'),
+            'vehicle' => $vehicle,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Vehicle $vehicle)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'max:32'],
+            'owner' => ['required', 'exists:users,id'],
+            'main_user' => ['exists:users,id'],
+            'users' => ['array', 'exists:users,id'],
+        ]);
+
+        $vehicle->name = $validated['name'];
+        $vehicle->owner_id = $validated['owner'];
+        $vehicle->main_user_id = $validated['main_user'];
+
+        $vehicle->save();
+
+        $vehicle->users()->sync($validated['users']);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Vehicle $vehicle)
+    {
+        $vehicle->delete();
+    }
+}

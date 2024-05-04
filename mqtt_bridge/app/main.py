@@ -52,24 +52,17 @@ class Waypoint():
             self.timer.start()
         
     def __setattr__(self, name, value):
-        print(name, value)
         super().__setattr__(name, value)
-        if not (-1 in self.__dict__.values()):
-            if (hasattr(self, 'vehicle_id')) and (hasattr(self, 'timer')):
-                if ((self.id == 0) and (self.trip < 0.1)):
-                    self.publish_waypoint()
-                elif (self.id > 0):
-                    self.publish_waypoint()
-
-    def publish_waypoint(self):
-        id = self.id
-        props = self.__dict__.copy()
-        props.pop('timer')
-        r.publish("waypointFor_"+self.vehicle_id, json.dumps(props))
-        print("new Waypoint from "+self.vehicle_id+":\n"+json.dumps(props))
-        self.timer.reset()
-        id = id + 1
-        vehicles[self.vehicle_id]["currentWaypoint"] = Waypoint(self.vehicle_id, self.timer, id, self.gpshdop, self.odometer)
+        if (hasattr(self, 'timer')) and (self.trip != -1):
+            id = self.id
+            props = self.__dict__.copy()
+            props.pop('timer')
+            r.publish("waypointFor_"+self.vehicle_id, json.dumps(props))
+            print("new Waypoint from "+self.vehicle_id+":\n"+json.dumps(props))
+            self.timer.reset()
+            id = id + 1
+            vehicles[self.vehicle_id]["lastWaypoint"] = self
+            vehicles[self.vehicle_id]["currentWaypoint"] = Waypoint(self.vehicle_id, self.timer, id, self.gpshdop, self.odometer)
             
 r = redis.Redis(
     os.getenv('REDIS_HOST', 'redis'),
@@ -102,26 +95,42 @@ def on_waypoint_message(client, userdata, msg):
             setattr(vehicles[vehicle_id]["currentWaypoint"], new_metric, float(msg.payload))
 
 def on_config_message(client, userdata, msg):
-    print("message_config")
-    print(id_from_topic(msg.topic)+" ["+msg.topic.split("/")[-1]+"]: "+str(msg.payload))
+    print("Result from config: "+ id_from_topic(msg.topic)+" ["+msg.topic.split("/")[-1]+"]: "+str(msg.payload))
     client.message_callback_remove(msg.topic)
-    client.unsubscribe(msg.topic)           
+    client.unsubscribe(msg.topic)   
+
+def on_missed_vehicle_on(client, userdata, msg):
+    vehicle_id = id_from_topic(msg.topic)
+    if(msg.payload == b'yes\n'):
+        vehicle_on(vehicles[vehicle_id], client, msg)     
+    client.message_callback_remove(msg.topic)
+    client.unsubscribe(msg.topic)       
 
 def vehicle_off(vehicle, client, msg):
     print(vehicle["id"]+" is off")
+    r.publish("stopTrip_"+vehicle["id"], json.dumps({
+        "timestamp": str(datetime.now(pytz.timezone('UTC'))),
+        "trip": vehicle["lastWaypoint"].trip,
+        "odometer": vehicle["lastWaypoint"].odometer,
+        "latitude": vehicle["lastWaypoint"].latitude,
+        "longitude": vehicle["lastWaypoint"].longitude
+    }))
     waypoint_topic = msg.topic.replace("/event", "/metric/v/p/#")
     client.unsubscribe(waypoint_topic)
     client.message_callback_remove(waypoint_topic)
-    r.publish("stopTrip_"+vehicle["id"], str(datetime.now(pytz.timezone('UTC'))))
-    del vehicle["currentWaypoint"]
+    if vehicle.get("currentWaypoint") is not None:
+        vehicle["currentWaypoint"].timer.cancel()
+        print(vehicle["currentWaypoint"].timer)
+        del vehicle["currentWaypoint"]
 
-def vehicle_on(vehicle, client, msg, allready_on=False):
+def vehicle_on(vehicle, client, msg):
     if vehicle.get("currentWaypoint") is None:
         print(vehicle["id"]+" is on")
-        waypoint_topic = msg.topic.replace("/event", "/metric/v/p/#")
+        waypoint_topic = msg.topic.replace("/event", "/metric/v/p/#").replace("/client/mqtt_bridge/response/missed_on", "/metric/v/p/#")
+        print(waypoint_topic)
         client.subscribe(waypoint_topic, 2)
         client.message_callback_add(waypoint_topic, on_waypoint_message)
-        vehicle["currentWaypoint"] = Waypoint(vehicle["id"],ResettableTimerDaemon(os.getenv('WAYPOINT_TIMEOUT', 300), vehicle_off, [vehicle, client, msg]), -(int(allready_on)))
+        vehicle["currentWaypoint"] = Waypoint(vehicle["id"],ResettableTimerDaemon(os.getenv('WAYPOINT_TIMEOUT', 300), vehicle_off, [vehicle, client, msg]))
         r.publish("startTrip_"+vehicle["id"], str(datetime.now(pytz.timezone('UTC'))))
 
 def vehicle_connected(vehicle, client, msg):
@@ -146,7 +155,12 @@ def on_message(client, userdata, msg):
     if (msg.payload == b'vehicle.off'):
         vehicle_off(vehicle, client, msg)
     if (msg.payload == b'server.v3.connected'):
-        vehicle_connected(vehicle, client, msg)      
+        vehicle_connected(vehicle, client, msg)
+    if vehicle.get("currentWaypoint") is None:
+        missed_vehicle_on_topic = msg.topic.replace("/event", "/client/mqtt_bridge")
+        client.subscribe(missed_vehicle_on_topic+"/response/missed_on", 2)
+        client.message_callback_add(missed_vehicle_on_topic+"/response/missed_on", on_missed_vehicle_on)
+        client.publish(missed_vehicle_on_topic+"/command/missed_on", "metric get v.e.on")    
     
 
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)

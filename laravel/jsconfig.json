@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/js/*"],
+            "ziggy-js": ["./vendor/tightenco/ziggy"],
+            "@laravel-inertia-permissions/*": ["./vendor/wijzijnweb/laravel-inertia-permissions/resources/js/*"]
+        },
+        "allowImportingTsExtensions": true
+    },
+    "exclude": ["node_modules", "public"]
+}

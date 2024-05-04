@@ -1,22 +1,60 @@
-<script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import Breadcrumbs from '@/Components/Breadcrumbs.vue'
+import { Head, router } from '@inertiajs/vue3'
+import usePermissions from '../../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts';
+
+const { can } = usePermissions()
+
+const props = defineProps({
+  vehicles: {
+    type: Array,
+    required: true
+  }
+})
 </script>
 
 <template>
-    <Head title="Dashboard" />
-
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Dashboard</h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900 dark:text-gray-100">You're logged in!</div>
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
+  <Head title="Dashboard" />
+  <AuthenticatedLayout>
+    <div class="mb-5">
+      <h5 class="text-h5 font-weight-bold">Dashboard</h5>
+      <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
+    </div>
+    <v-card v-if="!vehicles.length">
+      <v-card-text>
+        <v-empty-state v-if="can('vehicles all create')"
+          icon="mdi-car-search"
+          text="Welcome to the OVMS Admin Dashboard, add your first vehicle to begin using it"
+          title="We didn't find any vehicle yet."
+          action-text="add first vehicle"
+          @click:action="router.visit(route('admin.vehicles.create'))"
+        ></v-empty-state>
+        <v-empty-state v-else
+          icon="mdi-car-search"
+          text="Welcome to the OVMS Admin Dashboard, ask your admin to add a vehicle for you"
+          title="We didn't find any vehicle yet."
+        ></v-empty-state>
+      </v-card-text>
+    </v-card>
+    <v-card v-else>
+      {{props.vehicles}}
+    </v-card>
+  </AuthenticatedLayout>
 </template>
+
+<script>
+export default {
+  name: 'DashboardPage',
+  data() {
+    return {
+      breadcrumbs: [
+        {
+          title: 'Dashboard',
+          disabled: true,
+        },
+      ],
+    }
+  },
+}
+</script>

@@ -1,4 +1,53 @@
 services:
+
+    migrator:
+        image: 'serotonie/ovms-admin_migrator'
+        depends_on:
+            mariadb:
+                condition: service_healthy
+
+    scheduler:
+        image: 'serotonie/ovms-admin_scheduler'
+        volumes:
+            - ./laravel:/var/www/html/storage
+        depends_on:
+            mariadb:
+                condition: service_healthy
+            migrator:
+                condition: service_completed_successfully
+
+    worker:
+        image: 'serotonie/ovms-admin_worker'
+        volumes:
+            - ./laravel:/var/www/html/storage
+        depends_on:
+            mariadb:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+            migrator:
+                condition: service_completed_successfully
+
+    frontend:
+        image: 'serotonie/ovms-admin_frontend'
+        ports:
+            - 443:443
+        volumes:
+            - ./laravel/storage:/var/www/html/storage
+            #TODO - ./laravel/certs:/certs
+        healthcheck:
+            test: curl --fail -s http://127.0.0.1:80/up || exit 1
+            start_period: 30s
+            start_interval: 2s
+        depends_on:
+            mariadb:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+            migrator:
+                condition: service_completed_successfully
+            mosquitto:
+                condition: service_healthy
     
     mariadb:
         image: 'mariadb'
@@ -20,10 +69,12 @@ services:
                     "--connect",
                     "--innodb_initialized"
                 ]
+            start_period: 30s
+            start_interval: 2s
         restart: always
     
     redis:
-        image: 'redis'        
+        image: 'valkey/valkey:7.2'        
         environment:
             TZ: 'Europe/Zurich'
         volumes:
@@ -33,8 +84,10 @@ services:
                 - CMD
                 - redis-cli
                 - ping
+            start_period: 30s
+            start_interval: 2s
         command: 
-            redis-server --requirepass password --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
+            valkey-server --requirepass password --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
         restart: always
     
     mosquitto:
@@ -53,11 +106,15 @@ services:
                                                 #  keyfile /mosquitto/certs/live/example.com/privkey.pem
         healthcheck:
             test: ["CMD", "mosquitto_sub", "-p", "1880", "-t", "$$SYS/broker/version", "-C", "1", "-i", "healthcheck", "-W", "3"]
+            start_period: 30s
+            start_interval: 2s
         depends_on:
             mariadb:
                 condition: service_healthy
             redis: 
                 condition: service_healthy
+            migrator:
+                condition: service_completed_successfully
         restart: always
 
     mqtt_bridge:
@@ -70,6 +127,8 @@ services:
             redis: 
                 condition: service_healthy
             mosquitto:
-                condition: service_healthy   
+                condition: service_healthy
+            migrator:
+                condition: service_completed_successfully   
         restart: always     
 

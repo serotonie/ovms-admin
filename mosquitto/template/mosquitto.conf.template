@@ -28,7 +28,6 @@ ${BROKER_NO_SSL:-}auth_opt_backends redis
 ${BROKER_SSL:-}auth_opt_backends files, mysql, redis
 
 auth_opt_hasher bcrypt
-auth_opt_cost 12
 
 auth_opt_cache true
 auth_opt_cache_type redis
@@ -37,7 +36,7 @@ auth_opt_acl_jitter_seconds 3
 auth_opt_cache_host ${REDIS_HOST:-redis}
 auth_opt_cache_port ${REDIS_PORT:-6379}
 auth_opt_cache_password ${REDIS_PASSWORD}
-auth_opt_cache_db ${REDIS_DB:-3}
+auth_opt_cache_db ${REDIS_CACHE_DB:-3}
 
 ${BROKER_SSL:-}auth_opt_files_register acl
 ${BROKER_SSL:-}auth_opt_files_acl_path /mosquitto/config/acls.conf
@@ -79,7 +78,6 @@ ${BROKER_NO_SSL:-}auth_opt_log_level ${LOG_LEVEL:-info}
 ${BROKER_NO_SSL:-}auth_opt_backends files, mysql
 
 ${BROKER_NO_SSL:-}auth_opt_hasher bcrypt
-${BROKER_NO_SSL:-}auth_opt_cost 12
 
 ${BROKER_NO_SSL:-}auth_opt_cache true
 ${BROKER_NO_SSL:-}auth_opt_cache_type redis
@@ -88,7 +86,7 @@ ${BROKER_NO_SSL:-}auth_opt_acl_jitter_seconds 3
 ${BROKER_NO_SSL:-}auth_opt_cache_host ${REDIS_HOST:-redis}
 ${BROKER_NO_SSL:-}auth_opt_cache_port ${REDIS_PORT:-6379}
 ${BROKER_NO_SSL:-}auth_opt_cache_password ${REDIS_PASSWORD}
-${BROKER_NO_SSL:-}auth_opt_cache_db ${REDIS_DB:-3}
+${BROKER_NO_SSL:-}auth_opt_cache_db ${REDIS_CACHE_DB:-3}
 
 ${BROKER_NO_SSL:-}auth_opt_files_register acl
 ${BROKER_NO_SSL:-}auth_opt_files_acl_path /mosquitto/config/acls.conf
@@ -120,7 +118,6 @@ auth_opt_log_level ${LOG_LEVEL:-info}
 auth_opt_backends redis
 
 auth_opt_hasher bcrypt
-auth_opt_cost 12
 
 auth_opt_cache true
 auth_opt_cache_type redis
@@ -129,7 +126,7 @@ auth_opt_acl_jitter_seconds 3
 auth_opt_cache_host ${REDIS_HOST:-redis}
 auth_opt_cache_port ${REDIS_PORT:-6379}
 auth_opt_cache_password ${REDIS_PASSWORD}
-auth_opt_cache_db ${REDIS_DB:-3}
+auth_opt_cache_db ${REDIS_CACHE_DB:-3}
 
 auth_opt_redis_register user, acl
 auth_opt_redis_host ${REDIS_HOST:-redis}

@@ -1,1 +1,7 @@
-../.dockerignore
+.env
+.env.example
+Dockerfile
+.devcontainer
+.dotnet
+.local
+.vscode-server

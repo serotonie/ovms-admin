@@ -10,20 +10,27 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				// "mikestead.dotenv",
-				// "amiralizadeh9480.laravel-extra-intellisense",
-				// "ryannaddy.laravel-artisan",
-				// "onecentlin.laravel5-snippets",
-				// "onecentlin.laravel-blade"
-			],
-			"settings": {}
+				"mikestead.dotenv",
+				"amiralizadeh9480.laravel-extra-intellisense",
+				"onecentlin.laravel5-snippets",
+                                "open-southeners.laravel-pint",
+				"nhedger.inertia",
+				"Vue.volar",
+				"bmewburn.vscode-intelephense-client",
+				"MehediDracula.php-namespace-resolver",
+			        "vuetifyjs.vuetify-vscode"
+                        ],
+			"settings": {
+                                "laravel-pint.enable": true,
+                                "[php]":{
+                                        "editor.defaultFormatter": "open-southeners.laravel-pint"
+                                }
+                        }
 		}
 	},
 	"remoteUser": "sail",
-	"postCreateCommand": [
-		"chown -R 1000:1000 /var/www/html 2>/dev/null || true",
-		"bash"
-	]
+	"postCreateCommand": "chown -R 1000:33 /var/www/html && chmod -R g=u /var/www/html; php artisan optimize:clear; composer install; npm install; npm run build",
+	"postAttachCommand": "npm run dev"
 	// "forwardPorts": [],
 	// "runServices": [],
 	// "shutdownAction": "none",
