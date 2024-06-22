@@ -9,12 +9,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "fakerphp/faker": "^1.23",
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "tightenco/ziggy": "^2.0",
-        "wijzijnweb/laravel-inertia-permissions": "dev-main",
-        "fakerphp/faker": "^1.23"
+        "wijzijnweb/laravel-inertia-permissions": "dev-main"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
