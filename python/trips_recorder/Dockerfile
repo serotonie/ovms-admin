@@ -31,7 +31,7 @@ USER ${USERNAME}
 
 ENTRYPOINT [ "python", "-u", "main.py" ]
 
-FROM prod as dev
+FROM prod AS dev
 
 USER root
 
