@@ -71,7 +71,7 @@ FROM base_runtime as migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan migrate", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan migrate --force", "--" ]
 
 
 FROM base_runtime as scheduler
