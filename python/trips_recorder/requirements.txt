@@ -1,0 +1,8 @@
+bcrypt
+nanoid
+paho-mqtt
+peewee
+psycopg2-binary
+PyMySQL
+valkey[hiredis]
+resettabletimer

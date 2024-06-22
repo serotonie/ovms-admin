@@ -1,19 +1,22 @@
 // https://aka.ms/devcontainer.json. 
 {
-	"name": "OVMS Admin MQTT Bridge",
+	"name": "OVMS Admin Trips Recorder",
 	"initializeCommand": "docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml config > ./docker-compose.rendered.yml",
 	"dockerComposeFile": [
 		"../../docker-compose.rendered.yml"
 	],
-	"service": "mqtt_bridge",
-	"workspaceFolder": "/home/worker",
+	"service": "trips_recorder",
+	"workspaceFolder": "/opt/src",
 	"remoteUser": "worker",
-	"postCreateCommand": "bash",
+	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt;",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-python.python"
-			]
+			],
+			"settings": {
+				"pylint.lintOnChange": true
+			}
 		}
 	}
 }

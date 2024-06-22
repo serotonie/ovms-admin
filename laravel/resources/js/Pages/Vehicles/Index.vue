@@ -60,7 +60,7 @@ const { can } = usePermissions()
           </v-chip-group>
         </template>
         <template #[`item.last_seen`]="{ item }">
-          <span> {{ item.last_seen ? moment(item.last_seen).fromNow() : 'never' }}</span>
+          <span>{{ item.last_seen ? moment(Date(item.created_at).toLocaleString()).fromNow() : 'never' }}</span>
         </template>
         <template #[`item.action`]="{ item }">
           <Link 

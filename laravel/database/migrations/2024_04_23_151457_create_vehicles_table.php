@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('module_id', 32)->unique();
             $table->string('module_username', 32)->unique();
             $table->string('module_pwd');
+            $table->boolean('mqtt_superuser')->default(false);
             $table->foreignId('owner_id')
                 ->constrained(table: 'users')
                 ->cascadeOnUpdate()
@@ -27,7 +28,7 @@ return new class extends Migration
                 ->constrained(table: 'users')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-            $table->dateTimeTz('last_seen')->nullable();
+            $table->timestampTz('last_seen')->nullable();
             $table->timestamps();
         });
     }

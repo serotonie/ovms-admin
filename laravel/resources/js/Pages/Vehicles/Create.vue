@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import { customAlphabet } from 'nanoid'
+import { nanoid } from 'nanoid'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -19,8 +19,6 @@ const props = defineProps({
     required: false
   }
 })
-
-const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 21)
 
 const form = useForm({
   name: null,

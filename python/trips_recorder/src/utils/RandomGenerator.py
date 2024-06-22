@@ -22,5 +22,3 @@ def RandomStr():
         randomStr.append(randomchar)
 
     return ''.join(randomStr)
-
-

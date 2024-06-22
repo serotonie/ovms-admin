@@ -5,3 +5,5 @@ Dockerfile
 .dotnet
 .local
 .vscode-server
+.python_history
+venv

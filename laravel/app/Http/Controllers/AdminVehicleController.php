@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class AdminVehicleController extends Controller
@@ -68,12 +70,28 @@ class AdminVehicleController extends Controller
             'name' => $validated['name'],
             'module_id' => $validated['module_id'],
             'module_username' => $validated['module_username'],
-            'module_pwd' => $validated['module_username'],
+            'module_pwd' => Hash::make($validated['module_pwd']),
             'owner_id' => $validated['owner'],
             'main_user_id' => $validated['main_user'],
         ]);
 
         $vehicle->users()->attach($validated['users']);
+
+        //TODO acls granularity in real life
+        $topic_prefix = 'ovms/'.$validated['module_username'].'/'.$validated['module_id'];
+        $topics = [
+            1 => $topic_prefix.'/#',
+            2 => $topic_prefix.'/#',
+            4 => $topic_prefix.'/#',
+        ];
+
+        foreach ($topics as $key => $value) {
+            DB::table('mqtt_acls')->insert([
+                'username' => $validated['module_username'],
+                'rw' => $key,
+                'topic' => $value,
+            ]);
+        }
     }
 
     /**

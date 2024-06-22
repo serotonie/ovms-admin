@@ -13,19 +13,19 @@
 				"mikestead.dotenv",
 				"amiralizadeh9480.laravel-extra-intellisense",
 				"onecentlin.laravel5-snippets",
-                                "open-southeners.laravel-pint",
+				"open-southeners.laravel-pint",
 				"nhedger.inertia",
 				"Vue.volar",
 				"bmewburn.vscode-intelephense-client",
 				"MehediDracula.php-namespace-resolver",
-			        "vuetifyjs.vuetify-vscode"
-                        ],
+				"vuetifyjs.vuetify-vscode"
+			],
 			"settings": {
-                                "laravel-pint.enable": true,
-                                "[php]":{
-                                        "editor.defaultFormatter": "open-southeners.laravel-pint"
-                                }
-                        }
+				"laravel-pint.enable": true,
+				"[php]": {
+					"editor.defaultFormatter": "open-southeners.laravel-pint"
+				}
+			}
 		}
 	},
 	"remoteUser": "sail",

@@ -86,15 +86,15 @@ services:
             redis: 
                 condition: service_healthy
 
-    mqtt_bridge:
+    trips_recorder:
         labels:
             - "com.centurylinklabs.watchtower.enable=false" 
         build: 
-            context: mqtt_bridge
+            context: python/trips_recorder
             dockerfile: Dockerfile
+            target: dev
         volumes:
-            - './mqtt_bridge:/home/worker:cached'
-        entrypoint: ["tail", "-f", "/dev/null" ]
+            - './python/trips_recorder/src:/opt/src:cached'
         depends_on: !override
             redis: 
                 condition: service_healthy

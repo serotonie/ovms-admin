@@ -24,24 +24,20 @@ allow_anonymous false
 auth_plugin /mosquitto/go-auth_mqtt.so
 
 auth_opt_log_level ${LOG_LEVEL:-info}
-${BROKER_NO_SSL:-}auth_opt_backends redis
-${BROKER_SSL:-}auth_opt_backends files, mysql, redis
-
-auth_opt_hasher bcrypt
 
 auth_opt_cache true
-auth_opt_cache_type redis
+auth_opt_auth_cache_seconds 30
+auth_opt_acl_cache_seconds 30
 auth_opt_auth_jitter_seconds 3
 auth_opt_acl_jitter_seconds 3
-auth_opt_cache_host ${REDIS_HOST:-redis}
-auth_opt_cache_port ${REDIS_PORT:-6379}
-auth_opt_cache_password ${REDIS_PASSWORD}
-auth_opt_cache_db ${REDIS_CACHE_DB:-3}
 
-${BROKER_SSL:-}auth_opt_files_register acl
-${BROKER_SSL:-}auth_opt_files_acl_path /mosquitto/config/acls.conf
+auth_opt_hasher bcrypt
+auth_opt_hasher_cost 12
 
-${BROKER_SSL:-}auth_opt_mysql_register user, superuser
+${BROKER_NO_SSL:-}auth_opt_backends redis
+${BROKER_SSL:-}auth_opt_backends mysql, redis
+
+${BROKER_SSL:-}auth_opt_mysql_register user, superuser, acl
 ${BROKER_SSL:-}auth_opt_mysql_host ${DB_HOST:-mariadb}
 ${BROKER_SSL:-}auth_opt_mysql_port ${DB_PORT:-3306}
 ${BROKER_SSL:-}auth_opt_mysql_user ${DB_USERNAME}
@@ -49,6 +45,8 @@ ${BROKER_SSL:-}auth_opt_mysql_password ${DB_PASSWORD}
 ${BROKER_SSL:-}auth_opt_mysql_dbname ${DB_DATABASE:-ovms-admin}
 ${BROKER_SSL:-}auth_opt_mysql_allow_native_passwords true
 ${BROKER_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
+${BROKER_SSL:-}auth_opt_mysql_superquery SELECT COUNT(*) FROM vehicles WHERE (module_username = ?) and mqtt_superuser = 1 limit 1
+${BROKER_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE (username = ?) AND rw = ?
 
 auth_opt_redis_register user, superuser
 auth_opt_redis_disable_superuser false
@@ -75,21 +73,17 @@ ${BROKER_NO_SSL:-}keyfile /mosquitto/certs/live/example.com/privkey.pem
 ${BROKER_NO_SSL:-}auth_plugin /mosquitto/go-auth_mqtts.so
 
 ${BROKER_NO_SSL:-}auth_opt_log_level ${LOG_LEVEL:-info}
-${BROKER_NO_SSL:-}auth_opt_backends files, mysql
+
+auth_opt_cache true
+auth_opt_auth_cache_seconds 30
+auth_opt_acl_cache_seconds 30
+auth_opt_auth_jitter_seconds 3
+auth_opt_acl_jitter_seconds 3
 
 ${BROKER_NO_SSL:-}auth_opt_hasher bcrypt
+${BROKER_NO_SSL:-}auth_opt_hasher_cost 12
 
-${BROKER_NO_SSL:-}auth_opt_cache true
-${BROKER_NO_SSL:-}auth_opt_cache_type redis
-${BROKER_NO_SSL:-}auth_opt_auth_jitter_seconds 3
-${BROKER_NO_SSL:-}auth_opt_acl_jitter_seconds 3
-${BROKER_NO_SSL:-}auth_opt_cache_host ${REDIS_HOST:-redis}
-${BROKER_NO_SSL:-}auth_opt_cache_port ${REDIS_PORT:-6379}
-${BROKER_NO_SSL:-}auth_opt_cache_password ${REDIS_PASSWORD}
-${BROKER_NO_SSL:-}auth_opt_cache_db ${REDIS_CACHE_DB:-3}
-
-${BROKER_NO_SSL:-}auth_opt_files_register acl
-${BROKER_NO_SSL:-}auth_opt_files_acl_path /mosquitto/config/acls.conf
+${BROKER_NO_SSL:-}auth_opt_backends mysql
 
 ${BROKER_NO_SSL:-}auth_opt_mysql_register user, superuser
 ${BROKER_NO_SSL:-}auth_opt_mysql_host ${DB_HOST:-mariadb}
@@ -99,6 +93,8 @@ ${BROKER_NO_SSL:-}auth_opt_mysql_password ${DB_PASSWORD}
 ${BROKER_NO_SSL:-}auth_opt_mysql_dbname ${DB_DATABASE:-ovms-admin}
 ${BROKER_NO_SSL:-}auth_opt_mysql_allow_native_passwords true
 ${BROKER_NO_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
+${BROKER_NO_SSL:-}auth_opt_mysql_superquery SELECT COUNT(*) FROM vehicles WHERE (module_username = ?) and mqtt_superuser = 1 limit 1
+${BROKER_NO_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE (username = ?) AND rw = ?
 
 #####################################
 #   WSS listener for Admin Client   #
@@ -115,18 +111,17 @@ allow_anonymous false
 auth_plugin /mosquitto/go-auth_wss.so
 
 auth_opt_log_level ${LOG_LEVEL:-info}
-auth_opt_backends redis
-
-auth_opt_hasher bcrypt
 
 auth_opt_cache true
-auth_opt_cache_type redis
+auth_opt_auth_cache_seconds 30
+auth_opt_acl_cache_seconds 30
 auth_opt_auth_jitter_seconds 3
 auth_opt_acl_jitter_seconds 3
-auth_opt_cache_host ${REDIS_HOST:-redis}
-auth_opt_cache_port ${REDIS_PORT:-6379}
-auth_opt_cache_password ${REDIS_PASSWORD}
-auth_opt_cache_db ${REDIS_CACHE_DB:-3}
+
+auth_opt_hasher bcrypt
+auth_opt_hasher_cost 12
+
+auth_opt_backends redis
 
 auth_opt_redis_register user, acl
 auth_opt_redis_host ${REDIS_HOST:-redis}
