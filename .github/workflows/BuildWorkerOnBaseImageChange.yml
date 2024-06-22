@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: laravel
-          target: worker
+          target: queue_worker
           platforms: linux/amd64,linux/arm64
           push: true
           tags: serotonie/ovms-admin_worker:latest
