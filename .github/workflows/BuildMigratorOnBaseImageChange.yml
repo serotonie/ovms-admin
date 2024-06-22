@@ -1,4 +1,4 @@
-name: Trips Recorder - build and push on BaseImage Change
+name: Migrator - build and push on BaseImage Change
 
 on:
   schedule:
@@ -15,8 +15,8 @@ jobs:
         id: baseupdatecheck
         uses: lucacome/docker-image-update-checker@v1
         with:
-          base-image: python:3.11-slim
-          image: serotonie/ovms-admin_trips_recorder:latest # update for your image
+          base-image: php:latest
+          image: serotonie/ovms-admin_migrator:latest # update for your image
           
     
       - name: Checkout
@@ -37,9 +37,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: python/trips_record
-          target: prod
+          context: laravel
+          target: migrator
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_trips_recorder:latest
+          tags: serotonie/ovms-admin_migrator:latest
         if: steps.baseupdatecheck.outputs.needs-updating == 'true'
