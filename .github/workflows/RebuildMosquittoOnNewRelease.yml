@@ -1,4 +1,4 @@
-name: build and push docker image
+name: Mosquitto - build and push on new Release
 
 on:
   push:
