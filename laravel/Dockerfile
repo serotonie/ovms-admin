@@ -66,6 +66,7 @@ COPY --from=base_builder --chown=www-data:www-data  /var/www/html/vendor        
 COPY --chown=www-data:www-data                      config                          ./config/
 COPY --chown=www-data:www-data                      resources/views                 ./resources/views/
 COPY --chown=www-data:www-data                      routes                          ./routes/
+COPY --chown=www-data:www-data                      composer.json                   ./composer.json
 
 
 FROM base_runtime AS migrator
