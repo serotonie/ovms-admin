@@ -64,7 +64,7 @@ COPY --from=base_builder --chown=www-data:www-data  /var/www/html/bootstrap     
 COPY --from=base_builder --chown=www-data:www-data  /var/www/html/vendor            ./vendor/
 
 COPY --chown=www-data:www-data                      config                          ./config/
-COPY --chown=www-data:www-data                      ressources/views                ./ressources/views/
+COPY --chown=www-data:www-data                      resources/views                 ./resources/views/
 COPY --chown=www-data:www-data                      routes                          ./routes/
 
 
