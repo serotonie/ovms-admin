@@ -1,7 +1,7 @@
 ARG PHP_VERSION=8.3
 ARG NODE_VERSION=20
 
-FROM php:${PHP_VERSION} as base_builder
+FROM php:${PHP_VERSION} AS base_builder
 
 ARG NODE_VERSION
 ENV NODE_VERSION=${NODE_VERSION}
@@ -35,14 +35,14 @@ COPY --chown=www-data:www-data                      composer.json \
 COPY --chown=www-data:www-data                      bootstrap                       ./bootstrap/
 COPY --chown=www-data:www-data                      routes                          ./routes/
 COPY --chown=www-data:www-data                      app                             ./app/
-RUN set -eux;    composer install --no-dev
+RUN set -eux;   composer install --no-dev
 
 COPY --chown=www-data:www-data                      resources                       ./resources/
 
 RUN set -eux;   npm run build
 
 
-FROM php:${PHP_VERSION} as base_runtime
+FROM php:${PHP_VERSION} AS base_runtime
 
 RUN set -eux;   apt-get update && \
                 apt-get upgrade -y --no-install-recommends
@@ -64,29 +64,30 @@ COPY --from=base_builder --chown=www-data:www-data  /var/www/html/bootstrap     
 COPY --from=base_builder --chown=www-data:www-data  /var/www/html/vendor            ./vendor/
 
 COPY --chown=www-data:www-data                      config                          ./config/
+COPY --chown=www-data:www-data                      ressources/views                ./ressources/views
 COPY --chown=www-data:www-data                      routes                          ./routes/
 
 
-FROM base_runtime as migrator
+FROM base_runtime AS migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan migrate --force", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan migrate --force", "--" ]
 
 
-FROM base_runtime as scheduler
+FROM base_runtime AS scheduler
 
 COPY --chown=www-data:www-data                      storage                         ./storage
 
 ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; while true; do php artisan schedule:run; sleep 60; done;", "--" ]
 
 
-FROM scheduler as queue_worker
+FROM scheduler AS queue_worker
 
 ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan queue:work", "--" ]
 
 
-FROM php:${PHP_VERSION}-fpm as frontend
+FROM php:${PHP_VERSION}-fpm AS frontend
 
 RUN set -eux;   apt-get update &&\
                 apt-get upgrade -y --no-install-recommends
@@ -120,7 +121,7 @@ WORKDIR /var/www/html
 
 COPY --from=scheduler --chown=www-data:www-data     /var/www/html                   ../html/
 
-COPY --chown=www-data:www-data                      public                           ./lang/
+COPY --chown=www-data:www-data                      public                          ./lang/
 
 COPY --from=base_builder                            /var/www/html/public            ./public/
 
