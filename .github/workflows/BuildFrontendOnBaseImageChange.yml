@@ -3,7 +3,6 @@ name: Frontend - build and push on BaseImage Change
 on:
   schedule:
     - cron: "23 13 * * *"
-  workflow_dispatch:
 
 jobs:  
   docker:
