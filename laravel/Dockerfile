@@ -122,8 +122,8 @@ WORKDIR /var/www/html
 
 COPY --from=scheduler --chown=www-data:www-data     /var/www/html                   ../html/
 
-COPY --chown=www-data:www-data                      public                          ./lang/
+COPY --chown=www-data:www-data                      public                          ./public/
 
-COPY --from=base_builder                            /var/www/html/public            ./public/
+COPY --from=base_builder                            /var/www/html/public/build      ./public/build/
 
 ENTRYPOINT [ "/bin/bash", "-c", "/opt/generate-ssl-certs.sh; php artisan optimize; php-fpm -D; nginx -g 'daemon off;'", "--" ]
