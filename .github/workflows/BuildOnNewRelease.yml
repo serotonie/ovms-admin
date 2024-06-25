@@ -22,13 +22,9 @@ jobs:
             serotonie/ovms-admin_migrator          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
       - name: Docker meta scheduler
         id: meta_scheduler
         uses: docker/metadata-action@v5
@@ -38,13 +34,9 @@ jobs:
             serotonie/ovms-admin_scheduler          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
       - name: Docker meta queue-worker
         id: meta_queue-worker
         uses: docker/metadata-action@v5
@@ -54,13 +46,9 @@ jobs:
             serotonie/ovms-admin_queue-worker          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
       - name: Docker meta frontend
         id: meta_frontend
         uses: docker/metadata-action@v5
@@ -70,13 +58,9 @@ jobs:
             serotonie/ovms-admin_frontend          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
       - name: Docker meta mosquitto
         id: meta_mosquitto
         uses: docker/metadata-action@v5
@@ -86,13 +70,9 @@ jobs:
             serotonie/ovms-admin_mosquitto          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
       - name: Docker meta trips-recorder
         id: meta_trips-recorder
         uses: docker/metadata-action@v5
@@ -102,13 +82,9 @@ jobs:
             serotonie/ovms-admin_trips-recorder          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha      
+            type=semver,pattern={{major}}      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
