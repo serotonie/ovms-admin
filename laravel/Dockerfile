@@ -66,6 +66,8 @@ COPY --from=base_builder --chown=www-data:www-data  /var/www/html/vendor        
 COPY --chown=www-data:www-data                      config                          ./config/
 COPY --chown=www-data:www-data                      resources/views                 ./resources/views
 COPY --chown=www-data:www-data                      routes                          ./routes/
+COPY --chown=www-data:www-data                      storage/logs                    ./storage/logs 
+COPY --chown=www-data:www-data                      storage/framework/views         ./storage/framework/views
 COPY --chown=www-data:www-data                      composer.json                   ./composer.json
 
 RUN set -eux;   mkdir storage && \
