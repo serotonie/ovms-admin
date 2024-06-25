@@ -65,7 +65,7 @@ return [
             'host' => env('DB_HOST', 'mariadb'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'ovms-admin'),
-            'username' => env('DB_USERNAME', 'root'),
+            'username' => env('DB_USERNAME', 'dbuser'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
