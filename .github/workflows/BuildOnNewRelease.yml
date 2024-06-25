@@ -112,7 +112,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_migrator.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description migrator
-        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_scheduler.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description scheduler
-        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -146,7 +146,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_queue-worker.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description queue-worker
-        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -163,7 +163,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_frontend.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description frontend
-        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -179,7 +179,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_mosquitto.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description mosquitto
-        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -196,7 +196,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_trips-recorder.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description trips-recorder
-        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
