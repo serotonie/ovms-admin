@@ -127,6 +127,8 @@ jobs:
           push: true
           tags: ${{ steps.meta_migrator.outputs.tags }}
           labels: ${{ steps.meta_migrator.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_migrator.outputs.tags }}
+          cache-to: type=inline
       - name: Build and push scheduler
         uses: docker/build-push-action@v5
         with:
@@ -136,6 +138,8 @@ jobs:
           push: true
           tags: ${{ steps.meta_scheduler.outputs.tags }}
           labels: ${{ steps.meta_scheduler.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_scheduler.outputs.tags }}
+          cache-to: type=inline
       - name: Build and push queue-worker
         uses: docker/build-push-action@v5
         with:
@@ -145,6 +149,8 @@ jobs:
           push: true
           tags: ${{ steps.meta_queue-worker.outputs.tags }}
           labels: ${{ steps.meta_queue-worker.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_queue-worker.outputs.tags }}
+          cache-to: type=inline
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
@@ -154,6 +160,8 @@ jobs:
           push: true
           tags: ${{ steps.meta_frontend.outputs.tags }}
           labels: ${{ steps.meta_frontend.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_frontend.outputs.tags }}
+          cache-to: type=inline
       - name: Build and push mosquitto
         uses: docker/build-push-action@v5
         with:
@@ -162,12 +170,16 @@ jobs:
           push: true
           tags: ${{ steps.meta_mosquitto.outputs.tags }}
           labels: ${{ steps.meta_mosquitto.outputs.labels }}
-      - name: Build and push mosquitto
+          cache-from: type=registry,ref=${{ steps.meta_mosquitto.outputs.tags }}
+          cache-to: type=inline
+      - name: Build and push trips-recorder
         uses: docker/build-push-action@v5
         with:
           context: python/trips-recorder
           target: prod
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta_mosquitto.outputs.tags }}
-          labels: ${{ steps.meta_mosquitto.outputs.labels }}
+          tags: ${{ steps.meta_trips-recorder.outputs.tags }}
+          labels: ${{ steps.meta_trips-recorder.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_trips-recorder.outputs.tags }}
+          cache-to: type=inline
