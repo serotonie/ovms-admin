@@ -22,7 +22,7 @@ jobs:
             serotonie/ovms-admin_migrator          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
+            type=raw, latest
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
@@ -35,7 +35,7 @@ jobs:
             serotonie/ovms-admin_scheduler          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
+            type=raw, latest
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
@@ -48,7 +48,7 @@ jobs:
             serotonie/ovms-admin_queue-worker          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
+            type=raw, latest
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
@@ -61,7 +61,7 @@ jobs:
             serotonie/ovms-admin_frontend          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
+            type=raw, latest
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
@@ -74,7 +74,7 @@ jobs:
             serotonie/ovms-admin_mosquitto          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
+            type=raw, latest
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
@@ -87,7 +87,7 @@ jobs:
             serotonie/ovms-admin_trips-recorder          
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
+            type=raw, latest
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}      
