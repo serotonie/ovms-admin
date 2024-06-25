@@ -64,28 +64,30 @@ COPY --from=base_builder --chown=www-data:www-data  /var/www/html/bootstrap     
 COPY --from=base_builder --chown=www-data:www-data  /var/www/html/vendor            ./vendor/
 
 COPY --chown=www-data:www-data                      config                          ./config/
-COPY --chown=www-data:www-data                      resources/views                 ./resources/views/
 COPY --chown=www-data:www-data                      routes                          ./routes/
 COPY --chown=www-data:www-data                      composer.json                   ./composer.json
 
+RUN set -eux;   mkdir storage && \
+                mkdir storage/framework && \
+                mkdir storage/framework/views
 
 FROM base_runtime AS migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan migrate --force", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan migrate --force", "--" ]
 
 
 FROM base_runtime AS scheduler
 
 COPY --chown=www-data:www-data                      storage                         ./storage
 
-ENTRYPOINT [ "/bin/bash", "-c", "while true; do php artisan schedule:run; sleep 60; done;", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; while true; do php artisan schedule:run; sleep 60; done;", "--" ]
 
 
 FROM scheduler AS queue-worker
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan queue:work", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan queue:work", "--" ]
 
 
 FROM php:${PHP_VERSION}-fpm AS frontend
@@ -124,6 +126,8 @@ COPY --from=scheduler --chown=www-data:www-data     /var/www/html               
 
 COPY --chown=www-data:www-data                      public                          ./public/
 
-COPY --from=base_builder                            /var/www/html/public/build      ./public/build/
+COPY --from=base_builder --chown=www-data:www-data  /var/www/html/public/build      ./public/build/
+
+USER www-data
 
 ENTRYPOINT [ "/bin/bash", "-c", "/opt/generate-ssl-certs.sh; php artisan optimize; php-fpm -D; nginx -g 'daemon off;'", "--" ]
