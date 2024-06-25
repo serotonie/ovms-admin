@@ -5,7 +5,7 @@
 	"dockerComposeFile": [
 		"../../docker-compose.rendered.yml"
 	],
-	"service": "trips_recorder",
+	"service": "trips-recorder",
 	"workspaceFolder": "/opt/src",
 	"remoteUser": "worker",
 	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt;",

@@ -83,7 +83,7 @@ COPY --chown=www-data:www-data                      storage                     
 ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; while true; do php artisan schedule:run; sleep 60; done;", "--" ]
 
 
-FROM scheduler AS queue_worker
+FROM scheduler AS queue-worker
 
 ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan queue:work", "--" ]
 

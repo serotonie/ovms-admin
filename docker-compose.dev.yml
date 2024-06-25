@@ -86,15 +86,15 @@ services:
             redis: 
                 condition: service_healthy
 
-    trips_recorder:
+    trips-recorder:
         labels:
             - "com.centurylinklabs.watchtower.enable=false" 
         build: 
-            context: python/trips_recorder
+            context: python/trips-recorder
             dockerfile: Dockerfile
             target: dev
         volumes:
-            - './python/trips_recorder/src:/opt/src:cached'
+            - './python/trips-recorder/src:/opt/src:cached'
         depends_on: !override
             redis: 
                 condition: service_healthy

@@ -113,8 +113,8 @@ services:
                 condition: service_completed_successfully
         restart: always
 
-    trips_recorder:
-        image: 'serotonie/ovms-admin_trips_recorder'
+    trips-recorder:
+        image: 'serotonie/ovms-admin_trips-recorder'
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
             - DB_USERNAME=${DB_USERNAME}
