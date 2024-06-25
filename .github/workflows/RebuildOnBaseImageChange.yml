@@ -1,0 +1,186 @@
+name: Docker - build and push on new Release
+
+on:
+  schedule:
+    - cron: "0 15 * * *"
+
+jobs:  
+  docker:
+    runs-on: ubuntu-latest
+    steps:    
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker Image migrator Update Checker
+        id: baseupdatecheck_migrator
+        uses: lucacome/docker-image-update-checker@v1
+        with:
+          base-image: php
+          image: serotonie/ovms-admin_migrator:latest
+          platforms: linux/amd64,linux/arm64
+      - name: Docker Image scheduler Update Checker
+        id: baseupdatecheck_scheduler
+        uses: lucacome/docker-image-update-checker@v1
+        with:
+          base-image: php
+          image: serotonie/ovms-admin_scheduler:latest
+          platforms: linux/amd64,linux/arm64
+      - name: Docker Image queue worker Update Checker
+        id: baseupdatecheck_queue-worker
+        uses: lucacome/docker-image-update-checker@v1
+        with:
+          base-image: php
+          image: serotonie/ovms-admin_queue-worker:latest
+          platforms: linux/amd64,linux/arm64
+      - name: Docker Image frontend Update Checker
+        id: baseupdatecheck_frontend
+        uses: lucacome/docker-image-update-checker@v1
+        with:
+          base-image: php:fpm
+          image: serotonie/ovms-admin_frontend:latest
+          platforms: linux/amd64,linux/arm64
+      - name: Docker Image mosquitto Update Checker
+        id: baseupdatecheck_mosquitto
+        uses: lucacome/docker-image-update-checker@v1
+        with:
+          base-image: iegomez/mosquitto-go-auth
+          image: serotonie/ovms-admin_mosquitto:latest
+          platforms: linux/amd64,linux/arm64
+      - name: Docker Image trips recorder Update Checker
+        id: baseupdatecheck_trips-recorder
+        uses: lucacome/docker-image-update-checker@v1
+        with:
+          base-image: python:3
+          image: serotonie/ovms-admin_trips-recorder:latest
+          platforms: linux/amd64,linux/arm64     
+          
+          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+      - name: Build and push migrator
+        uses: docker/build-push-action@v5
+        with:
+          context: laravel
+          target: migrator
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_migrator
+          cache-from: serotonie/ovms-admin_migrator
+          cache-to: type=inline
+        if: steps.baseupdatecheck_migrator.outputs.needs-updating == 'true'
+      - name: Update repo description migrator
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_migrator
+        if: steps.baseupdatecheck_migrator.outputs.needs-updating == 'true'
+
+
+      - name: Build and push scheduler
+        uses: docker/build-push-action@v5
+        with:
+          context: laravel
+          target: scheduler
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_scheduler
+          cache-from: serotonie/ovms-admin_scheduler
+          cache-to: type=inline
+        if: steps.baseupdatecheck_scheduler.outputs.needs-updating == 'true'
+      - name: Update repo description scheduler
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_scheduler
+        if: steps.baseupdatecheck_scheduler.outputs.needs-updating == 'true'
+
+
+      - name: Build and push queue-worker
+        uses: docker/build-push-action@v5
+        with:
+          context: laravel
+          target: queue-worker
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_queue-worker
+          cache-from: serotonie/ovms-admin_queue-worker
+          cache-to: type=inline
+        if: steps.baseupdatecheck_queue-worker.outputs.needs-updating == 'true'
+      - name: Update repo description queue-worker
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_queue-worker
+        if: steps.baseupdatecheck_queue-worker.outputs.needs-updating == 'true'
+
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: laravel
+          target: frontend
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_frontend
+          cache-from: serotonie/ovms-admin_frontend
+          cache-to: type=inline
+        if: steps.baseupdatecheck_frontend.outputs.needs-updating == 'true'
+      - name: Update repo description frontend
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_frontend
+        if: steps.baseupdatecheck_frontend.outputs.needs-updating == 'true'
+
+
+      - name: Build and push mosquitto
+        uses: docker/build-push-action@v5
+        with:
+          context: mosquitto
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_mosquitto
+          cache-from: type=registry,ref=$serotonie/ovms-admin_mosquitto
+          cache-to: type=inline
+        if: steps.baseupdatecheck_mosquitto.outputs.needs-updating == 'true'
+      - name: Update repo description mosquitto
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_mosquitto
+        if: steps.baseupdatecheck_mosquitto.outputs.needs-updating == 'true'
+
+
+      - name: Build and push trips-recorder
+        uses: docker/build-push-action@v5
+        with:
+          context: python/trips-recorder
+          target: prod
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_trips-recorder
+          cache-from: type=registry,ref=serotonie/ovms-admin_trips-recorder
+          cache-to: type=inline
+        if: steps.baseupdatecheck_trips-recorder.outputs.needs-updating == 'true'
+      - name: Update repo description trips-recorder
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_trips-recorder
+        if: steps.baseupdatecheck_trips-recorder.outputs.needs-updating == 'true'
