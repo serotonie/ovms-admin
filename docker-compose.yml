@@ -16,8 +16,8 @@ services:
             migrator:
                 condition: service_completed_successfully
 
-    worker:
-        image: 'serotonie/ovms-admin_worker'
+    queue-worker:
+        image: 'serotonie/ovms-admin_queue-worker'
         volumes:
             - ./laravel:/var/www/html/storage
         depends_on:
