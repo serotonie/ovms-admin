@@ -54,7 +54,7 @@ services:
         environment:
             MARIADB_RANDOM_ROOT_PASSWORD: 'yes'
             MARIADB_ROOT_HOST: '%'
-            MARIADB_DATABASE: '${DB_DATABASE}'
+            MARIADB_DATABASE: '${DB_DATABASE:-ovms-admin}'
             MARIADB_USER: '${DB_USERNAME}'
             MARIADB_PASSWORD: '${DB_PASSWORD}'
         volumes:
@@ -76,6 +76,8 @@ services:
         image: 'valkey/valkey:7.2'
         volumes:
             - './redis:/data'
+        environment:
+            - REIDS_PASSWORD=${REDIS_PASSWORD}
         healthcheck:
             test:
                 - CMD
@@ -84,7 +86,7 @@ services:
             start_period: 30s
             start_interval: 2s
         command:
-            valkey-server --requirepass password --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
+            valkey-server --requirepass ${REDIS_PASSWORD} --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
         restart: always
 
     mosquitto:
@@ -92,7 +94,7 @@ services:
         ports:
             - ${MOSQUITTO_PORT:-8883}:${MOSQUITTO_PORT:-8883}
         environment:
-            - DB_USERNAME=${DB_USERNAME}
+            - DB_USERNAME=${DB_USERNAME:-dbuser}
             - DB_PASSWORD=${DB_PASSWORD}
             - REDIS_PASSWORD=${REDIS_PASSWORD}
         volumes:
@@ -117,7 +119,7 @@ services:
         image: 'serotonie/ovms-admin_trips-recorder'
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
-            - DB_USERNAME=${DB_USERNAME}
+            - DB_USERNAME=${DB_USERNAME:-dbuser}
             - DB_PASSWORD=${DB_PASSWORD}
         depends_on:
             redis:
