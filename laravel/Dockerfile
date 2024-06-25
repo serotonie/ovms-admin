@@ -70,10 +70,6 @@ COPY --chown=www-data:www-data                      storage/logs                
 COPY --chown=www-data:www-data                      storage/framework/views         ./storage/framework/views
 COPY --chown=www-data:www-data                      composer.json                   ./composer.json
 
-RUN set -eux;   mkdir storage && \
-                mkdir storage/framework && \
-                mkdir storage/framework/views
-
 FROM base_runtime AS migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
