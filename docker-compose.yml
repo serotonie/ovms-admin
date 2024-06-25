@@ -55,7 +55,7 @@ services:
             MARIADB_RANDOM_ROOT_PASSWORD: 'yes'
             MARIADB_ROOT_HOST: '%'
             MARIADB_DATABASE: '${DB_DATABASE:-ovms-admin}'
-            MARIADB_USER: '${DB_USERNAME}'
+            MARIADB_USER: '${DB_USERNAME:-dbuser}'
             MARIADB_PASSWORD: '${DB_PASSWORD}'
         volumes:
             - '/home/pi/DockerDatabases/ovms_admin/mysql:/var/lib/mysql'
