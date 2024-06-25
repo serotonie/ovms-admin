@@ -73,19 +73,19 @@ FROM base_runtime AS migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan migrate --force", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan migrate --force", "--" ]
 
 
 FROM base_runtime AS scheduler
 
 COPY --chown=www-data:www-data                      storage                         ./storage
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; while true; do php artisan schedule:run; sleep 60; done;", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "while true; do php artisan schedule:run; sleep 60; done;", "--" ]
 
 
 FROM scheduler AS queue-worker
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan queue:work", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "php artisan queue:work", "--" ]
 
 
 FROM php:${PHP_VERSION}-fpm AS frontend
