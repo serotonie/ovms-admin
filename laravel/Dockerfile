@@ -74,19 +74,19 @@ FROM base_runtime AS migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan migrate --force", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "mkdir -p storage/framework/views; mkdir -p storage/logs; php artisan optimize; php artisan migrate --force", "--" ]
 
 
 FROM base_runtime AS scheduler
 
 COPY --chown=www-data:www-data                      storage                         ./storage
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; while true; do php artisan schedule:run; sleep 60; done;", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "mkdir -p storage/framework/views; mkdir -p storage/logs; php artisan optimize; while true; do php artisan schedule:run; sleep 60; done;", "--" ]
 
 
 FROM scheduler AS queue-worker
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan optimize; php artisan queue:work", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "mkdir -p storage/framework/views; mkdir -p storage/logs; php artisan optimize; php artisan queue:work", "--" ]
 
 
 FROM php:${PHP_VERSION}-fpm AS frontend
@@ -127,4 +127,4 @@ COPY --chown=www-data:www-data                      public                      
 
 COPY --from=base_builder --chown=www-data:www-data  /var/www/html/public/build      ./public/build/
 
-ENTRYPOINT [ "/bin/bash", "-c", "/opt/generate-ssl-certs.sh; php artisan optimize; php-fpm -D; nginx -g 'daemon off;'", "--" ]
+ENTRYPOINT [ "/bin/bash", "-c", "/opt/generate-ssl-certs.sh; mkdir -p storage/framework/views; mkdir -p storage/logs; php artisan optimize; php-fpm -D; nginx -g 'daemon off;'", "--" ]
