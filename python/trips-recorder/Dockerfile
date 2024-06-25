@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS prod
+FROM python:3 AS prod
 
 ARG USERNAME=worker
 ARG USER_UID=1000
