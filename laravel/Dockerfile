@@ -129,6 +129,4 @@ COPY --chown=www-data:www-data                      public                      
 
 COPY --from=base_builder --chown=www-data:www-data  /var/www/html/public/build      ./public/build/
 
-USER www-data
-
 ENTRYPOINT [ "/bin/bash", "-c", "/opt/generate-ssl-certs.sh; php artisan optimize; php-fpm -D; nginx -g 'daemon off;'", "--" ]
