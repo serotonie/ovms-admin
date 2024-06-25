@@ -111,6 +111,12 @@ jobs:
           labels: ${{ steps.meta_migrator.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta_migrator.outputs.tags }}
           cache-to: type=inline
+      - name: Update repo description migrator
+        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_migrator
       - name: Build and push scheduler
         uses: docker/build-push-action@v5
         with:
@@ -122,6 +128,12 @@ jobs:
           labels: ${{ steps.meta_scheduler.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta_scheduler.outputs.tags }}
           cache-to: type=inline
+      - name: Update repo description scheduler
+        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_scheduler
       - name: Build and push queue-worker
         uses: docker/build-push-action@v5
         with:
@@ -133,6 +145,12 @@ jobs:
           labels: ${{ steps.meta_queue-worker.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta_queue-worker.outputs.tags }}
           cache-to: type=inline
+      - name: Update repo description queue-worker
+        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_queue-worker
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
@@ -144,6 +162,12 @@ jobs:
           labels: ${{ steps.meta_frontend.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta_frontend.outputs.tags }}
           cache-to: type=inline
+      - name: Update repo description frontend
+        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_frontend
       - name: Build and push mosquitto
         uses: docker/build-push-action@v5
         with:
@@ -154,6 +178,12 @@ jobs:
           labels: ${{ steps.meta_mosquitto.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta_mosquitto.outputs.tags }}
           cache-to: type=inline
+      - name: Update repo description mosquitto
+        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_mosquitto
       - name: Build and push trips-recorder
         uses: docker/build-push-action@v5
         with:
@@ -165,3 +195,9 @@ jobs:
           labels: ${{ steps.meta_trips-recorder.outputs.labels }}
           cache-from: type=registry,ref=${{ steps.meta_trips-recorder.outputs.tags }}
           cache-to: type=inline
+      - name: Update repo description trips-recorder
+        uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae # v4.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_trips-recorder
