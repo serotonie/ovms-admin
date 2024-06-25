@@ -2,7 +2,7 @@ name: Docker - keep base image up to date
 
 on:
   schedule:
-    - cron: "0 15 * * *"
+    - cron: "8 15 * * *"
 
 jobs:  
   docker:
