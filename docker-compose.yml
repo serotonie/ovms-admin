@@ -41,7 +41,7 @@ services:
         ports:
             - 443:443
         volumes:
-            - ./laravel/storage:/var/www/html/storage
+            - ./laravel:/var/www/html/storage
             #TODO - ./laravel/certs:/certs
         healthcheck:
             test: curl --fail -s http://127.0.0.1:80/up || exit 1
