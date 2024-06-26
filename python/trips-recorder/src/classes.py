@@ -2,6 +2,9 @@ import logging
 
 from threading import Timer
 from datetime import datetime
+
+from waiting import wait, TimeoutExpired
+
 from nanoid import generate
 
 import database.models as models
@@ -20,12 +23,13 @@ class Vehicle():
         self.current_trip = models.Trip.select().where(models.Trip.vehicle == self.model.id).where(models.Trip.stop_time.is_null()).get_or_none()
         if self.current_trip is not None:
             self.current_waypoint = self.Waypoint(
+                log=self.log,
                 trip_id=self.current_trip,
                 timer=ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
                 )
             self.current_waypoint.timer.start()
         else:
-            self.current_waypoint = self.Waypoint()
+            self.current_waypoint = self.Waypoint(log=self.log)
         for attr in self.current_waypoint.__dict__.keys():
             if attr == 'trip_id' or attr == 'timer' or attr == 'last_waypoint':
                 pass
@@ -41,6 +45,7 @@ class Vehicle():
 
     class Waypoint():
         def __init__(self,
+                     log,
                      utc = '1970-01-01 00:00:00 UTC',
                      longitude = -1,
                      latitude = -1,
@@ -60,6 +65,7 @@ class Vehicle():
             self.gpshdop = gpshdop
             self.odometer = odometer
             self.trip = trip
+            self.log = log
 
         def __setattr__(self, name, value) -> None:
             match name:
@@ -78,17 +84,20 @@ class Vehicle():
                                 position_long = self.longitude,
                                 trip = self.trip_id
                             )
+                            self.log.debug(current_waypoint.__dict__)
                             self.timer.reset()
                             self.__init__(
+                                log=self.log,
                                 gpshdop=self.gpshdop if (self.latitude != -1 or self.longitude != -1) else -1,
                                 odometer=self.odometer,
                                 trip_id=self.trip_id,
                                 timer=self.timer,
-                                last_waypoint=current_waypoint
+                                last_waypoint=current_waypoint if (self.latitude != -1 and self.longitude != -1) else self.last_waypoint
                                 )
                 case _:
                     if value != '(not found)':
-                        object.__setattr__(self, name, value)
+                        if not hasattr(self, name) or value != getattr(self, name):
+                            object.__setattr__(self, name, value)
 
     def __setattr__(self, name, value) -> None:
         if name == 'driving':
@@ -145,20 +154,25 @@ class Vehicle():
         client.message_callback_remove(response_topic)
         client.unsubscribe(response_topic, 2)
         self.command[command_id]['timer'].cancel()
-        self.command.pop(command_id)
+        self.command.pop(command_id)       
 
     def start_trip(self):
-        self.current_waypoint.trip = 0
-        self.current_trip = models.Trip.create(
-            vehicle=self.model,
-            start_time=datetime.now(),
-            start_point_lat=self.current_waypoint.latitude,
-            start_point_long=self.current_waypoint.longitude,
-            distance=self.current_waypoint.trip
-            )
-        self.current_waypoint.trip_id = self.current_trip
-        self.current_waypoint.timer = ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
-        self.current_waypoint.timer.start()
+        try:
+            wait(lambda: (self.current_waypoint.latitude != -1 and self.current_waypoint.longitude != 1), timeout_seconds=WP_TIMEOUT)
+        except:
+            self.log.warn('Position unknown for ' + str(WP_TIMEOUT) +'s, the trip can\'t be started')
+            self.driving = 'no'
+        else:
+            self.current_trip = models.Trip.create(
+                vehicle=self.model,
+                start_time=datetime.now(),
+                start_point_lat=self.current_waypoint.latitude,
+                start_point_long=self.current_waypoint.longitude,
+                distance=self.current_waypoint.trip
+                )
+            self.current_waypoint.trip_id = self.current_trip
+            self.current_waypoint.timer = ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
+            self.current_waypoint.timer.start()
 
     def stop_trip(self):
         if self.current_trip is not None:

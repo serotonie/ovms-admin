@@ -39,5 +39,3 @@ RUN set -eux;   apt-get install -y --no-install-recommends \
                 git
 
 USER ${USERNAME}
-
-ENTRYPOINT ["tail", "-f", "/dev/null" ]

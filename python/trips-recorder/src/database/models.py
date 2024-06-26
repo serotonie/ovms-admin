@@ -31,7 +31,7 @@ class Trip(Base):
         table_name = 'trips'
 
 class Waypoint(Base):
-    created_at = DateTimeField(null=True)
+    timestamp = DateTimeField(null=True)
     distance = FloatField()
     gpshdop = FloatField(null=True)
     id = BigAutoField()
@@ -39,7 +39,6 @@ class Waypoint(Base):
     position_lat = FloatField()
     position_long = FloatField()
     trip = ForeignKeyField(column_name='trip_id', field='id', model=Trip)
-    updated_at = DateTimeField(null=True)
-
+    
     class Meta:
         table_name = 'waypoints'

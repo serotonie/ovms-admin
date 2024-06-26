@@ -8,7 +8,7 @@ from setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, MQTT_PORT
 import mqtt_callbacks as callbacks
 
 redis_log = logging.getLogger('redis')
-redis_log.debug('setting up creds for mqtt client')
+redis_log.info('setting up creds for mqtt client')
 REDIS.set(MQTT_USERNAME, bcrypt.hashpw(MQTT_PASSWORD.encode('utf-8'), bcrypt.gensalt()))
 REDIS.set(MQTT_USERNAME+":su", "true")
 

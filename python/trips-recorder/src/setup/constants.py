@@ -4,7 +4,7 @@ import logging
 from utils.RandomGenerator import RandomStr
 
 logging.basicConfig(format='%(asctime)s %(name)-14s %(levelname)-8s %(message)s',
-                    level=logging.INFO,
+                    level=logging.os.environ.get('LOG_LEVEL', 'INFO').upper(),
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 LOGGER = logging.getLogger()

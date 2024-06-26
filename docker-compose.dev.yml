@@ -35,7 +35,7 @@ services:
 
     scheduler: !reset
 
-    worker: !reset
+    queue-worker: !reset
 
     frontend:
         labels:
@@ -94,7 +94,9 @@ services:
             dockerfile: Dockerfile
             target: dev
         volumes:
-            - './python/trips-recorder/src:/opt/src:cached'
+            - './python/trips-recorder:/opt:cached'
+        #entrypoint:
+        #    ["tail", "-f", "/dev/null" ]
         depends_on: !override
             redis: 
                 condition: service_healthy

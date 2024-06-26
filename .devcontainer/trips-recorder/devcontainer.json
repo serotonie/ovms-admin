@@ -8,7 +8,7 @@
 	"service": "trips-recorder",
 	"workspaceFolder": "/opt/src",
 	"remoteUser": "worker",
-	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt;",
+	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash;",
 	"customizations": {
 		"vscode": {
 			"extensions": [
