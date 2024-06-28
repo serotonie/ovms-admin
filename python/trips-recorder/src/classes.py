@@ -3,8 +3,6 @@ import logging
 from threading import Timer
 from datetime import datetime
 
-from waiting import wait, TimeoutExpired
-
 from nanoid import generate
 
 import database.models as models
@@ -157,22 +155,16 @@ class Vehicle():
         self.command.pop(command_id)       
 
     def start_trip(self):
-        try:
-            wait(lambda: (self.current_waypoint.latitude != -1 and self.current_waypoint.longitude != 1), timeout_seconds=WP_TIMEOUT)
-        except:
-            self.log.warn('Position unknown for ' + str(WP_TIMEOUT) +'s, the trip can\'t be started')
-            self.driving = 'no'
-        else:
-            self.current_trip = models.Trip.create(
-                vehicle=self.model,
-                start_time=datetime.now(),
-                start_point_lat=self.current_waypoint.latitude,
-                start_point_long=self.current_waypoint.longitude,
-                distance=self.current_waypoint.trip
-                )
-            self.current_waypoint.trip_id = self.current_trip
-            self.current_waypoint.timer = ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
-            self.current_waypoint.timer.start()
+        self.current_trip = models.Trip.create(
+            vehicle=self.model,
+            start_time=datetime.now(),
+            start_point_lat=self.current_waypoint.latitude,
+            start_point_long=self.current_waypoint.longitude,
+            distance=self.current_waypoint.trip
+            )
+        self.current_waypoint.trip_id = self.current_trip
+        self.current_waypoint.timer = ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
+        self.current_waypoint.timer.start()
 
     def stop_trip(self):
         if self.current_trip is not None:
