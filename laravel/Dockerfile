@@ -131,6 +131,6 @@ ENTRYPOINT [    "/bin/bash", \
                 "-c", \
                 "/opt/generate-ssl-certs.sh; \
                 chown -R www-data:www-data storage; \
-                su -s /bin/bash -c 'mkdir -p storage/framework/views storag/logs' www-data; \
+                su -s /bin/bash -c 'mkdir -p storage/framework/views storage/logs' www-data; \
                 su -s /bin/bash -c 'php artisan optimize' www-data; php-fpm -D; \
                 nginx -g 'daemon off;'", "--" ]
