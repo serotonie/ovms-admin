@@ -1,3 +1,5 @@
+"""Module defining the custom class use in main"""
+
 import logging
 
 from threading import Timer
@@ -5,20 +7,29 @@ from datetime import datetime
 
 from nanoid import generate
 
-import database.models as models
 import mqtt_callbacks as callbacks
 
-from utils.ResettableTimerDaemon import ResettableTimerDaemon
-from setup.constants import WP_TIMEOUT, LOGGER
+from database import models
+from utils.resettabletimer_daemon import ResettableTimerDaemon
+from setup.constants import WP_TIMEOUT
 
 class Vehicle():
+
+    """Class representing a vehicle"""
+
     def __init__(self, module_id, client) -> None:
         self.log = logging.getLogger(module_id)
         self.model = models.Vehicle.get_or_none(models.Vehicle.module_id == module_id)
         self.mqttc = client
         self.command = {}
         self.driving = ''
-        self.current_trip = models.Trip.select().where(models.Trip.vehicle == self.model.id).where(models.Trip.stop_time.is_null()).get_or_none()
+        self.current_trip = (
+            models.Trip.select()
+            .where(models.Trip.vehicle == self.model.id)
+            .where(models.Trip.stop_time.is_null())
+            .get_or_none()
+        )
+
         if self.current_trip is not None:
             self.current_waypoint = Waypoint(
                 log=self.log,
@@ -26,30 +37,34 @@ class Vehicle():
                 timer=ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
                 )
             self.current_waypoint.timer.start()
+
         else:
             self.current_waypoint = Waypoint(log=self.log)
-        for attr in self.current_waypoint.__dict__.keys():
-            if attr == 'trip_id' or attr == 'timer' or attr == 'last_waypoint':
+
+        for attr in self.current_waypoint.__dict__:
+            if attr in ('trip_id', 'timer', 'last_waypoint'):
                 pass
+
             elif attr != 'utc':
                 topic = "ovms/+/" + self.model.module_id + "/metric/v/p/" + attr
                 self.mqttc.message_callback_add(topic, callbacks.on_wp_update)
                 self.mqttc.subscribe(topic, 2)
+
             else:
                 topic = "ovms/+/" + self.model.module_id + "/metric/m/time/" + attr
                 self.mqttc.message_callback_add(topic, callbacks.on_wp_update)
                 self.mqttc.subscribe(topic, 2)
-        self.send_command('metrics get v.e.on', 'vehicle_state(msg.payload, vehicles[id])')
-    
+
+        self.send_command('metrics get v.e.on', 'vehicle_state(msg.payload, vehicles[vhc_id])')
+
     def __del__(self):
-        for attr in self.current_waypoint.__dict__.keys():
-            if attr == 'trip_id' or attr == 'timer' or attr == 'last_waypoint':
+        for attr in self.current_waypoint.__dict__:
+            if attr in ('trip_id', 'timer', 'last_waypoint'):
                 pass
             elif attr != 'utc':
                 topic = "ovms/+/" + self.model.module_id + "/metric/v/p/" + attr
                 self.mqttc.unsubscribe(topic)
                 self.mqttc.message_callback_remove(topic)
-                
             else:
                 topic = "ovms/+/" + self.model.module_id + "/metric/m/time/" + attr
                 self.mqttc.unsubscribe(topic)
@@ -72,6 +87,7 @@ class Vehicle():
         object.__setattr__(self, name, value)
 
     def send_command(self, command, callback):
+        """Function to send a command to a vehicle"""        
         command_id = generate(size=10)
 
         command_topic = '/'.join((
@@ -82,7 +98,6 @@ class Vehicle():
             'python',
             'command',
             command_id))
-        
         response_topic ='/'.join((
             'ovms',
             self.model.module_username,
@@ -91,7 +106,6 @@ class Vehicle():
             'python',
             'response',
             command_id))
-        
         self.command[command_id] = {
             'command': command,
             'response_topic': response_topic,
@@ -105,21 +119,33 @@ class Vehicle():
         self.command[command_id]['timer'].start()
 
     def timeout_command(self, command_id):
-        self.log.info(command_id + ' TIMEOUT: don\'t received a response on ' + self.command[command_id]['command'])
+        """Function to catch a timeout when no response is received"""
+        self.log.info(
+                command_id +
+                ' TIMEOUT: don\'t received a response on ' +
+                self.command[command_id]['command']
+        )
         self.cancel_command(command_id)
 
     def cancel_command(self, command_id):
+        """Function to cancel a command"""
         self.mqttc.unsubscribe(self.command[command_id]['response_topic'], 2)
         self.mqttc.message_callback_remove(self.command[command_id]['response_topic'])
         self.mqttc.publish(self.command[command_id]['response_topic'], "", 0)
-        self.mqttc.publish(self.command[command_id]['response_topic'].replace("response", "command"), "", 0)
+        (
+            self.mqttc
+            .publish(self.command[command_id]['response_topic']
+            .replace("response", "command"), "", 0)
+        )
         self.command[command_id]['timer'].cancel()
-        self.command.pop(command_id)       
+        self.command.pop(command_id)
 
     def start_trip(self):
+        """Function to start a new trip on vehicle"""
         if self.current_trip is not None:
             pass
         else:
+            self.current_waypoint.trip = 0
             self.current_trip = models.Trip.create(
                 vehicle=self.model,
                 start_time=datetime.now(),
@@ -127,11 +153,20 @@ class Vehicle():
                 start_point_long=self.current_waypoint.longitude,
                 distance=self.current_waypoint.trip
                 )
+        if self.current_trip.start_point_lat == -1:
+            self.current_waypoint.start_point_lat_to_upd = self.current_trip
+        if self.current_trip.start_point_long == -1:
+            self.current_waypoint.start_point_long_to_upd = self.current_trip
         self.current_waypoint.trip_id = self.current_trip
-        self.current_waypoint.timer = ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
+        self.current_waypoint.timer = ResettableTimerDaemon(
+            WP_TIMEOUT,
+            setattr,
+            [self, 'driving', 'no']
+        )
         self.current_waypoint.timer.start()
 
     def stop_trip(self):
+        """Function to stop the current trip on vehicle"""
         if self.current_trip is not None:
             self.current_trip.stop_time=datetime.now()
             self.current_trip.stop_point_lat=self.current_waypoint.last_waypoint.position_lat
@@ -143,19 +178,24 @@ class Vehicle():
             self.current_waypoint.timer.cancel()
             self.current_waypoint.timer = -1
 
+
 class Waypoint():
-    def __init__(self,
-                    log,
-                    utc = '1970-01-01 00:00:00 UTC',
-                    longitude = -1,
-                    latitude = -1,
-                    gpshdop = -1,
-                    odometer = -1,
-                    trip = -1,
-                    trip_id = -1,
-                    timer = -1,
-                    last_waypoint={}
-                    ) -> None:    
+    """Class representing a waypoint"""
+    def __init__(
+        self,
+        log,
+        utc = '1970-01-01 00:00:00 UTC',
+        longitude = -1,
+        latitude = -1,
+        gpshdop = -1,
+        odometer = -1,
+        trip = -1,
+        trip_id = -1,
+        timer = -1,
+        last_waypoint=None,
+        start_point_lat_to_upd = None,
+        start_point_long_to_upd = None
+    ) -> None:
         self.last_waypoint=last_waypoint
         self.trip_id = trip_id
         self.timer = timer
@@ -166,6 +206,8 @@ class Waypoint():
         self.odometer = odometer
         self.trip = trip
         self.log = log
+        self.start_point_lat_to_upd = start_point_lat_to_upd
+        self.start_point_long_to_upd = start_point_long_to_upd
 
     def __setattr__(self, name, value) -> None:
         match name:
@@ -173,30 +215,43 @@ class Waypoint():
                 object.__setattr__(self, name, datetime.strptime(value, '%Y-%m-%d %H:%M:%S %Z'))
             case 'trip':
                 object.__setattr__(self, name, value)
-                if value != -1:
-                    if self.trip_id != -1 and self.latitude != -1 and self.longitude != -1:
-                        current_waypoint = models.Waypoint.create(
-                            timestamp = self.utc,
-                            distance = self.trip,
-                            gpshdop = self.gpshdop,
-                            odometer = self.odometer,
-                            position_lat = self.latitude,
-                            position_long = self.longitude,
-                            trip = self.trip_id
+                if self.trip_id != -1 and self.latitude != -1 and self.longitude != -1:
+
+                    current_waypoint = models.Waypoint.create(
+                        timestamp = self.utc,
+                        distance = self.trip,
+                        gpshdop = self.gpshdop,
+                        odometer = self.odometer,
+                        position_lat = self.latitude,
+                        position_long = self.longitude,
+                        trip = self.trip_id
+                    )
+
+                    if self.start_point_lat_to_upd is not None:
+                        self.start_point_lat_to_upd.start_point_lat = self.latitude
+                        self.start_point_lat_to_upd.save()
+                        self.start_point_lat_to_upd = None
+
+                    if self.start_point_long_to_upd is not None:
+                        self.start_point_long_to_upd.start_point_long = self.longitude
+                        self.start_point_long_to_upd.save()
+                        self.start_point_long_to_upd = None
+
+                    self.log.debug(current_waypoint.__dict__)
+
+                    self.timer.reset()
+
+                    self.__init__(
+                        log=self.log,
+                        gpshdop=self.gpshdop,
+                        odometer=self.odometer,
+                        trip_id=self.trip_id,
+                        timer=self.timer,
+                        last_waypoint=current_waypoint,
+                        start_point_lat_to_upd=self.start_point_lat_to_upd,
+                        start_point_long_to_upd=self.start_point_long_to_upd
                         )
-                        self.log.debug(current_waypoint.__dict__)
-                        self.timer.reset()
-                        self.__init__(
-                            log=self.log,
-                            gpshdop=self.gpshdop,
-                            odometer=self.odometer,
-                            trip_id=self.trip_id,
-                            timer=self.timer,
-                            last_waypoint=current_waypoint
-                            )
             case _:
                 if value != '(not found)':
                     if not hasattr(self, name) or value != getattr(self, name):
                         object.__setattr__(self, name, value)
-
-    

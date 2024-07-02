@@ -1,3 +1,5 @@
+"""Module to configure the databases used"""
+
 import os
 import valkey as redis
 from playhouse.db_url import connect

@@ -1,4 +1,7 @@
+"""Main module"""
+
 import logging
+import atexit
 import bcrypt
 
 import paho.mqtt.client as mqtt
@@ -12,6 +15,9 @@ redis_log.info('setting up creds for mqtt client')
 REDIS.set(MQTT_USERNAME, bcrypt.hashpw(MQTT_PASSWORD.encode('utf-8'), bcrypt.gensalt()))
 REDIS.set(MQTT_USERNAME+":su", "true")
 
+atexit.register(REDIS.delete, MQTT_USERNAME)
+atexit.register(REDIS.delete, MQTT_USERNAME+":su")
+
 mqtt_log = logging.getLogger('mqtt')
 MQTTC = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 MQTTC.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
@@ -23,7 +29,5 @@ vehicles = {}
 
 MQTTC.user_data_set(vehicles)
 MQTTC.connect(MQTT_HOST, MQTT_PORT)
-
-
 
 MQTTC.loop_forever()
