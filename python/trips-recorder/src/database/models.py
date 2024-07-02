@@ -9,7 +9,7 @@ from peewee import (
     ForeignKeyField,
     IntegerField
 )
-from playhouse.signals import Model, pre_save
+from playhouse.signals import Model, pre_save # pylint: disable=reimported
 from database.config import DB
 from utils.reverse_geocoding import geocoder
 
@@ -21,12 +21,21 @@ class Base(Model):
         database = DB
         only_save_dirty=True
 
+class User(Base):
+    """Model of user"""
+    id = BigAutoField()
+
+    class Meta:
+        """Metadata of """
+        table_name = 'users'
+
 class Vehicle(Base):
     """Model of vehicle"""
     id = BigAutoField()
     last_seen = DateTimeField(null=True)
     module_id = CharField(unique=True)
     module_username = CharField(unique=True)
+    main_user_id = ForeignKeyField(model=User, field='id')
 
     class Meta:
         """Metadata of vehicle model"""
@@ -53,7 +62,7 @@ class Trip(Base):
     stop_postcode = CharField(null=True)
     stop_country = CharField(null=True)
     vehicle_id = ForeignKeyField(field='id', model=Vehicle)
-    user_id = ForeignKeyField(model=Vehicle, field='id')
+    user_id = ForeignKeyField(model=User, field='id')
 
     class Meta:
         """Metadata for Trip Model"""
