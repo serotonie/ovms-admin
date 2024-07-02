@@ -147,11 +147,12 @@ class Vehicle():
         else:
             self.current_waypoint.trip = 0
             self.current_trip = models.Trip.create(
-                vehicle=self.model,
+                vehicle_id=self.model,
                 start_time=datetime.now(),
                 start_point_lat=self.current_waypoint.latitude,
                 start_point_long=self.current_waypoint.longitude,
-                distance=self.current_waypoint.trip
+                distance=self.current_waypoint.trip,
+                user_id=self.model.user_id
                 )
         if self.current_trip.start_point_lat == -1:
             self.current_waypoint.start_point_lat_to_upd = self.current_trip

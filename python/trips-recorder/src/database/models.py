@@ -52,7 +52,8 @@ class Trip(Base):
     stop_village = CharField(null=True)
     stop_postcode = CharField(null=True)
     stop_country = CharField(null=True)
-    vehicle = ForeignKeyField(column_name='vehicle_id', field='id', model=Vehicle)
+    vehicle_id = ForeignKeyField(field='id', model=Vehicle)
+    user_id = ForeignKeyField(model=Vehicle, field='id')
 
     class Meta:
         """Metadata for Trip Model"""
