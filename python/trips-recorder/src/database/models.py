@@ -81,7 +81,7 @@ def on_save_handler(model_class, instance, created): # pylint: disable=unused-ar
         )
         instance.start_house_number = address.get('house_number', "-1")
         instance.start_road = address.get('road', "-1")
-        instance.start_village = address.get('village', address.get('city', "-1"))
+        instance.start_village = address.get('town', address.get('village', address.get('city', "-1")))
         instance.start_postcode = address.get('postcode', "-1")
         instance.start_country = address.get('country', "-1")
 
