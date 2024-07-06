@@ -38,7 +38,7 @@ class AdminUserController extends Controller
             ])
             ->paginate($request->get('limit', 10));
 
-        return Inertia::render('Users/Index', [
+        return Inertia::render('Admin/Users/Index', [
             'data' => $data,
         ]);
     }
@@ -69,7 +69,7 @@ class AdminUserController extends Controller
     {
         $user['role'] = $user->getRoleNames()->toArray()[0];
 
-        return Inertia::render('Users/Edit', [
+        return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
             'roles' => Role::all('name', 'id')->sortBy('id')->pluck('name'),
         ]);

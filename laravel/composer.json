@@ -11,13 +11,16 @@
         "php": "^8.2",
         "fakerphp/faker": "^1.23",
         "inertiajs/inertia-laravel": "^1.0",
+        "jmikola/geojson": "^1.2",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
+        "plank/laravel-mediable": "^6.1",
         "tightenco/ziggy": "^2.0",
         "wijzijnweb/laravel-inertia-permissions": "dev-main"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
+        "icanhazstring/composer-unused": "dev-main",
         "laravel/breeze": "^2.0",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",

@@ -122,7 +122,7 @@ const submit = () => {
               <v-text-field
                 v-model="form.module_pwd"
                 append-inner-icon="mdi-reload"
-                @click:append-inner="form.module_id=nanoid()"
+                @click:append-inner="form.module_pwd=nanoid()"
                 label="Module Password"
                 variant="underlined"
                 :error-messages="form.errors.module_pwd"

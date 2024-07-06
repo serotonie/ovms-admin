@@ -29,7 +29,7 @@
 		}
 	},
 	"remoteUser": "sail",
-	"postCreateCommand": "chown -R 1000:33 /var/www/html && chmod -R g=u /var/www/html; php artisan optimize:clear; composer install; npm install; npm run build",
+	"postCreateCommand": "php artisan optimize:clear; composer install; npm install; npm run build",
 	"postAttachCommand": "npm run dev"
 	// "forwardPorts": [],
 	// "runServices": [],

@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, router } from '@inertiajs/vue3'
-import usePermissions from '../../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts';
+import usePermissions from '../../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts'
 
 const { can } = usePermissions()
 
@@ -15,6 +15,7 @@ const props = defineProps({
 </script>
 
 <template>
+
   <Head title="Dashboard" />
   <AuthenticatedLayout>
     <div class="mb-5">
@@ -23,22 +24,16 @@ const props = defineProps({
     </div>
     <v-card v-if="!vehicles.length">
       <v-card-text>
-        <v-empty-state v-if="can('vehicles all create')"
-          icon="mdi-car-search"
+        <v-empty-state v-if="can('vehicles all create')" icon="mdi-car-search"
           text="Welcome to the OVMS Admin Dashboard, add your first vehicle to begin using it"
-          title="We didn't find any vehicle yet."
-          action-text="add first vehicle"
-          @click:action="router.visit(route('admin.vehicles.create'))"
-        ></v-empty-state>
-        <v-empty-state v-else
-          icon="mdi-car-search"
+          title="We didn't find any vehicle yet." action-text="add first vehicle"
+          @click:action="router.visit(route('admin.vehicles.create'))"></v-empty-state>
+        <v-empty-state v-else icon="mdi-car-search"
           text="Welcome to the OVMS Admin Dashboard, ask your admin to add a vehicle for you"
-          title="We didn't find any vehicle yet."
-        ></v-empty-state>
+          title="We didn't find any vehicle yet."></v-empty-state>
       </v-card-text>
     </v-card>
     <v-card v-else>
-      {{props.vehicles}}
     </v-card>
   </AuthenticatedLayout>
 </template>

@@ -18,7 +18,6 @@ class Vehicle extends Model
      */
     protected $fillable = [
         'name',
-        'color',
         'module_id',
         'module_username',
         'module_pwd',
@@ -41,6 +40,18 @@ class Vehicle extends Model
      * @var array
      */
     protected $appends = ['ownership_level'];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'last_seen' => 'datetime',
+        ];
+    }
 
     /**
      * Get the owner of the Vehicle
@@ -67,7 +78,7 @@ class Vehicle extends Model
     }
 
     /**
-     * The users of the Vehicle
+     * The ownership level of the user for the Vehicle
      *
      * @return string
      */

@@ -22,13 +22,14 @@ Route::middleware(['auth', 'verified'])
                     ->get(),
             ]);
         })->name('dashboard');
-    })
+    });
+
+Route::middleware(['auth', 'verified'])
     ->controller(VehicleController::class)
     ->prefix('vehicles')
     ->name('vehicles.')
     ->group(function () {
         Route::get('', 'index')->name('index');
-        Route::get('{vehicle}', 'show')->name('show');
     });
 
 // Route::fallback(function (){

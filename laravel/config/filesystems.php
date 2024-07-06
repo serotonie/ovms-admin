@@ -44,6 +44,13 @@ return [
             'throw' => false,
         ],
 
+        'vehicle_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploads/vehicle_images'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

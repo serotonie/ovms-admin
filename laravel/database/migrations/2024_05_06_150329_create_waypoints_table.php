@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('waypoints', function (Blueprint $table) {
             $table->id();
             $table->datetimeTz('timestamp');
-            $table->foreignId('trip_id')->constrained();
+            $table->foreignId('trip_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->float('gpshdop', 1)->nullable();
             $table->integer('odometer', unsigned: true);
             $table->float('position_lat');

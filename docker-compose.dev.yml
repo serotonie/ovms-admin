@@ -2,7 +2,7 @@ services:
 
     laravel.test:
         labels:
-            - "com.centurylinklabs.watchtower.enable=false" 
+            - "com.centurylinklabs.watchtower.enable=false"
         build:
             context: ./laravel/vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
@@ -18,29 +18,29 @@ services:
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}' 
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - './laravel:/var/www/html:cached'
             - '.env:/var/www/html/.env:cached'
-        entrypoint: ["tail", "-f", "/dev/null" ]
+        entrypoint: [ "tail", "-f", "/dev/null" ]
         depends_on:
             mariadb:
                 condition: service_healthy
-            redis: 
+            redis:
                 condition: service_healthy
             frontend:
                 condition: service_started
 
-    migrator: !reset
+    migrator: !reset ""
 
-    scheduler: !reset
+    scheduler: !reset ""
 
-    queue-worker: !reset
+    queue-worker: !reset ""
 
     frontend:
         labels:
-            - "com.centurylinklabs.watchtower.enable=false" 
-        build: 
+            - "com.centurylinklabs.watchtower.enable=false"
+        build:
             context: laravel
             dockerfile: Dockerfile
             target: frontend
@@ -54,11 +54,11 @@ services:
             redis:
                 condition: service_healthy
             mosquitto:
-                condition: service_healthy            
+                condition: service_healthy
 
     mariadb:
         labels:
-            - "com.centurylinklabs.watchtower.enable=false" 
+            - "com.centurylinklabs.watchtower.enable=false"
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         volumes: !override
@@ -66,14 +66,14 @@ services:
 
     redis:
         labels:
-            - "com.centurylinklabs.watchtower.enable=false" 
+            - "com.centurylinklabs.watchtower.enable=false"
         volumes: !override
             - 'sail-redis:/data'
 
     mosquitto:
         labels:
-            - "com.centurylinklabs.watchtower.enable=false" 
-        build: 
+            - "com.centurylinklabs.watchtower.enable=false"
+        build:
             context: mosquitto
             dockerfile: Dockerfile
         environment:
@@ -83,13 +83,13 @@ services:
         depends_on: !override
             mariadb:
                 condition: service_healthy
-            redis: 
+            redis:
                 condition: service_healthy
 
     trips-recorder:
         labels:
-            - "com.centurylinklabs.watchtower.enable=false" 
-        build: 
+            - "com.centurylinklabs.watchtower.enable=false"
+        build:
             context: python/trips-recorder
             dockerfile: Dockerfile
             target: dev
@@ -98,7 +98,7 @@ services:
         #entrypoint:
         #    ["tail", "-f", "/dev/null" ]
         depends_on: !override
-            redis: 
+            redis:
                 condition: service_healthy
             mosquitto:
                 condition: service_healthy
@@ -107,19 +107,19 @@ services:
         image: phpmyadmin
         restart: always
         ports:
-        - 8002:80
+            - 8002:80
         environment:
-        - PMA_HOST=${DB_HOST:-mariadb}
-        - PMA_PORT=${DB_PORT:-3306}
-        - PMA_USER=${DB_USERNAME}
-        - PMA_PASSWORD=${DB_PASSWORD}
+            - PMA_HOST=${DB_HOST:-mariadb}
+            - PMA_PORT=${DB_PORT:-3306}
+            - PMA_USER=${DB_USERNAME}
+            - PMA_PASSWORD=${DB_PASSWORD}
 
     mailpit:
         image: 'axllent/mailpit:latest'
         restart: always
         ports:
-        - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-        - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
 
 volumes:
     sail-mariadb:

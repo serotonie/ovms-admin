@@ -31,7 +31,7 @@ class AdminVehicleController extends Controller
             $item['users'] = $item->users()->get()->select('id', 'name')->toArray();
         }
 
-        return Inertia::render('Vehicles/Index', [
+        return Inertia::render('Admin/Vehicles/Index', [
             'data' => $data,
         ]);
     }
@@ -41,7 +41,7 @@ class AdminVehicleController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Vehicles/Create', [
+        return Inertia::render('Admin/Vehicles/Create', [
             'system_users' => User::all('id', 'name'),
             'mqtt' => [
                 'hostname' => 'mqtt.host.name', //TODO add config
@@ -103,7 +103,7 @@ class AdminVehicleController extends Controller
         $vehicle['main_user'] = $vehicle->main_user()->get()->select('id', 'name')->toArray()[0];
         $vehicle['users'] = $vehicle->users()->get()->select('id', 'name')->toArray();
 
-        return Inertia::render('Vehicles/Edit', [
+        return Inertia::render('Admin/Vehicles/Edit', [
             'system_users' => User::all('id', 'name'),
             'vehicle' => $vehicle,
         ]);

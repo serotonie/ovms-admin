@@ -10,7 +10,7 @@ export default {
       {
         title: 'My Vehicles',
         icon: 'mdi-car-multiple',
-        to: "route('vehicles.index')",
+        to: route('vehicles.index'),
         permissions: ''
       }
     ],
@@ -29,5 +29,5 @@ export default {
       }
     ],
     //config:[{}]
-},
+  },
 }

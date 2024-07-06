@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->string('name', 32);
-            $table->string('color')->nullable();
             $table->string('module_id', 32)->unique();
             $table->string('module_username', 32)->unique();
             $table->string('module_pwd');
