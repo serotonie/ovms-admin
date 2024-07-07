@@ -3,6 +3,7 @@
 import logging
 from datetime import datetime
 
+from utils.mqtt_creds import set_creds
 from utils.topic import vhc_id_from_topic
 from classes import Vehicle
 from database.models import Vehicle as Vehicle_model
@@ -13,6 +14,11 @@ def on_connect(client, userdata, flags, reason_code, properties): # pylint: disa
     """Mqtt Callback when client is connected"""
     log.info("Connected with result code %s", reason_code)
     client.subscribe("ovms/+/+/event", 2)
+
+def on_connect_fail(client, userdata): # pylint: disable=unused-argument
+    """Mqtt Callback when client can't connect"""
+    log.warning('Failed to connect to mqtt broker, I will retry')
+    set_creds()
 
 def on_message(client, vehicles, msg):
     """Default mqtt callback when a message is received"""

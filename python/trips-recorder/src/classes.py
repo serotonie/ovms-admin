@@ -11,6 +11,7 @@ import mqtt_callbacks as callbacks
 
 from database import models
 from utils.resettabletimer_daemon import ResettableTimerDaemon
+from utils.nested_iterator import iterate_all
 from setup.constants import WP_TIMEOUT
 
 class Vehicle():
@@ -34,7 +35,7 @@ class Vehicle():
             self.current_waypoint = Waypoint(
                 log=self.log,
                 trip_id=self.current_trip,
-                timer=ResettableTimerDaemon(WP_TIMEOUT, setattr, [self, 'driving', 'no'])
+                timer=ResettableTimerDaemon(WP_TIMEOUT, self.no_new_waypoint)
                 )
             self.current_waypoint.timer.start()
 
@@ -87,36 +88,37 @@ class Vehicle():
         object.__setattr__(self, name, value)
 
     def send_command(self, command, callback):
-        """Function to send a command to a vehicle"""        
-        command_id = generate(size=10)
+        """Function to send a command to a vehicle"""
+        if command not in iterate_all(self.command, 'value'):
+            command_id = generate(size=10)
 
-        command_topic = '/'.join((
-            'ovms',
-            self.model.module_username,
-            self.model.module_id,
-            'client',
-            'python',
-            'command',
-            command_id))
-        response_topic ='/'.join((
-            'ovms',
-            self.model.module_username,
-            self.model.module_id,
-            'client',
-            'python',
-            'response',
-            command_id))
-        self.command[command_id] = {
-            'command': command,
-            'response_topic': response_topic,
-            'callback': callback,
-            'timer': Timer(10, self.timeout_command, args=[command_id])
-        }
+            command_topic = '/'.join((
+                'ovms',
+                self.model.module_username,
+                self.model.module_id,
+                'client',
+                'python',
+                'command',
+                command_id))
+            response_topic ='/'.join((
+                'ovms',
+                self.model.module_username,
+                self.model.module_id,
+                'client',
+                'python',
+                'response',
+                command_id))
+            self.command[command_id] = {
+                'command': command,
+                'response_topic': response_topic,
+                'callback': callback,
+                'timer': Timer(10, self.timeout_command, args=[command_id])
+            }
 
-        self.mqttc.publish(command_topic, command, 2)
-        self.mqttc.message_callback_add(response_topic, callbacks.on_command_response)
-        self.mqttc.subscribe(response_topic, 2)
-        self.command[command_id]['timer'].start()
+            self.mqttc.publish(command_topic, command, 2)
+            self.mqttc.message_callback_add(response_topic, callbacks.on_command_response)
+            self.mqttc.subscribe(response_topic, 2)
+            self.command[command_id]['timer'].start()
 
     def timeout_command(self, command_id):
         """Function to catch a timeout when no response is received"""
@@ -161,8 +163,7 @@ class Vehicle():
         self.current_waypoint.trip_id = self.current_trip
         self.current_waypoint.timer = ResettableTimerDaemon(
             WP_TIMEOUT,
-            setattr,
-            [self, 'driving', 'no']
+            self.no_new_waypoint
         )
         self.current_waypoint.timer.start()
 
@@ -178,6 +179,12 @@ class Vehicle():
             self.current_waypoint.trip_id = -1
             self.current_waypoint.timer.cancel()
             self.current_waypoint.timer = -1
+
+    def no_new_waypoint(self):
+        """Function to stop trip when no new waypoint are received and try to reset the module"""
+        self.log.info('No new waypoint received since %ss, stop trip and try to reset the vehicle', WP_TIMEOUT)
+        self.driving = 'no'
+        self.send_command('module reset', 'print(msg.payload)')
 
 
 class Waypoint():

@@ -11,7 +11,7 @@ from peewee import (
 )
 from playhouse.signals import Model, pre_save # pylint: disable=reimported
 from database.config import DB
-from utils.reverse_geocoding import geocoder
+from utils.geocoder import geocoder
 
 class Base(Model):
     """Defining a Base Model"""

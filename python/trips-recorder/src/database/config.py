@@ -2,6 +2,7 @@
 
 import os
 import valkey as redis
+from peewee import Model
 from playhouse.db_url import connect
 
 DB = connect(''.join((

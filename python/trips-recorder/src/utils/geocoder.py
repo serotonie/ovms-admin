@@ -21,6 +21,7 @@ class CachedGeocoder:
             time.sleep(max(1 -(time.time() - self.ts), 0))
             self.ts = time.time()
             self.db[pos_hash] = self.geocoder.reverse(pgh.decode(pos_hash))
+            REDIS.expire(pos_hash, 2073600)
         return self.db[pos_hash]
 
 geocoder = CachedGeocoder()
