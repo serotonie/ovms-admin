@@ -7,7 +7,7 @@ per_listener_settings true
 #  local listener for healthcheck   #
 #####################################
 
-listener 1880 localhost
+listener 1880 127.0.0.1
 allow_anonymous true
 
 #####################################
