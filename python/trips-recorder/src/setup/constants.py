@@ -17,4 +17,7 @@ MQTT_PASSWORD = random_str()
 MQTT_HOST = os.environ.get('MQTT_HOST', 'mosquitto')
 MQTT_PORT = int(os.environ.get('MQTT_PORT', '1883'))
 
-WP_TIMEOUT = 300
+WP_TIMEOUT = os.environ.get('WP_TIMEOUT', 300)
+MQTT_CREDS_REFRESH = os.environ.get('MQTT_CREDS_REFRESH', 300)
+
+NOMINATIM_CACHE_TTL = os.environ.get('NOMINATIM_CACHE_TTL', 172800)

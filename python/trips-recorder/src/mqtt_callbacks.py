@@ -18,7 +18,6 @@ def on_connect(client, userdata, flags, reason_code, properties): # pylint: disa
 def on_connect_fail(client, userdata): # pylint: disable=unused-argument
     """Mqtt Callback when client can't connect"""
     log.warning('Failed to connect to mqtt broker, I will retry')
-    set_creds()
 
 def on_message(client, vehicles, msg):
     """Default mqtt callback when a message is received"""
