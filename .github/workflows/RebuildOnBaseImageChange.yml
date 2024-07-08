@@ -69,7 +69,7 @@ jobs:
 
 
       - name: Build and push migrator
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: migrator
@@ -89,7 +89,7 @@ jobs:
 
 
       - name: Build and push scheduler
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: scheduler
@@ -109,7 +109,7 @@ jobs:
 
 
       - name: Build and push queue-worker
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: queue-worker
@@ -129,7 +129,7 @@ jobs:
 
 
       - name: Build and push frontend
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: frontend
@@ -149,7 +149,7 @@ jobs:
 
 
       - name: Build and push mosquitto
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: mosquitto
           platforms: linux/amd64,linux/arm64
@@ -168,7 +168,7 @@ jobs:
 
 
       - name: Build and push trips-recorder
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: python/trips-recorder
           target: prod
