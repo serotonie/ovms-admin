@@ -184,7 +184,6 @@ class Vehicle():
         """Function to stop trip when no new waypoint are received and try to reset the module"""
         self.log.info('No new waypoint received since %ss, stop trip and try to reset the vehicle', WP_TIMEOUT)
         self.driving = 'no'
-        self.send_command('module reset', 'print(msg.payload)')
 
 
 class Waypoint():
