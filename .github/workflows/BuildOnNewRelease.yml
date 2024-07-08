@@ -101,7 +101,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push migrator
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: migrator
@@ -118,7 +118,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_migrator
       - name: Build and push scheduler
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: scheduler
@@ -135,7 +135,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_scheduler
       - name: Build and push queue-worker
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: queue-worker
@@ -152,7 +152,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_queue-worker
       - name: Build and push frontend
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: laravel
           target: frontend
@@ -169,7 +169,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_frontend
       - name: Build and push mosquitto
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: mosquitto
           platforms: linux/amd64,linux/arm64
@@ -185,7 +185,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_mosquitto
       - name: Build and push trips-recorder
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: python/trips-recorder
           target: prod
