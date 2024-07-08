@@ -24,4 +24,13 @@ done
 
 echo "[$ME] mosquitto conf created"
 
-exec "$@"
+exec "$@" 2>&1 |
+while read -r line; do
+  case "$line" in
+    *'New connection from 127.0.0.1:'*' on port '1880'.') ;; # drop
+    *'New client connected from 127.0.0.1:'*' as healthcheck '?'p2, c1, k60'?'.') ;; # drop
+    *'New client connected from 127.0.0.1:'*' as healthcheck '?'p2, c1, k60, u'"'"*"'"?'.') ;; # drop
+    *'Client healthcheck disconnected.') ;; # drop
+    *) echo "$line" ;; # forward
+  esac
+done
