@@ -8,7 +8,7 @@ const { can } = usePermissions()
 
 const props = defineProps({
   vehicles: {
-    type: Array,
+    type: Number,
     required: true
   }
 })
@@ -22,7 +22,7 @@ const props = defineProps({
       <h5 class="text-h5 font-weight-bold">Dashboard</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
-    <v-card v-if="!vehicles.length">
+    <v-card v-if="vehicles === 0">
       <v-card-text>
         <v-empty-state v-if="can('vehicles all create')" icon="mdi-car-search"
           text="Welcome to the OVMS Admin Dashboard, add your first vehicle to begin using it"
@@ -34,6 +34,7 @@ const props = defineProps({
       </v-card-text>
     </v-card>
     <v-card v-else>
+      Hello everyone
     </v-card>
   </AuthenticatedLayout>
 </template>

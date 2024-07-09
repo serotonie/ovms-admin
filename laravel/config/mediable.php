@@ -23,7 +23,7 @@ return [
     /*
      * Filesystem disk to use if none is specified
      */
-    'default_disk' => 'public',
+    'default_disk' => 'uploads',
 
     /*
      * Filesystems that can be used for media storage
@@ -31,7 +31,8 @@ return [
      * Uploader will throw an exception if a disk not in this list is selected
      */
     'allowed_disks' => [
-        'public',
+        'uploads',
+        'vehicle_images',
     ],
 
     /*
@@ -48,18 +49,18 @@ return [
      * * `'replace'` : the old file and media model is deleted
      * * `'error'`: an Exception is thrown
      */
-    'on_duplicate' => Plank\Mediable\MediaUploader::ON_DUPLICATE_INCREMENT,
+    'on_duplicate' => Plank\Mediable\MediaUploader::ON_DUPLICATE_REPLACE,
 
     /*
      * Reject files unless both their mime and extension are recognized and both match a single aggregate type
      */
-    'strict_type_checking' => false,
+    'strict_type_checking' => true,
 
     /*
      * Reject files whose mime type or extension is not recognized
      * if true, files will be given a type of `'other'`
      */
-    'allow_unrecognized_types' => false,
+    'allow_unrecognized_types' => true,
 
     /**
      * Prefer the client-provided MIME type over the one inferred from the file contents, if provided
@@ -100,7 +101,7 @@ return [
                 'jpeg',
                 'png',
                 'gif',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_IMAGE_VECTOR => [
             'mime_types' => [
@@ -108,7 +109,7 @@ return [
             ],
             'extensions' => [
                 'svg',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_PDF => [
             'mime_types' => [
@@ -116,7 +117,7 @@ return [
             ],
             'extensions' => [
                 'pdf',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_AUDIO => [
             'mime_types' => [
@@ -125,7 +126,7 @@ return [
                 'audio/mpeg',
                 'audio/mp3',
                 'audio/mpeg',
-                'audio/wav'
+                'audio/wav',
             ],
             'extensions' => [
                 'aac',
@@ -133,22 +134,22 @@ return [
                 'oga',
                 'mp3',
                 'wav',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_VIDEO => [
             'mime_types' => [
                 'video/mp4',
                 'video/mpeg',
                 'video/ogg',
-                'video/webm'
+                'video/webm',
             ],
             'extensions' => [
                 'mp4',
                 'm4v',
                 'mov',
                 'ogv',
-                'webm'
-            ]
+                'webm',
+            ],
         ],
         Plank\Mediable\Media::TYPE_ARCHIVE => [
             'mime_types' => [
@@ -158,7 +159,7 @@ return [
             ],
             'extensions' => [
                 'zip',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_DOCUMENT => [
             'mime_types' => [
@@ -168,7 +169,7 @@ return [
                 'text/json',
                 'application/json',
                 'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             ],
             'extensions' => [
                 'doc',
@@ -177,7 +178,7 @@ return [
                 'text',
                 'xml',
                 'json',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_SPREADSHEET => [
             'mime_types' => [
@@ -187,21 +188,19 @@ return [
             'extensions' => [
                 'xls',
                 'xlsx',
-            ]
+            ],
         ],
         Plank\Mediable\Media::TYPE_PRESENTATION => [
-            'mime_types' =>
-                [
-                    'application/vnd.ms-powerpoint',
-                    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                    'application/vnd.openxmlformats-officedocument.presentationml.slideshow'
-                ],
-            'extensions' =>
-                [
-                    'ppt',
-                    'pptx',
-                    'ppsx',
-                ]
+            'mime_types' => [
+                'application/vnd.ms-powerpoint',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+            ],
+            'extensions' => [
+                'ppt',
+                'pptx',
+                'ppsx',
+            ],
         ],
     ],
 
@@ -301,5 +300,5 @@ return [
                 '-a tune=ssim',
             ],
         ],
-    ]
+    ],
 ];

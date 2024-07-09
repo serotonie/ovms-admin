@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Plank\Mediable\Facades\MediaUploader;
 
 class AdminVehicleController extends Controller
 {
@@ -77,6 +78,14 @@ class AdminVehicleController extends Controller
 
         $vehicle->users()->attach($validated['users']);
 
+        $picture = MediaUploader::fromSource($request->file('picture'))
+            ->setAllowedAggregateTypes(['image'])
+            ->toDestination('vehicle_images', $vehicle->id)
+            ->useHashForFilename()
+            ->upload();
+
+        $vehicle->syncMedia($picture, 'picture');
+
         //TODO acls granularity in real life
         $topic_prefix = 'ovms/'.$validated['module_username'].'/'.$validated['module_id'];
         $topics = [
@@ -99,9 +108,12 @@ class AdminVehicleController extends Controller
      */
     public function edit(Vehicle $vehicle)
     {
+        $picture = $vehicle->getMedia('picture')->first();
+
         $vehicle['owner'] = $vehicle->owner()->get()->select('id', 'name')->toArray()[0];
         $vehicle['main_user'] = $vehicle->main_user()->get()->select('id', 'name')->toArray()[0];
         $vehicle['users'] = $vehicle->users()->get()->select('id', 'name')->toArray();
+        $vehicle['picture'] = $picture != null ? $picture->getUrl() : '/car_default.png';
 
         return Inertia::render('Admin/Vehicles/Edit', [
             'system_users' => User::all('id', 'name'),
@@ -128,6 +140,16 @@ class AdminVehicleController extends Controller
         $vehicle->save();
 
         $vehicle->users()->sync($validated['users']);
+
+        $vehicle->getMedia('picture')->first()->delete();
+
+        $picture = MediaUploader::fromSource($request->file('picture'))
+            ->setAllowedAggregateTypes(['image'])
+            ->toDestination('vehicle_images', $vehicle->id)
+            ->useHashForFilename()
+            ->upload();
+
+        $vehicle->syncMedia($picture, 'picture');
     }
 
     /**
@@ -135,6 +157,7 @@ class AdminVehicleController extends Controller
      */
     public function destroy(Vehicle $vehicle)
     {
+        $vehicle->getMedia('picture')->first()->delete();
         $vehicle->delete();
     }
 }

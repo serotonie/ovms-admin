@@ -13,7 +13,19 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Vehicles/Index');
+        $vehicles = Vehicle::whereRelation('users', 'user_id', '=', auth()->user()->id)
+            ->orWhere('owner_id', auth()->user()->id)
+            ->orWhere('main_user_id', auth()->user()->id)
+            ->withMedia()
+            ->cursorPaginate(12);
+
+        foreach ($vehicles as $vehicle) {
+            $vehicle['picture'] = $vehicle->getMedia('picture')->first()->getUrl();
+        }
+
+        return Inertia::render('Vehicles/Index', [
+            'vehicles' => $vehicles,
+        ]);
     }
 
     /**

@@ -3,6 +3,7 @@
 use App\Http\Controllers\VehicleController;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 require __DIR__.'/auth.php';
@@ -19,10 +20,17 @@ Route::middleware(['auth', 'verified'])
                 'vehicles' => Vehicle::whereRelation('users', 'user_id', '=', auth()->user()->id)
                     ->orWhere('owner_id', auth()->user()->id)
                     ->orWhere('main_user_id', auth()->user()->id)
-                    ->get(),
+                    ->count(),
             ]);
         })->name('dashboard');
     });
+
+Route::get('vehicle_images/{vehicle}/{file_name}', function (string $vehicle, string $file_name) {
+    $vhc_images_disk = Storage::disk('vehicle_images');
+
+    return response($vhc_images_disk->get($vehicle.'/'.$file_name), 200)
+        ->header('Content-Type', $vhc_images_disk->mimeType($vehicle.'/'.$file_name));
+})->middleware(['auth', 'verified']);
 
 Route::middleware(['auth', 'verified'])
     ->controller(VehicleController::class)
