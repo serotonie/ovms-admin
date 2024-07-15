@@ -78,13 +78,16 @@ class AdminVehicleController extends Controller
 
         $vehicle->users()->attach($validated['users']);
 
-        $picture = MediaUploader::fromSource($request->file('picture'))
-            ->setAllowedAggregateTypes(['image'])
-            ->toDestination('vehicle_images', $vehicle->id)
-            ->useHashForFilename()
-            ->upload();
+        $pic_request = $request->file('picture');
+        if ($pic_request != null) {
+            $picture = MediaUploader::fromSource($request->file('picture'))
+                ->setAllowedAggregateTypes(['image'])
+                ->useHashForFilename()
+                ->toDirectory('')
+                ->upload();
 
-        $vehicle->syncMedia($picture, 'picture');
+            $vehicle->syncMedia($picture, 'picture');
+        }
 
         //TODO acls granularity in real life
         $topic_prefix = 'ovms/'.$validated['module_username'].'/'.$validated['module_id'];
@@ -141,15 +144,19 @@ class AdminVehicleController extends Controller
 
         $vehicle->users()->sync($validated['users']);
 
-        $vehicle->getMedia('picture')->first()->delete();
+        $pic_request = $request->file('picture');
+        if ($pic_request != null) {
+            $media_to_delete = $vehicle->getMedia('picture')->first();
+            $media_to_delete != null ? $media_to_delete->delete() : null;
 
-        $picture = MediaUploader::fromSource($request->file('picture'))
-            ->setAllowedAggregateTypes(['image'])
-            ->toDestination('vehicle_images', $vehicle->id)
-            ->useHashForFilename()
-            ->upload();
+            $picture = MediaUploader::fromSource($request->file('picture'))
+                ->setAllowedAggregateTypes(['image'])
+                ->useHashForFilename()
+                ->toDirectory('')
+                ->upload();
 
-        $vehicle->syncMedia($picture, 'picture');
+            $vehicle->syncMedia($picture, 'picture');
+        }
     }
 
     /**
@@ -157,7 +164,8 @@ class AdminVehicleController extends Controller
      */
     public function destroy(Vehicle $vehicle)
     {
-        $vehicle->getMedia('picture')->first()->delete();
+        $media_to_delete = $vehicle->getMedia('picture')->first();
+        $media_to_delete != null ? $media_to_delete->delete() : null;
         $vehicle->delete();
     }
 }

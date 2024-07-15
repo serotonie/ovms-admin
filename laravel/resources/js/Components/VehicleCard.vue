@@ -5,7 +5,7 @@ const props = defineProps({
 </script>
 <template>
     <v-card class="mx-auto" width="400">
-        <v-img color="surface-variant" height="200" :src="vehicle.picture" cover />
+        <v-img color="surface-variant" :aspect-ratio="16 / 9" :src="vehicle.picture" cover />
         <v-card-title>
             {{ vehicle.name }}
         </v-card-title>

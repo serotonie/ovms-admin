@@ -25,11 +25,9 @@ Route::middleware(['auth', 'verified'])
         })->name('dashboard');
     });
 
-Route::get('vehicle_images/{vehicle}/{file_name}', function (string $vehicle, string $file_name) {
-    $vhc_images_disk = Storage::disk('vehicle_images');
-
-    return response($vhc_images_disk->get($vehicle.'/'.$file_name), 200)
-        ->header('Content-Type', $vhc_images_disk->mimeType($vehicle.'/'.$file_name));
+Route::get('uploads/{file_name}', function (string $file_name) {
+    return response(Storage::get($file_name), 200)
+        ->header('Content-Type', Storage::mimeType($file_name));
 })->middleware(['auth', 'verified']);
 
 Route::middleware(['auth', 'verified'])

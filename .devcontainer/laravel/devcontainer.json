@@ -30,7 +30,7 @@
 	},
 	"remoteUser": "sail",
 	"postCreateCommand": "php artisan optimize:clear; composer install; npm install; npm run build",
-	"postAttachCommand": "npm run dev"
+	"postAttachCommand": "/bin/bash"
 	// "forwardPorts": [],
 	// "runServices": [],
 	// "shutdownAction": "none",
