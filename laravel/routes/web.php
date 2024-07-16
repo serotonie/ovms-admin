@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\VehicleController;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,14 @@ Route::middleware(['auth', 'verified'])
     ->controller(VehicleController::class)
     ->prefix('vehicles')
     ->name('vehicles.')
+    ->group(function () {
+        Route::get('', 'index')->name('index');
+    });
+
+Route::middleware(['auth', 'verified'])
+    ->controller(TripController::class)
+    ->prefix('trips')
+    ->name('trips.')
     ->group(function () {
         Route::get('', 'index')->name('index');
     });

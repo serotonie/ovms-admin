@@ -12,6 +12,12 @@ export default {
         icon: 'mdi-car-multiple',
         to: route('vehicles.index'),
         permissions: ''
+      },
+      {
+        title: 'My Trips',
+        icon: 'mdi-map-marker-path',
+        to: route('trips.index'),
+        permissions: ''
       }
     ],
     admin: [

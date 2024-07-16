@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Trip;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class VehicleController extends Controller
+class TripController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,39 +17,23 @@ class VehicleController extends Controller
         $vehicles = Vehicle::whereRelation('users', 'user_id', '=', auth()->user()->id)
             ->orWhere('owner_id', auth()->user()->id)
             ->orWhere('main_user_id', auth()->user()->id)
-            ->withMedia()
-            ->orderBy('id')
+            ->get();
+
+        $trips = Trip::whereIn('vehicle_id', $vehicles->pluck('id'))
+            ->with('waypoints:trip_id,position_lat,position_long')
+            ->orderBy('id', 'desc')
             ->cursorPaginate(12);
 
-        foreach ($vehicles as $vehicle) {
-            $vehicle['picture'] = $vehicle->getMedia('picture')->first()->getUrl();
-        }
-
-        return Inertia::render('Vehicles/Index', [
+        return Inertia::render('Trips/Index', [
             'vehicles' => $vehicles,
+            'trips' => $trips,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Vehicle $vehicle)
+    public function show(Trip $trip)
     {
         //
     }
@@ -56,7 +41,7 @@ class VehicleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Vehicle $vehicle)
+    public function edit(Trip $trip)
     {
         //
     }
@@ -64,7 +49,7 @@ class VehicleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Vehicle $vehicle)
+    public function update(Request $request, Trip $trip)
     {
         //
     }
@@ -72,7 +57,7 @@ class VehicleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Vehicle $vehicle)
+    public function destroy(Trip $trip)
     {
         //
     }
