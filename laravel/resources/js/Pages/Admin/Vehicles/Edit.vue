@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import ImagePicker from '@/Components/ImagePicker.vue';
@@ -30,7 +31,6 @@ Array.from(props.vehicle.users).forEach(e => {
 });
 
 function submit() {
-  console.log('submitting')
   form.post(route('admin.vehicles.update', props.vehicle.id),
     {
       onSuccess: () => { router.visit(route('admin.vehicles.index')) }
@@ -39,6 +39,12 @@ function submit() {
 
 function back() {
   window.history.back();
+}
+
+const isPicEditing = ref(false)
+
+function handleEditing(value) {
+  isPicEditing.value = value
 }
 
 </script>
@@ -52,9 +58,10 @@ function back() {
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
     </div>
     <v-card>
-      <v-form @submit.prevent="submit">
+      <v-form @submit.prevent="submit" :disabled="isPicEditing">
         <v-card-text>
-          <ImagePicker v-model="form.picture" :defaultImage="props.vehicle.picture"></ImagePicker>
+          <ImagePicker v-model="form.picture" :defaultImage="props.vehicle.picture" @beforeEditing="handleEditing(true)"
+            @afterEditing="handleEditing(false)" />
           <v-row>
             <v-col cols="12" sm="12" md="6">
               <v-text-field v-model="form.name" label="Name" variant="underlined" type="text"
@@ -79,7 +86,7 @@ function back() {
           <Link href="#" @click="back" as="div">
           <v-btn text>Cancel</v-btn>
           </Link>
-          <v-btn type="submit" color="primary" :loading="form.processing">Save</v-btn>
+          <v-btn type="submit" color="primary" :loading="form.processing" :disabled="isPicEditing">Save</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
