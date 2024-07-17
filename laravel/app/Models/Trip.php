@@ -9,6 +9,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Trip extends Model
 {
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'start_time' => 'datetime',
+            'stop_time' => 'datetime',
+        ];
+    }
+
+    /**
      * Get all of the waypoints for the Trip
      */
     public function waypoints(): HasMany

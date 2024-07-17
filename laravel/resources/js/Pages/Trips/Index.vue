@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import TripCard from '@/Components/TripCard.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { computed, ref } from 'vue'
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
 
 const breadcrumbs = ref([
     {
@@ -15,8 +15,12 @@ const breadcrumbs = ref([
 const page = usePage()
 
 const vehicles = computed(() => page.props.vehicles)
+const categories = computed(() => page.props.categories)
 const trips = computed(() => page.props.trips.data)
 
+function infiniteLoad() {
+    router.get(page.props.trips.next_page_url)
+}
 </script>
 
 <template>
@@ -29,7 +33,7 @@ const trips = computed(() => page.props.trips.data)
         </div>
         <v-row>
             <v-col v-for="trip in trips">
-                <TripCard :trip="trip"></TripCard>
+                <TripCard :categories="categories" :vehicles="vehicles" :trip="trip"></TripCard>
             </v-col>
         </v-row>
     </AuthenticatedLayout>

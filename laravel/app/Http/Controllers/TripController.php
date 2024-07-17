@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Trip;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -24,9 +25,12 @@ class TripController extends Controller
             ->orderBy('id', 'desc')
             ->cursorPaginate(12);
 
+        $categories = Category::all();
+
         return Inertia::render('Trips/Index', [
             'vehicles' => $vehicles,
             'trips' => $trips,
+            'categories' => $categories,
         ]);
     }
 

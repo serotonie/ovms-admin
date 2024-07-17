@@ -1,10 +1,13 @@
 <script setup>
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LPolyline } from "@vue-leaflet/vue-leaflet";
+import { useTheme } from "vuetify/lib/framework.mjs";
+import { LMap, LTileLayer, LPolyline, LCircleMarker } from "@vue-leaflet/vue-leaflet";
+import moment from "moment";
 const props = defineProps({
-  trip: Object
+  trip: Object,
+  vehicles: Array,
+  categories: Array
 })
-
 const latLngs = []
 
 props.trip.waypoints.forEach(e => {
@@ -16,27 +19,49 @@ const path = {
   color: "#ff00ff"
 }
 
-const center = path
+const startMarker = {
+  latLng: path.latLngs[0],
+  color: useTheme().current.value.colors.primary
+}
 
-const zoom = 2
-
+const stopMarker = {
+  latLng: path.latLngs[path.latLngs.length - 1],
+  color: useTheme().current.value.colors.secondary
+}
 </script>
+
+<script>
+
+export default {
+  methods: {
+    pathReady(e) {
+      if (Object.keys(e.getBounds()).length != 0) {
+        this.$refs.map.leafletObject.fitBounds(e.getBounds())
+      }
+    },
+  }
+}
+</script>
+
 <template>
-  <v-card class="mx-auto" width="400">
+  <v-card class="mx-auto" min-width="250" max-width="400">
     <v-img color="surface-variant" :aspect-ratio="16 / 9">
-      <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" :use-global-leaflet="false">
+      <l-map ref="map" :use-global-leaflet="false">
         <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap">
         </l-tile-layer>
-        <l-polyline :lat-lngs="path.latLngs" :color="path.color" />
+        <l-polyline @ready="pathReady" :lat-lngs="path.latLngs" :color="path.color" />
+        <l-circle-marker :lat-lng="startMarker.latLng" :color="startMarker.color" fill-opacity="1" radius="4" />
+        <l-circle-marker :lat-lng="stopMarker.latLng" :color="stopMarker.color" fill-opacity="1" radius="4" />
       </l-map>
     </v-img>
-
+    <v-card-title>{{ vehicles.find(o => o.id === trip.vehicle_id).name }}</v-card-title>
     <v-card-text>
       <v-timeline align="start" density="compact">
         <v-timeline-item dot-color="primary" size="x-small">
           <div class="mb-4">
             <div class="font-weight-normal">
-              <strong>{{ trip.start_time }}</strong>
+              <strong>{{ moment(trip.start_time).format('L') }}</strong> {{ moment(trip.start_time).format('LT') }}
+              <v-divider class="mb-4" />
               <p>
                 {{ trip.start_road }} {{ trip.start_house_number }}
               <p>
@@ -51,7 +76,8 @@ const zoom = 2
         <v-timeline-item dot-color="secondary" size="x-small">
           <div class="mb-4">
             <div class="font-weight-normal">
-              <strong>{{ trip.stop_time }}</strong>
+              <strong>{{ moment(trip.stop_time).format('L') }}</strong> {{ moment(trip.stop_time).format('LT') }}
+              <v-divider class="mb-4" />
               <p>{{ trip.stop_road }} {{ trip.stop_house_number }} </p>
               <p>
                 {{
@@ -62,6 +88,7 @@ const zoom = 2
           </div>
         </v-timeline-item>
       </v-timeline>
+      {{ categories.find(o => o.id === trip.category_id).name }}
     </v-card-text>
   </v-card>
 </template>
