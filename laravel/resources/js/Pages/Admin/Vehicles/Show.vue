@@ -14,8 +14,9 @@ const props = defineProps({
 </script>
 
 <template>
+
   <Head :title="props.vehicle.name" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout title="Admin">
     <div class="mb-5">
       <h5 class="text-h5 font-weight-bold">{{ props.vehicle.name }}</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />

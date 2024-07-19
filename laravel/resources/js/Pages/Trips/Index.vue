@@ -1,40 +1,62 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import TripCard from '@/Components/TripCard.vue'
-import Breadcrumbs from '@/Components/Breadcrumbs.vue'
-import { computed, ref } from 'vue'
-import { Head, usePage, router } from '@inertiajs/vue3'
+import { ref } from 'vue'
+import { Head } from '@inertiajs/vue3'
+import axios from 'axios'
 
-const breadcrumbs = ref([
-    {
-        title: 'Trips',
-        disabled: true,
-    },
-])
+const props = defineProps({
+    vehicles: Object,
+    categories: Object,
+    trips: Object
+})
 
-const page = usePage()
+const vehicles = props.vehicles
+const categories = props.categories
+const trips = ref(props.trips.data)
+const nextCursor = ref(props.trips.next_page_url)
 
-const vehicles = computed(() => page.props.vehicles)
-const categories = computed(() => page.props.categories)
-const trips = computed(() => page.props.trips.data)
-
-function infiniteLoad() {
-    router.get(page.props.trips.next_page_url)
+async function infiniteLoad({ done }) {
+    try {
+        const result = await axios.get(nextCursor.value)
+        trips.value.push(...result.data.data)
+        if (result.data.next_page_url === null) {
+            done('empty')
+        }
+        else {
+            nextCursor.value = result.data.next_page_url
+            done('ok')
+        }
+    } catch (error) {
+        done('error')
+    }
 }
 </script>
 
 <template>
 
-    <Head title="Trip" />
-    <AuthenticatedLayout>
-        <div class="mb-5">
-            <h5 class="text-h5 font-weight-bold">Trip</h5>
-            <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
-        </div>
-        <v-row>
-            <v-col v-for="trip in trips">
-                <TripCard :categories="categories" :vehicles="vehicles" :trip="trip"></TripCard>
-            </v-col>
-        </v-row>
+    <Head title="My Trips" />
+    <AuthenticatedLayout title="My Trips">
+
+        <v-infinite-scroll color="secondary" @load="infiniteLoad" class="px-3">
+            <v-row>
+                <v-col v-for="trip in trips">
+                    <TripCard :categories="categories" :vehicles="vehicles" :trip="trip"></TripCard>
+                </v-col>
+            </v-row>
+            <template v-slot:empty>
+                <v-alert type="info">No more trips!</v-alert>
+            </template>
+            <template v-slot:error="{ props }">
+                <v-alert type="error">
+                    <div class="d-flex justify-space-between align-center">
+                        Something went wrong...
+                        <v-btn color="white" size="small" variant="outlined" v-bind="props">
+                            Retry
+                        </v-btn>
+                    </div>
+                </v-alert>
+            </template>
+        </v-infinite-scroll>
     </AuthenticatedLayout>
 </template>

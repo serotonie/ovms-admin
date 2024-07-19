@@ -23,12 +23,13 @@ const submit = () => {
   })
 }
 
-const allowedRoles = props.roles.slice(0, props.roles.indexOf(usePage().props.auth.user.roles[0].name)+1);
+const allowedRoles = props.roles.slice(0, props.roles.indexOf(usePage().props.auth.user.roles[0].name) + 1);
 </script>
 
 <template>
+
   <Head title="Create User" />
-  <AuthenticatedLayout>
+  <AuthenticatedLayout title="Admin">
     <div class="mb-5">
       <h5 class="text-h5 font-weight-bold">Create User</h5>
       <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
@@ -38,29 +39,19 @@ const allowedRoles = props.roles.slice(0, props.roles.indexOf(usePage().props.au
         <v-card-text>
           <v-row>
             <v-col cols="12" sm="12" md="6">
-              <v-text-field
-                v-model="form.email"
-                label="Email"
-                variant="underlined"
-                type="email"
-                :error-messages="form.errors.email"
-              />
+              <v-text-field v-model="form.email" label="Email" variant="underlined" type="email"
+                :error-messages="form.errors.email" />
             </v-col>
             <v-col cols="12" sm="12" md="6">
-              <v-select
-                v-model="form.role"
-                label="Role"
-                variant="underlined"
-                :items="allowedRoles"
-                :error-messages="form.errors.role"
-              />
+              <v-select v-model="form.role" label="Role" variant="underlined" :items="allowedRoles"
+                :error-messages="form.errors.role" />
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <Link :href="route('admin.users.index')" as="div">
-            <v-btn text>Cancel</v-btn>
+          <v-btn text>Cancel</v-btn>
           </Link>
           <v-btn type="submit" color="primary" append-icon="mdi-send">Send Invitation</v-btn>
         </v-card-actions>

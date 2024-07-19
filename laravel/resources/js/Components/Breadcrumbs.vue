@@ -6,7 +6,7 @@ import { Link } from '@inertiajs/vue3'
   <v-breadcrumbs :items="items">
     <template #title="{ item }">
       <Link v-if="!item.disabled" :href="item.href" class="v-breadcrumbs-item--link">
-        {{ item.title }}
+      {{ item.title }}
       </Link>
       <span v-else>{{ item.title }}</span>
     </template>

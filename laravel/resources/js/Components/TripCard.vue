@@ -1,15 +1,19 @@
 <script setup>
 import "leaflet/dist/leaflet.css";
+import { ref } from "vue";
 import { useTheme } from "vuetify/lib/framework.mjs";
 import { LMap, LTileLayer, LPolyline, LCircleMarker } from "@vue-leaflet/vue-leaflet";
 import moment from "moment";
+
+const map = ref(null)
+
 const props = defineProps({
   trip: Object,
   vehicles: Array,
   categories: Array
 })
-const latLngs = []
 
+const latLngs = []
 props.trip.waypoints.forEach(e => {
   latLngs.push([e.position_lat, e.position_long])
 });
@@ -28,30 +32,25 @@ const stopMarker = {
   latLng: path.latLngs[path.latLngs.length - 1],
   color: useTheme().current.value.colors.secondary
 }
-</script>
 
-<script>
-
-export default {
-  methods: {
-    pathReady(e) {
-      if (Object.keys(e.getBounds()).length != 0) {
-        this.$refs.map.leafletObject.fitBounds(e.getBounds())
-      }
-    },
+function pathReady(e) {
+  if (Object.keys(e.getBounds()).length != 0) {
+    map.value.leafletObject.fitBounds(e.getBounds())
   }
 }
+
 </script>
 
 <template>
   <v-card class="mx-auto" min-width="250" max-width="400">
     <v-img color="surface-variant" :aspect-ratio="16 / 9">
-      <l-map ref="map" :use-global-leaflet="false">
-        <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap">
-        </l-tile-layer>
+      <l-map v-if="path.latLngs.length != 0" ref="map" :options="{
+        scrollWheelZoom: false
+      }" :use-global-leaflet="false">
+        <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
         <l-polyline @ready="pathReady" :lat-lngs="path.latLngs" :color="path.color" />
-        <l-circle-marker :lat-lng="startMarker.latLng" :color="startMarker.color" fill-opacity="1" radius="4" />
-        <l-circle-marker :lat-lng="stopMarker.latLng" :color="stopMarker.color" fill-opacity="1" radius="4" />
+        <l-circle-marker :lat-lng="startMarker.latLng" :color="startMarker.color" :fill-opacity="1" :radius="4" />
+        <l-circle-marker :lat-lng="stopMarker.latLng" :color="stopMarker.color" :fill-opacity="1" :radius="4" />
       </l-map>
     </v-img>
     <v-card-title>{{ vehicles.find(o => o.id === trip.vehicle_id).name }}</v-card-title>

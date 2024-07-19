@@ -27,11 +27,15 @@ class TripController extends Controller
 
         $categories = Category::all();
 
-        return Inertia::render('Trips/Index', [
-            'vehicles' => $vehicles,
-            'trips' => $trips,
-            'categories' => $categories,
-        ]);
+        if (request()->wantsJson()) {
+            return $trips;
+        } else {
+            return Inertia::render('Trips/Index', [
+                'vehicles' => $vehicles,
+                'trips' => $trips,
+                'categories' => $categories,
+            ]);
+        }
     }
 
     /**

@@ -17,11 +17,7 @@ const props = defineProps({
 <template>
 
   <Head title="Dashboard" />
-  <AuthenticatedLayout>
-    <div class="mb-5">
-      <h5 class="text-h5 font-weight-bold">Dashboard</h5>
-      <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
-    </div>
+  <AuthenticatedLayout title="Dashboard">
     <v-card v-if="vehicles === 0">
       <v-card-text>
         <v-empty-state v-if="can('vehicles all create')" icon="mdi-car-search"

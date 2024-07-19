@@ -19,12 +19,8 @@ const vehicles = computed(() => page.props.vehicles.data)
 
 <template>
 
-    <Head title="Vehicle" />
-    <AuthenticatedLayout>
-        <div class="mb-5">
-            <h5 class="text-h5 font-weight-bold">Vehicle</h5>
-            <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
-        </div>
+    <Head title="My Vehicles" />
+    <AuthenticatedLayout title="My Vehicles">
         <v-row>
             <v-col v-for="vehicle in vehicles">
                 <VehicleCard :vehicle="vehicle"></VehicleCard>
