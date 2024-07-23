@@ -1,6 +1,7 @@
 <script setup>
 import "leaflet/dist/leaflet.css";
 import { ref } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import { useTheme } from "vuetify/lib/framework.mjs";
 import { LMap, LTileLayer, LPolyline, LCircleMarker } from "@vue-leaflet/vue-leaflet";
 import moment from "moment";
@@ -39,10 +40,23 @@ function pathReady(e) {
   }
 }
 
+const form = useForm({
+  category_id: props.trip.category_id,
+  user_id: props.trip.user_id
+})
+
+function submit() {
+  console.log('submit')
+}
+
+function addCategoryHandler() {
+  console.log('addCategory')
+}
+
 </script>
 
 <template>
-  <v-card class="mx-auto" min-width="250" max-width="400">
+  <v-card class="mx-auto fill-height" min-width="250" max-width="400">
     <v-img color="surface-variant" :aspect-ratio="16 / 9">
       <l-map v-if="path.latLngs.length != 0" ref="map" :options="{
         scrollWheelZoom: false
@@ -56,7 +70,7 @@ function pathReady(e) {
     <v-card-title>{{ vehicles.find(o => o.id === trip.vehicle_id).name }}</v-card-title>
     <v-card-text>
       <v-timeline align="start" density="compact">
-        <v-timeline-item dot-color="primary" size="x-small">
+        <v-timeline-item height="160" dot-color="primary" size="x-small">
           <div class="mb-4">
             <div class="font-weight-normal">
               <strong>{{ moment(trip.start_time).format('L') }}</strong> {{ moment(trip.start_time).format('LT') }}
@@ -72,7 +86,7 @@ function pathReady(e) {
             </div>
           </div>
         </v-timeline-item>
-        <v-timeline-item dot-color="secondary" size="x-small">
+        <v-timeline-item height="160" dot-color="secondary" size="x-small">
           <div class="mb-4">
             <div class="font-weight-normal">
               <strong>{{ moment(trip.stop_time).format('L') }}</strong> {{ moment(trip.stop_time).format('LT') }}
@@ -87,7 +101,17 @@ function pathReady(e) {
           </div>
         </v-timeline-item>
       </v-timeline>
-      {{ categories.find(o => o.id === trip.category_id).name }}
     </v-card-text>
+    <v-card-actions>
+      <div width="500">
+        <v-form @submit.prevent="submit">
+          <v-autocomplete variant="underlined" v-model="form.category_id" label="Category"
+            :error-messages="form.errors.category_id" :items="props.categories" item-title="name" item-value="id"
+            append-icon="mdi-plus" @click:append="addCategoryHandler" />
+          <v-autocomplete variant="underlined" v-model="form.user_id" label="User" :error-messages="form.errors.user_id"
+            :items="props.system_users" item-title="name" item-value="id" />
+        </v-form>
+      </div>
+    </v-card-actions>
   </v-card>
 </template>

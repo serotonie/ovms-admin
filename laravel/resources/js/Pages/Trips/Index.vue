@@ -31,15 +31,41 @@ async function infiniteLoad({ done }) {
         done('error')
     }
 }
+
+function submitFilter() {
+    console.log('submit filter')
+}
 </script>
 
 <template>
 
     <Head title="My Trips" />
     <AuthenticatedLayout title="My Trips">
+        <template v-slot:appbar-actions>
+            <div class="text-center">
+                <v-menu open-on-hover :close-on-content-click="false">
+                    <template v-slot:activator="{ props }">
+                        <v-btn icon="mdi-filter" v-bind="props" />
+                    </template>
+
+                    <v-list>
+                        <v-list-subheader>Vehicle</v-list-subheader>
+                        <v-list-item v-for="(item, i) in vehicles" :key="i">
+                            <v-checkbox :label="item.name" />
+                        </v-list-item>
+                        <v-list-subheader>Ownership Level</v-list-subheader>
+                        <v-list-item><v-checkbox label="Owner" /></v-list-item>
+                        <v-list-item><v-checkbox label="Main User" /></v-list-item>
+                        <v-list-item><v-checkbox label="User" /></v-list-item>
+
+                    </v-list>
+                    <v-btn @click="submitFilter">FILTER</v-btn>
+                </v-menu>
+            </div>
+        </template>
 
         <v-infinite-scroll color="secondary" @load="infiniteLoad" class="px-3">
-            <v-row>
+            <v-row align="stretch">
                 <v-col v-for="trip in trips">
                     <TripCard :categories="categories" :vehicles="vehicles" :trip="trip"></TripCard>
                 </v-col>

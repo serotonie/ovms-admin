@@ -1,6 +1,5 @@
 <script setup>
 import NavigationMenu from '@/Components/NavigationMenu.vue'
-import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue'
@@ -57,7 +56,9 @@ onMounted(() => {
     <v-app-bar color="primary">
       <v-app-bar-nav-icon v-if="display.mobile" @click.stop="drawer = !drawer" />
       <v-app-bar-nav-icon v-else @click.stop="rail = !rail" />
-      <v-toolbar-title :text="title" /> </v-app-bar>
+      <v-toolbar-title :text="title" />
+      <slot name="appbar-actions" />
+    </v-app-bar>
     <v-main>
       <v-container>
         <slot />
