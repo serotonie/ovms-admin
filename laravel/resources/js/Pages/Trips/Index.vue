@@ -67,7 +67,8 @@ function submitFilter() {
         <v-infinite-scroll color="secondary" @load="infiniteLoad" class="px-3">
             <v-row align="stretch">
                 <v-col v-for="trip in trips">
-                    <TripCard :categories="categories" :vehicles="vehicles" :trip="trip"></TripCard>
+                    <TripCard :categories="categories" :vehicle="props.vehicles.find(o => o.id === trip.vehicle_id)"
+                        :trip="trip"></TripCard>
                 </v-col>
             </v-row>
             <template v-slot:empty>

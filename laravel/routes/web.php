@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])
     ->name('trips.')
     ->group(function () {
         Route::get('', 'index')->name('index');
+        Route::match(['put', 'patch'], '/{trip}', 'update')->middleware('permission:users all update')->name('update');
     });
 
 // Route::fallback(function (){

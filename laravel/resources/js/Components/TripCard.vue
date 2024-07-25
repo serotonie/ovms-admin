@@ -10,7 +10,7 @@ const map = ref(null)
 
 const props = defineProps({
   trip: Object,
-  vehicles: Array,
+  vehicle: Object,
   categories: Array
 })
 
@@ -41,12 +41,17 @@ function pathReady(e) {
 }
 
 const form = useForm({
+  vehicle_id: props.vehicle.id,
   category_id: props.trip.category_id,
   user_id: props.trip.user_id
 })
 
 function submit() {
-  console.log('submit')
+  form.patch(route('trips.update', props.trip.id))
+}
+
+function cancel() {
+  form.reset()
 }
 
 function addCategoryHandler() {
@@ -67,7 +72,8 @@ function addCategoryHandler() {
         <l-circle-marker :lat-lng="stopMarker.latLng" :color="stopMarker.color" :fill-opacity="1" :radius="4" />
       </l-map>
     </v-img>
-    <v-card-title>{{ vehicles.find(o => o.id === trip.vehicle_id).name }}</v-card-title>
+    <v-card-title>{{ vehicle.name }}</v-card-title>
+    <v-card-subtitle>{{ vehicle.ownership_level }}</v-card-subtitle>
     <v-card-text>
       <v-timeline align="start" density="compact">
         <v-timeline-item height="160" dot-color="primary" size="x-small">
@@ -103,13 +109,26 @@ function addCategoryHandler() {
       </v-timeline>
     </v-card-text>
     <v-card-actions>
-      <div width="500">
+      <div class="w-100">
         <v-form @submit.prevent="submit">
-          <v-autocomplete variant="underlined" v-model="form.category_id" label="Category"
-            :error-messages="form.errors.category_id" :items="props.categories" item-title="name" item-value="id"
-            append-icon="mdi-plus" @click:append="addCategoryHandler" />
-          <v-autocomplete variant="underlined" v-model="form.user_id" label="User" :error-messages="form.errors.user_id"
-            :items="props.system_users" item-title="name" item-value="id" />
+          <v-row justify="space-between">
+            <v-col cols="9">
+              <v-autocomplete variant="underlined" v-model="form.category_id" label="Category"
+                :error-messages="form.errors.category_id" :items="props.categories" item-title="name" item-value="id"
+                append-icon="mdi-plus" @click:append="addCategoryHandler" />
+              <v-autocomplete variant="underlined" v-model="form.user_id" label="User"
+                :error-messages="form.errors.user_id" :items="vehicle.users" item-title="name"
+                item-value="pivot.user_id" />
+            </v-col>
+            <v-col class="d-flex flex-column align-self-center align-end">
+              <v-row>
+                <v-btn @click="cancel" icon="mdi-cancel" />
+              </v-row>
+              <v-row>
+                <v-btn type="submit" color="primary" icon="mdi-content-save" />
+              </v-row>
+            </v-col>
+          </v-row>
         </v-form>
       </div>
     </v-card-actions>

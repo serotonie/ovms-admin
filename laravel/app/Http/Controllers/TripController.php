@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Trip;
 use App\Models\Vehicle;
+use App\Rules\IsUserOfVehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,9 +16,10 @@ class TripController extends Controller
      */
     public function index()
     {
-        $vehicles = Vehicle::whereRelation('users', 'user_id', '=', auth()->user()->id)
+        $vehicles = Vehicle::orWhereRelation('users', 'user_id', '=', auth()->user()->id)
             ->orWhere('owner_id', auth()->user()->id)
             ->orWhere('main_user_id', auth()->user()->id)
+            ->with('users:name')
             ->get();
 
         $trips = Trip::whereIn('vehicle_id', $vehicles->pluck('id'))
@@ -47,19 +49,18 @@ class TripController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Trip $trip)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Trip $trip)
     {
-        //
+        $validated = $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'user_id' => ['required', 'exists:users,id', new IsUserOfVehicle],
+        ]);
+
+        $trip->category_id = $validated['category_id'];
+        $trip->user_id = $validated['user_id'];
+        $trip->save();
     }
 
     /**
