@@ -11,7 +11,7 @@
         "@mdi/font": "^7.4.47",
         "@vitejs/plugin-vue": "^5.1.2",
         "@vue-leaflet/vue-leaflet": "^0.10.1",
-        "axios": "^1.7.3",
+        "axios": "^1.7.4",
         "laravel-vite-plugin": "^1.0",
         "leaflet": "^1.9.4",
         "postcss": "^8.4.41",
