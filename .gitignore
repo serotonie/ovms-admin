@@ -1,3 +1,5 @@
+docker-compose.rendered.yml
+
 **/.env
 **/.env.backup
 **/.env.production
