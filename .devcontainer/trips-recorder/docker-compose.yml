@@ -1,0 +1,5 @@
+services:
+  trips-recorder:
+    volumes:
+      - './python/trips-recorder:/app:cached'
+    entrypoint: [ "tail", "-f", "/dev/null" ]

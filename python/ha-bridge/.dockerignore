@@ -1,0 +1,9 @@
+.env
+.env.example
+Dockerfile
+.devcontainer
+.dotnet
+.local
+.vscode-server
+.python_history
+venv

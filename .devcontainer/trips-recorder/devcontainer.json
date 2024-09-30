@@ -1,14 +1,14 @@
 // https://aka.ms/devcontainer.json. 
 {
 	"name": "OVMS Admin Trips Recorder",
-	"initializeCommand": "docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml config > ./docker-compose.rendered.yml",
+	"initializeCommand": "docker compose down --remove-orphans; sudo chown -R pi:www-data ./laravel; docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml -f ./.devcontainer/trips-recorder/docker-compose.yml config > ./docker-compose.rendered.yml",
 	"dockerComposeFile": [
 		"../../docker-compose.rendered.yml"
 	],
 	"service": "trips-recorder",
-	"workspaceFolder": "/opt/src",
+	"workspaceFolder": "/app/src",
 	"remoteUser": "worker",
-	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash;",
+	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash",
 	"customizations": {
 		"vscode": {
 			"extensions": [

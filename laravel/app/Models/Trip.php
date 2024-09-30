@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Trip extends Model
 {
+    public $timestamps = false;
+
     /**
      * Get the attributes that should be cast.
      *

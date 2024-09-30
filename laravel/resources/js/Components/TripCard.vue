@@ -81,14 +81,9 @@ function addCategoryHandler() {
             <div class="font-weight-normal">
               <strong>{{ moment(trip.start_time).format('L') }}</strong> {{ moment(trip.start_time).format('LT') }}
               <v-divider class="mb-4" />
-              <p>
-                {{ trip.start_road }} {{ trip.start_house_number }}
-              <p>
-                {{
-                  trip.start_postcode }} {{ trip.start_village }}
-              </p>
+              <p>{{ trip.start_road }} {{ trip.start_house_number }}</p>
+              <p>{{ trip.start_postcode }} {{ trip.start_village }}</p>
               <p>{{ trip.start_country }}</p>
-              </p>
             </div>
           </div>
         </v-timeline-item>

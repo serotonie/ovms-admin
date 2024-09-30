@@ -3,16 +3,14 @@ FROM python:3-slim AS prod
 ARG USERNAME=worker
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ENV WORKDIR=/app/src
+ENV WORKDIR=/opt/src
 ENV VIRTUAL_ENV=${WORKDIR}/venv
 
 ENV DB_CONFIG_PATH=database/config.py
 
 RUN eux;    apt-get update &&\
-    apt-get upgrade -y --no-install-recommends
-
-RUN mkdir /app
-
+            apt-get upgrade -y --no-install-recommends
+            
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
@@ -38,6 +36,6 @@ FROM prod AS dev
 USER root
 
 RUN set -eux;   apt-get install -y --no-install-recommends \
-    git
+                git
 
 USER ${USERNAME}
