@@ -60,6 +60,8 @@ FROM prod AS dev
 USER root
 
 RUN set -eux;   apt-get install -y --no-install-recommends \
-    git
+    git \
+    gcc \
+    python3-dev
 
 USER ${USERNAME}
