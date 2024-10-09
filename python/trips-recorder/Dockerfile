@@ -1,3 +1,19 @@
+FROM python:3-slim AS psycopg2_builder
+
+RUN set -eux;    apt-get update &&\
+    apt-get upgrade -y --no-install-recommends
+
+RUN set -eux;   apt-get install -y --no-install-recommends \
+    libpq-dev \
+    gcc \
+    python3-dev
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install psycopg2-binary
+
+
 FROM python:3-slim AS prod
 
 ARG USERNAME=worker
@@ -8,8 +24,11 @@ ENV VIRTUAL_ENV=${WORKDIR}/venv
 
 ENV DB_CONFIG_PATH=database/config.py
 
-RUN eux;    apt-get update &&\
+RUN set -eux;    apt-get update &&\
     apt-get upgrade -y --no-install-recommends
+
+RUN set -eux;   apt-get install -y --no-install-recommends \
+    libpq-dev
 
 RUN mkdir /app
 
@@ -20,6 +39,9 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /usr/bin/bash
 
 WORKDIR ${WORKDIR}
+
+COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib ./venv/lib
+COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib64 ./venv/lib64
 
 COPY --chown=$USERNAME:$USERNAME requirements.txt ./
 RUN pip install -r requirements.txt
