@@ -170,8 +170,8 @@ jobs:
       - name: Build and push trips-recorder
         uses: docker/build-push-action@v6
         with:
-          context: python/trips-recorder
-          target: prod
+          context: python
+          target: trips_recorder
           platforms: linux/amd64,linux/arm64
           push: true
           tags: serotonie/ovms-admin_trips-recorder
