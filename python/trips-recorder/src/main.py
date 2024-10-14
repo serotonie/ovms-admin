@@ -2,11 +2,14 @@
 
 import logging
 
-import paho.mqtt.client as mqtt
+import sys
+sys.path.insert(0, '../..')
 
-from utils.mqtt_creds import set_creds
-from setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, MQTT_PORT
+import paho.mqtt.client as mqtt
 import mqtt_callbacks as callbacks
+
+from common.utils.mqtt_creds import set_creds
+from common.setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, MQTT_PORT
 
 set_creds()
 

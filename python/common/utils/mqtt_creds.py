@@ -5,7 +5,7 @@ import bcrypt
 
 from utils.resettabletimer_daemon import ResettableTimerDaemon
 from database.config import REDIS
-from setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_CREDS_REFRESH
+from common.setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_CREDS_REFRESH
 
 def set_creds():
     """Set the MQTT Creds in REDIS"""

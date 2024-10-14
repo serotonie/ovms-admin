@@ -3,8 +3,8 @@
 import logging
 from datetime import datetime
 
-from utils.mqtt_creds import set_creds
-from utils.topic import vhc_id_from_topic
+from common.utils.mqtt_creds import set_creds
+from common.utils.topic import vhc_id_from_topic
 from classes import Vehicle
 from database.models import Vehicle as Vehicle_model
 
