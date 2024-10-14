@@ -55,9 +55,9 @@ services:
         labels:
             - "com.centurylinklabs.watchtower.enable=false"
         build:
-            context: python/trips-recorder
+            context: python
             dockerfile: Dockerfile
-            target: dev
+            target: trips_recorder_dev
         depends_on: !override
             redis:
                 condition: service_healthy
