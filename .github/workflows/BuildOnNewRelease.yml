@@ -118,7 +118,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: mosquitto/mosquitto-go-auth
-          target: mosquitto-go-auth
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta_mosquitto-go-auth.outputs.tags }}
