@@ -17,6 +17,16 @@ jobs:
     steps:    
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Docker mosquitto-go-auth
+        id: meta_mosquitto-go-auth
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            serotonie/mosquitto-go-auth          
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=raw, latest
       - name: Docker meta migrator
         id: meta_migrator
         uses: docker/metadata-action@v5
@@ -104,6 +114,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push mosquitto-go-auth
+        uses: docker/build-push-action@v6
+        with:
+          context: mosquitto/mosquitto-go-auth
+          target: mosquitto-go-auth
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta_mosquitto-go-auth.outputs.tags }}
+          labels: ${{ steps.meta_mosquitto-go-auth.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_mosquitto-go-auth.outputs.tags }}
+          cache-to: type=inline
       - name: Build and push migrator
         uses: docker/build-push-action@v6
         with:

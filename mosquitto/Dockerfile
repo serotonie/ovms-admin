@@ -42,7 +42,7 @@ RUN set -ex; \
 RUN set -ex; \
   go build -o ../../envsubst
 
-FROM iegomez/mosquitto-go-auth
+FROM serotonie/mosquitto-go-auth
 COPY --from=envsubst_builder /envsubst/envsubst /usr/local/bin
 RUN chmod +x /usr/local/bin/envsubst
 COPY ./template ./template

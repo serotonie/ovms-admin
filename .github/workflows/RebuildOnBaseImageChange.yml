@@ -13,6 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Docker Image mosquitto-go-auth Update Checker
+        id: baseupdatecheck_mosquitto-go-auth
+        uses: lucacome/docker-image-update-checker@v2
+        with:
+          base-image: debian:stable-slim
+          image: serotonie/ovms-admin_mosquitto-go-auth:latest
+          platforms: linux/amd64,linux/arm64
       - name: Docker Image migrator Update Checker
         id: baseupdatecheck_migrator
         uses: lucacome/docker-image-update-checker@v2
@@ -67,7 +74,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
+      - name: Build and push mosquitto-go-auth
+        uses: docker/build-push-action@v6
+        with:
+          context: mosquitto/mosquitto-go-auth
+          target: mosquitto-go-auth
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: serotonie/ovms-admin_mosquitto-go-auth
+          cache-from: serotonie/ovms-admin_mosquitto-go-auth
+          cache-to: type=inline
+        if: steps.baseupdatecheck_mosquitto-go-auth.outputs.needs-updating == 'true'
       - name: Build and push migrator
         uses: docker/build-push-action@v6
         with:
