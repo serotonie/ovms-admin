@@ -82,7 +82,9 @@ jobs:
           context: mosquitto/mosquitto-go-auth
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/mosquitto-go-auth
+          tags: |
+            ghcr.io/serotonie/mosquitto-go-auth
+            serotonie/mosquitto-go-auth
           cache-from: serotonie/mosquitto-go-auth
           cache-to: type=inline
         if: steps.baseupdatecheck_mosquitto-go-auth.outputs.needs-updating == 'true'
@@ -93,7 +95,9 @@ jobs:
           target: migrator
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_migrator
+          tags: |
+            ghcr.io/serotonie/ovms-admin_migrator
+            serotonie/ovms-admin_migrator
           cache-from: serotonie/ovms-admin_migrator
           cache-to: type=inline
         if: steps.baseupdatecheck_migrator.outputs.needs-updating == 'true'
@@ -113,7 +117,9 @@ jobs:
           target: scheduler
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_scheduler
+          tags: |
+            ghcr.io/serotonie/ovms-admin_scheduler
+            serotonie/ovms-admin_scheduler
           cache-from: serotonie/ovms-admin_scheduler
           cache-to: type=inline
         if: steps.baseupdatecheck_scheduler.outputs.needs-updating == 'true'
@@ -133,7 +139,9 @@ jobs:
           target: queue-worker
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_queue-worker
+          tags: |
+            ghcr.io/serotonie/ovms-admin_queue-worker
+            serotonie/ovms-admin_queue-worker
           cache-from: serotonie/ovms-admin_queue-worker
           cache-to: type=inline
         if: steps.baseupdatecheck_queue-worker.outputs.needs-updating == 'true'
@@ -153,7 +161,9 @@ jobs:
           target: frontend
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_frontend
+          tags: |
+            ghcr.io/serotonie/ovms-admin_frontend
+            serotonie/ovms-admin_frontend
           cache-from: serotonie/ovms-admin_frontend
           cache-to: type=inline
         if: steps.baseupdatecheck_frontend.outputs.needs-updating == 'true'
@@ -172,7 +182,9 @@ jobs:
           context: mosquitto
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_mosquitto
+          tags: |
+            ghcr.io/serotonie/ovms-admin_mosquitto
+            serotonie/ovms-admin_mosquitto
           cache-from: type=registry,ref=$serotonie/ovms-admin_mosquitto
           cache-to: type=inline
         if: steps.baseupdatecheck_mosquitto.outputs.needs-updating == 'true'
@@ -192,7 +204,9 @@ jobs:
           target: trips_recorder
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_trips-recorder
+          tags: |
+            ghcr.io/serotonie/ovms-admin_trips-recorder
+            serotonie/ovms-admin_trips-recorder
           cache-from: type=registry,ref=serotonie/ovms-admin_trips-recorder
           cache-to: type=inline
         if: steps.baseupdatecheck_trips-recorder.outputs.needs-updating == 'true'

@@ -26,6 +26,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/mosquitto-go-auth          
             serotonie/mosquitto-go-auth          
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -36,6 +37,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/ovms-admin_migrator          
             serotonie/ovms-admin_migrator          
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -49,6 +51,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/ovms-admin_scheduler          
             serotonie/ovms-admin_scheduler          
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -62,6 +65,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/ovms-admin_queue-worker          
             serotonie/ovms-admin_queue-worker          
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -75,6 +79,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/ovms-admin_frontend          
             serotonie/ovms-admin_frontend          
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -88,6 +93,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/ovms-admin_mosquitto          
             serotonie/ovms-admin_mosquitto          
           # generate Docker tags based on the following events/attributes
           tags: |
@@ -101,6 +107,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
+            ghcr.io/serotonie/ovms-admin_trips-recorder          
             serotonie/ovms-admin_trips-recorder          
           # generate Docker tags based on the following events/attributes
           tags: |
