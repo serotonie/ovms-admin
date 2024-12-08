@@ -80,8 +80,8 @@ jobs:
           context: mosquitto/mosquitto-go-auth
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: serotonie/ovms-admin_mosquitto-go-auth
-          cache-from: serotonie/ovms-admin_mosquitto-go-auth
+          tags: serotonie/mosquitto-go-auth
+          cache-from: serotonie/mosquitto-go-auth
           cache-to: type=inline
         if: steps.baseupdatecheck_mosquitto-go-auth.outputs.needs-updating == 'true'
       - name: Build and push migrator
