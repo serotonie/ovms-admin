@@ -1,7 +1,7 @@
 // https://aka.ms/devcontainer.json
 {
 	"name": "OVMS Admin Laravel Frontend",
-	"initializeCommand": "docker compose down --remove-orphans; sudo chown -R pi:www-data ./laravel; sudo chown -R g=u ./laravel; docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml -f ./.devcontainer/laravel/docker-compose.yml config > ./docker-compose.rendered.yml",
+	"initializeCommand": "docker compose down --remove-orphans; sudo chown -R pi:www-data ./laravel; sudo chmod -R g=u ./laravel; docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml -f ./.devcontainer/laravel/docker-compose.yml config > ./docker-compose.rendered.yml",
 	"dockerComposeFile": [
 		"../../docker-compose.rendered.yml"
 	],
