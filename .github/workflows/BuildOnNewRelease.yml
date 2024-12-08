@@ -17,6 +17,9 @@ jobs:
     steps:    
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
+
       - name: Docker mosquitto-go-auth
         id: meta_mosquitto-go-auth
         uses: docker/metadata-action@v5

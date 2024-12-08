@@ -12,6 +12,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Docker Image mosquitto-go-auth Update Checker
         id: baseupdatecheck_mosquitto-go-auth
