@@ -129,6 +129,7 @@ jobs:
           context: mosquitto/mosquitto-go-auth
           platforms: linux/amd64,linux/arm64
           tags: latest
+          push: false
       - name: Build and push migrator
         uses: docker/build-push-action@v6
         with:
