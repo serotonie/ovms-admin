@@ -56,7 +56,7 @@ COPY --chown=$USERNAME:$USERNAME ./common /common
 
 ENTRYPOINT [ "python", "-u", "main.py" ]
 
-FROM base_prod as trips_recorder
+FROM base_prod AS trips_recorder
 
 COPY --chown=$USERNAME:$USERNAME ./trips-recorder/requirements.txt ./
 RUN pip install -r ./requirements.txt
