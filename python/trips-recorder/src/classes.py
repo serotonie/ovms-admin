@@ -9,8 +9,9 @@ from nanoid import generate
 
 import mqtt_callbacks as callbacks
 
+from common.database.models import Vehicle
 from database import models
-from utils.resettabletimer_daemon import ResettableTimerDaemon
+from common.utils.resettabletimer_daemon import ResettableTimerDaemon
 from utils.nested_iterator import iterate_all
 from setup.constants import WP_TIMEOUT
 
@@ -20,7 +21,7 @@ class Vehicle():
 
     def __init__(self, module_id, client) -> None:
         self.log = logging.getLogger(module_id)
-        self.model = models.Vehicle.get_or_none(models.Vehicle.module_id == module_id)
+        self.model = Vehicle.get_or_none(Vehicle.module_id == module_id)
         self.mqttc = client
         self.command = {}
         self.driving = ''

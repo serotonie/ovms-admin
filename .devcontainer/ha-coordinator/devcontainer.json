@@ -8,7 +8,7 @@
 	"service": "ha-coordinator",
 	"workspaceFolder": "/app/src",
 	"remoteUser": "worker",
-	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash",
+	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r /common/requirements.txt; pip install -r ../requirements.txt; /bin/bash",
 	"customizations": {
 		"vscode": {
 			"extensions": [

@@ -1,7 +1,6 @@
 """Module defining the callbacks for the mqtt client"""
 
 import logging
-from datetime import datetime
 
 from common.utils.mqtt_creds import set_creds
 from common.utils.topic import vhc_id_from_topic

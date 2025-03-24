@@ -6,7 +6,7 @@ from datetime import datetime
 from common.utils.mqtt_creds import set_creds
 from common.utils.topic import vhc_id_from_topic
 from classes import Vehicle
-from database.models import Vehicle as Vehicle_model
+from common.database.models import Vehicle as Vehicle_model
 
 log = logging.getLogger('mqtt')
 

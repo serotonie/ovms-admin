@@ -4,4 +4,5 @@ paho-mqtt
 peewee
 psycopg2-binary
 PyMySQL
+resettabletimer
 valkey
