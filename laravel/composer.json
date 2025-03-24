@@ -15,8 +15,7 @@
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "plank/laravel-mediable": "^6.1",
-        "tightenco/ziggy": "^2.0",
-        "wijzijnweb/laravel-inertia-permissions": "dev-main"
+        "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",

@@ -26,20 +26,6 @@ class UsersSeeder extends Seeder
             $user->assignRole('User');
         }
 
-        //->assignRole('User');
-
-        $fleetmgrs = User::factory(random_int(1, 5))
-            ->sequence(fn (Sequence $sequence) => [
-                'name' => 'fleetmgr'.str($sequence->index),
-                'password' => 'fleetmgrpwd',
-                'email' => 'fleetmgr'.str($sequence->index).'@test.com',
-                'email_verified_at' => now(),
-            ])->create();
-
-        foreach ($fleetmgrs as $fleetmgr) {
-            $fleetmgr->assignRole('Fleet Manager');
-        }
-
         $admins = User::factory(random_int(1, 3))
             ->sequence(fn (Sequence $sequence) => [
                 'name' => 'admin'.str($sequence->index),

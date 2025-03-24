@@ -2,9 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import usePermissions from '@/../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts';
 import moment from 'moment';
-const { can } = usePermissions()
 </script>
 
 <template>
@@ -20,7 +18,7 @@ const { can } = usePermissions()
         <v-text-field v-model="search" label="Search" variant="underlined" prepend-inner-icon="mdi-magnify" hide-details
           clearable single-line />
         <v-spacer />
-        <Link :href="route('admin.vehicles.create')" as="div" v-if="can('vehicles all create')">
+        <Link :href="route('admin.vehicles.create')" as="div">
         <v-btn color="primary" prepend-icon="mdi-plus">New Vehicle</v-btn>
         </Link>
       </div>
@@ -47,13 +45,12 @@ const { can } = usePermissions()
           <span>{{ item.last_seen ? moment(item.last_seen).fromNow() : 'never' }}</span>
         </template>
         <template #[`item.action`]="{ item }">
-          <Link :href="route('admin.vehicles.edit', item.id)" as="button" v-if="can('vehicles all update')">
+          <Link :href="route('admin.vehicles.edit', item.id)" as="button">
           <v-icon color="warning" icon="mdi-pencil" size="small" />
           </Link>
           <v-icon class="ml-2" color="error" icon="mdi-delete" size="small" @click="deleteItem(item)"
             v-if="can('vehicles all delete')" />
-          <v-icon class="ml-2" color="werning" icon="mdi-restore" size="small" @click="resetItem(item)"
-            v-if="can('vehicles all delete') && can('vehicles all update')" />
+          <v-icon class="ml-2" color="werning" icon="mdi-restore" size="small" @click="resetItem(item)" />
         </template>
       </v-data-table-server>
     </v-card>

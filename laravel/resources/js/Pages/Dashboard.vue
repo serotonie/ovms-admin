@@ -2,9 +2,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, router } from '@inertiajs/vue3'
-import usePermissions from '../../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts'
-
-const { can } = usePermissions()
 
 const props = defineProps({
   vehicles: {
@@ -20,11 +17,11 @@ const props = defineProps({
   <AuthenticatedLayout title="Dashboard">
     <v-card v-if="vehicles === 0">
       <v-card-text>
-        <v-empty-state v-if="can('vehicles all create')" icon="mdi-car-search"
+        <v-empty-state icon="mdi-car-search"
           text="Welcome to the OVMS Admin Dashboard, add your first vehicle to begin using it"
           title="We didn't find any vehicle yet." action-text="add first vehicle"
           @click:action="router.visit(route('admin.vehicles.create'))"></v-empty-state>
-        <v-empty-state v-else icon="mdi-car-search"
+        <v-empty-state icon="mdi-car-search"
           text="Welcome to the OVMS Admin Dashboard, ask your admin to add a vehicle for you"
           title="We didn't find any vehicle yet."></v-empty-state>
       </v-card-text>

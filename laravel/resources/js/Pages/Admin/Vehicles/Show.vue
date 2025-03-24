@@ -2,8 +2,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import usePermissions from '@/../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts';
-const { can } = usePermissions()
 
 const props = defineProps({
   vehicle: {

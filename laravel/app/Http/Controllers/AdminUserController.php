@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 
 class AdminUserController extends Controller
 {
@@ -26,15 +25,12 @@ class AdminUserController extends Controller
             return $query->orderBy($sortBy['key'], $sortBy['order']);
         });
 
-        $data = $query->join('model_has_roles', 'id', '=', 'model_has_roles.model_id')
-            ->join('roles', 'role_id', '=', 'roles.id')
+        $data = $query
             ->select([
                 'users.id',
                 'users.name',
                 'users.email',
                 'users.created_at',
-                'roles.name as role_name',
-                'roles.color as role_color',
             ])
             ->paginate($request->get('limit', 10));
 
@@ -71,7 +67,6 @@ class AdminUserController extends Controller
 
         return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
-            'roles' => Role::all('name', 'id')->sortBy('id')->pluck('name'),
         ]);
     }
 

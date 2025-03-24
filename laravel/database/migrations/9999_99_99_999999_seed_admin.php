@@ -11,17 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Artisan::call('db:seed', [
-            '--class' => 'PermissionsSeeder',
-            '--force' => true,
-        ]);
-
-        Artisan::call('db:seed', [
-            '--class' => 'RolesSeeder',
-            '--force' => true,
-        ]);
-
-        Artisan::call('db:seed', [
-            '--class' => 'SuperadminSeeder',
+            '--class' => 'AdminSeeder',
             '--force' => true,
         ]);
     }

@@ -2,9 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import usePermissions from '@/../../vendor/wijzijnweb/laravel-inertia-permissions/resources/js/Uses/usePermissions.ts';
 
-const { can } = usePermissions()
 </script>
 
 <template>
@@ -20,7 +18,7 @@ const { can } = usePermissions()
         <v-text-field v-model="search" label="Search" variant="underlined" prepend-inner-icon="mdi-magnify" hide-details
           clearable single-line />
         <v-spacer />
-        <Link :href="route('admin.users.invite.create')" as="div" v-if="can('users all create')">
+        <Link :href="route('admin.users.invite.create')" as="div">
         <v-btn color="primary" prepend-icon="mdi-plus">Invite new user</v-btn>
         </Link>
       </div>
@@ -33,7 +31,7 @@ const { can } = usePermissions()
           <v-chip :color="item.role_color" variant="flat">{{ item.role_name }}</v-chip>
         </template>
         <template #[`item.action`]="{ item }">
-          <Link :href="route('admin.users.edit', item.id)" as="button" v-if="can('users all update')">
+          <Link :href="route('admin.users.edit', item.id)" as="button">
           <v-icon color="warning" icon="mdi-pencil" size="small" />
           </Link>
           <v-icon class="ml-2" color="error" icon="mdi-delete" size="small" @click="deleteItem(item)"
