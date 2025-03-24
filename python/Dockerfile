@@ -15,21 +15,6 @@ RUN pip install --upgrade pip
 RUN pip install psycopg2-binary
 
 
-FROM python:3-slim AS pygeohash_builder
-
-RUN set -eux;    apt-get update &&\
-    apt-get upgrade -y --no-install-recommends
-
-RUN set -eux;   apt-get install -y --no-install-recommends \
-    gcc
-
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-RUN pip install --upgrade pip
-RUN pip install pygeohash
-
-
 FROM python:3-slim AS base_prod
 
 ARG USERNAME=worker
@@ -75,9 +60,6 @@ ENTRYPOINT [ "python", "-u", "main.py" ]
 
 
 FROM base_prod AS trips_recorder
-
-COPY --from=pygeohash_builder --chown=$USERNAME:$USERNAME /opt/venv/lib/* ./venv/lib/
-COPY --from=pygeohash_builder --chown=$USERNAME:$USERNAME /opt/venv/lib64/* ./venv/lib64/
 
 RUN pip install --upgrade pip
 COPY --chown=$USERNAME:$USERNAME ./trips-recorder/requirements.txt ./
