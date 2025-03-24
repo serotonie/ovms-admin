@@ -27,6 +27,7 @@ laravel/npm-debug.log
 laravel/yarn-error.log
 laravel/.fleet
 laravel/.idea
+laravel/framework/views
 
 python/*/**/__pycache__
 python/*/src/venv
