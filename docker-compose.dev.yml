@@ -64,6 +64,19 @@ services:
             mosquitto:
                 condition: service_healthy
 
+    ha-coordinator:
+        labels:
+            - "com.centurylinklabs.watchtower.enable=false"
+        build:
+            context: python
+            dockerfile: Dockerfile
+            target: ha_coordinator_dev
+        depends_on: !override
+            redis:
+                condition: service_healthy
+            mosquitto:
+                condition: service_healthy
+
     phpmyadmin:
         image: phpmyadmin
         restart: always

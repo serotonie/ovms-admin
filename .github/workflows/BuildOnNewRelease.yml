@@ -104,6 +104,20 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}  
+      - name: Docker meta ha-coordinator
+        id: meta_ha-coordinator
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ghcr.io/serotonie/ovms-admin_ha-coordinator          
+            serotonie/ovms-admin_ha-coordinator          
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=raw, latest
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}} 
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -233,3 +247,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_trips-recorder
+      - name: Build and push ha-coordinator
+        uses: docker/build-push-action@v6
+        with:
+          context: python
+          target: ha_coordinator
+          platforms: linux/amd64 #,linux/arm64
+          push: true
+          tags: ${{ steps.meta_ha-coordinator.outputs.tags }}
+          labels: ${{ steps.meta_ha-coordinator.outputs.labels }}
+          cache-from: type=registry,ref=${{ steps.meta_ha-coordinator.outputs.tags }}
+          cache-to: type=inline
+      - name: Update repo description ha-coordinator
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_ha-coordinator

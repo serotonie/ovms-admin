@@ -81,3 +81,26 @@ RUN set -eux;   apt-get install -y --no-install-recommends \
     python3-dev
 
 USER ${USERNAME}
+
+
+FROM base_prod AS ha_coordinator
+
+RUN pip install --upgrade pip
+COPY --chown=$USERNAME:$USERNAME ./ha-coordinator/requirements.txt ./
+RUN pip install -r ./requirements.txt \
+    && rm requirements.txt
+
+COPY --chown=$USERNAME:$USERNAME ./ha-coordinator/src ./
+
+USER ${USERNAME}
+
+
+FROM ha_coordinator AS ha_coordinator_dev
+
+USER root
+
+RUN set -eux;   apt-get install -y --no-install-recommends \
+    git \
+    python3-dev
+
+USER ${USERNAME}

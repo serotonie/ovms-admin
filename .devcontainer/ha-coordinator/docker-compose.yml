@@ -1,0 +1,6 @@
+services:
+  ha-coordinator:
+    volumes:
+      - './python/ha-coordinator:/app:cached'
+      - './python/common:/common:cached'
+    entrypoint: [ "tail", "-f", "/dev/null" ]

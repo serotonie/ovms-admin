@@ -68,14 +68,7 @@ services:
         volumes:
             - '/home/pi/DockerDatabases/ovms-admin/mysql:/var/lib/mysql'
         healthcheck:
-            test:
-                [
-                    "CMD",
-                    "healthcheck.sh",
-                    "--su-mysql",
-                    "--connect",
-                    "--innodb_initialized"
-                ]
+            test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
             start_period: 30s
             start_interval: 2s
         restart: always
@@ -93,8 +86,7 @@ services:
                 - ping
             start_period: 30s
             start_interval: 2s
-        command:
-            valkey-server --requirepass ${REDIS_PASSWORD} --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
+        command: valkey-server --requirepass ${REDIS_PASSWORD} --save 60 1 --loglevel ${REDIS_LOG_LEVEL:-notice}
         restart: always
 
     mosquitto:
@@ -108,10 +100,10 @@ services:
         volumes:
             - './mosquitto:/var/lib/mosquitto'
             #- './letsencrypt:/mosquitto/certs' #  cafile /mosquitto/certs/live/example.com/chain.pem
-                                                #  certfile /mosquitto/certs/live/example.com/cert.pem
-                                                #  keyfile /mosquitto/certs/live/example.com/privkey.pem
+            #  certfile /mosquitto/certs/live/example.com/cert.pem
+            #  keyfile /mosquitto/certs/live/example.com/privkey.pem
         healthcheck:
-            test: ["CMD", "mosquitto_sub", "-p", "1880", "-t", "$$SYS/broker/version", "-C", "1", "-i", "healthcheck", "-W", "3"]
+            test: [ "CMD", "mosquitto_sub", "-p", "1880", "-t", "$$SYS/broker/version", "-C", "1", "-i", "healthcheck", "-W", "3" ]
             start_period: 30s
             start_interval: 2s
         depends_on:
@@ -138,3 +130,17 @@ services:
                 condition: service_completed_successfully
         restart: always
 
+    ha-coordinator:
+        image: 'serotonie/ovms-admin_ha-coordinator'
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+            - DB_USERNAME=${DB_USERNAME:-dbuser}
+            - DB_PASSWORD=${DB_PASSWORD}
+        depends_on:
+            redis:
+                condition: service_healthy
+            mosquitto:
+                condition: service_healthy
+            migrator:
+                condition: service_completed_successfully
+        restart: always

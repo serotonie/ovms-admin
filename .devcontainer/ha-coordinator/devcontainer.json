@@ -1,0 +1,23 @@
+// https://aka.ms/devcontainer.json. 
+{
+	"name": "OVMS Admin Home Assistant Coordinator",
+	"initializeCommand": "docker compose down --remove-orphans; sudo chown -R 1000:33 ./laravel; sudo chmod -R g=u ./laravel; docker compose -f ./docker-compose.yml -f ./docker-compose.dev.yml -f ./.devcontainer/ha-coordinator/docker-compose.yml config > ./docker-compose.rendered.yml",
+	"dockerComposeFile": [
+		"../../docker-compose.rendered.yml"
+	],
+	"service": "ha-coordinator",
+	"workspaceFolder": "/app/src",
+	"remoteUser": "worker",
+	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.pylint"
+			],
+			"settings": {
+				"pylint.lintOnChange": true
+			}
+		}
+	}
+}
