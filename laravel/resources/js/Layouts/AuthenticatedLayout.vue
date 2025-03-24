@@ -35,7 +35,7 @@ onMounted(() => {
   <v-app class="bg-grey-lighten-4">
     <v-navigation-drawer v-model="drawer" :rail="rail" permanent>
       <v-list>
-        <v-list-item :title="page.props.auth.user.name" :subtitle="page.props.auth.user.user_type">
+        <v-list-item :title="page.props.auth.user.name" :subtitle="page.props.auth.user.role">
           <template v-slot:append>
             <v-menu>
               <template v-slot:activator="{ props }">

@@ -35,7 +35,7 @@ import { Head, Link } from '@inertiajs/vue3'
           <v-icon color="warning" icon="mdi-pencil" size="small" />
           </Link>
           <v-icon class="ml-2" color="error" icon="mdi-delete" size="small" @click="deleteItem(item)"
-            v-if="can('users all delete') && `${item.id}` != $page.props.auth.user.id" />
+            v-if="`${item.id}` != $page.props.auth.user.id" />
         </template>
       </v-data-table-server>
     </v-card>

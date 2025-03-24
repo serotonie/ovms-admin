@@ -13,7 +13,7 @@ class StoreUserInviteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('users all create');
+        return true;
     }
 
     /**
@@ -25,7 +25,7 @@ class StoreUserInviteRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
-            'role' => ['required', 'string', Rule::exists('roles', 'name')],
+            'role' => ['required', 'string', Rule::in(['admin', 'user'])],
         ];
     }
 }

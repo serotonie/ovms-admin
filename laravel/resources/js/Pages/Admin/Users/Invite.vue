@@ -3,13 +3,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link, useForm, router, usePage } from '@inertiajs/vue3'
 
-const props = defineProps({
-  roles: {
-    type: Array,
-    required: true,
-  }
-})
-
 const form = useForm({
   email: null,
   role: null
@@ -18,12 +11,12 @@ const form = useForm({
 const submit = () => {
   form.post(route('admin.users.invite.store'), {
     onSuccess: () => {
-      router.visit(route('admin.users'))
+      router.visit(route('admin.users.index'))
     },
   })
 }
 
-const allowedRoles = props.roles.slice(0, props.roles.indexOf(usePage().props.auth.user.roles[0].name) + 1);
+const roles = ['admin', 'user'];
 </script>
 
 <template>
@@ -43,7 +36,7 @@ const allowedRoles = props.roles.slice(0, props.roles.indexOf(usePage().props.au
                 :error-messages="form.errors.email" />
             </v-col>
             <v-col cols="12" sm="12" md="6">
-              <v-select v-model="form.role" label="Role" variant="underlined" :items="allowedRoles"
+              <v-select v-model="form.role" label="Role" variant="underlined" :items="roles"
                 :error-messages="form.errors.role" />
             </v-col>
           </v-row>

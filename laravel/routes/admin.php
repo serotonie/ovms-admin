@@ -15,7 +15,7 @@ Route::middleware(['auth', 'verified'])
     ->name('admin.users.')
     ->group(function () {
         Route::get('invite', function () {
-            return Inertia::render('Users/Invite');
+            return Inertia::render('Admin/Users/Invite');
         })->name('invite.create');
         Route::post('', 'invite')->name('invite.store');
 

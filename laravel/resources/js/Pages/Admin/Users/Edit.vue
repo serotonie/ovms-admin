@@ -3,13 +3,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link, useForm, router } from '@inertiajs/vue3'
 
+const roles = ["admin", "user"]
+
 const props = defineProps({
   user: {
     type: Object,
-    required: true,
-  },
-  roles: {
-    type: Array,
     required: true,
   },
   auth: {
@@ -31,8 +29,6 @@ const submit = () => {
     },
   })
 }
-
-const allowedRoles = props.roles.slice(0, props.roles.indexOf(props.auth.user.roles[0].name) + 1);
 
 function back() {
   window.history.back();
@@ -62,7 +58,7 @@ function back() {
                 :error-messages="form.errors.email" />
             </v-col>
             <v-col cols="12" sm="12" md="6">
-              <v-select v-model="form.role" label="Role" variant="underlined" :items="allowedRoles"
+              <v-select v-model="form.role" label="Role" variant="underlined" :items="roles"
                 :error-messages="form.errors.role" />
             </v-col>
           </v-row>

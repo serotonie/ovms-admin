@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
         User::factory()->create([
             'name' => env('ADMIN_NAME', 'admin'),
             'password' => env('ADMIN_PASSWORD', 'changeme'),
-            'user_type' => 'admin',
+            'role' => 'admin',
             'email' => env('ADMIN_MAIL', 'admin@example.com'),
             'email_verified_at' => now(),
         ]);

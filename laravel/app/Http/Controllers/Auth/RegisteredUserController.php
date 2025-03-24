@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
         try {
             $request->validate([
                 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)],
-                'role' => ['required', 'string', Rule::exists('roles', 'name')],
+                'role' => ['required', 'string', Rule::in(['admin', 'user'])],
             ]);
         } catch (\Exception $e) {
             abort(403, $e->getMessage());
@@ -54,10 +54,9 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
             'email_verified_at' => now(),
         ]);
-
-        $user->assignRole($request->role);
 
         event(new Registered($user));
 

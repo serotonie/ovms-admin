@@ -30,6 +30,7 @@ class AdminUserController extends Controller
                 'users.id',
                 'users.name',
                 'users.email',
+                'users.role',
                 'users.created_at',
             ])
             ->paginate($request->get('limit', 10));
@@ -63,8 +64,6 @@ class AdminUserController extends Controller
      */
     public function edit(User $user)
     {
-        $user['role'] = $user->getRoleNames()->toArray()[0];
-
         return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
         ]);
@@ -78,15 +77,14 @@ class AdminUserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-            'role' => ['required', 'string', Rule::exists('roles', 'name')],
+            'role' => ['required', 'string', Rule::in(['admin', 'user'])],
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
+        $user->role = $validated['role'];
 
         $user->save();
-
-        $user->syncRoles($validated['role']);
 
         return redirect(route('admin.users.index'))->with('success', "$user->name has been updated");
     }
