@@ -4,11 +4,11 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
     build:
-      context: ./laravel/vendor/laravel/sail/runtimes/8.3
+      context: ./laravel/vendor/laravel/sail/runtimes/8.4
       dockerfile: Dockerfile
       args:
         WWWGROUP: '${WWWGROUP}'
-    image: sail-8.3/app
+    image: sail-8.4/app
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
