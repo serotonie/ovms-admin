@@ -63,7 +63,7 @@ jobs:
         with:
           base-image: python:3
           image: serotonie/ovms-admin_trips-recorder:latest
-          platforms: linux/amd64,linux/arm64     
+          platforms: linux/amd64 #,linux/arm64     
           
           
       - name: Set up QEMU
