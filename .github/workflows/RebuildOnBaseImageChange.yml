@@ -63,7 +63,14 @@ jobs:
         with:
           base-image: python:3
           image: serotonie/ovms-admin_trips-recorder:latest
-          platforms: linux/amd64 #,linux/arm64     
+          platforms: linux/amd64 #,linux/arm64
+      - name: Docker Image ha-cordinator Update Checker
+        id: baseupdatecheck_ha-cordinator
+        uses: lucacome/docker-image-update-checker@v2
+        with:
+          base-image: python:3
+          image: serotonie/ovms-admin_ha-coordinator:latest
+          platforms: linux/amd64,linux/arm64  
           
           
       - name: Set up QEMU
@@ -207,7 +214,7 @@ jobs:
         with:
           context: python
           target: trips_recorder
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           push: true
           tags: |
             ghcr.io/serotonie/ovms-admin_trips-recorder
@@ -222,3 +229,24 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_trips-recorder
         if: steps.baseupdatecheck_trips-recorder.outputs.needs-updating == 'true'
+
+      - name: Build and push ha-coordinator
+        uses: docker/build-push-action@v6
+        with:
+          context: python
+          target: trips_recorder
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/serotonie/ovms-admin_ha-coordinator
+            serotonie/ovms-admin_ha-coordinator
+          cache-from: type=registry,ref=serotonie/ovms-admin_ha-coordinator
+          cache-to: type=inline
+        if: steps.baseupdatecheck_ha-coordinator.outputs.needs-updating == 'true'
+      - name: Update repo description ha-coordinator
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: serotonie/ovms-admin_ha-coordinator
+        if: steps.baseupdatecheck_ha-coordinator.outputs.needs-updating == 'true'
