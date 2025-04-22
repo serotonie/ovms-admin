@@ -15,7 +15,7 @@
         "laravel-vite-plugin": "^1.2",
         "leaflet": "^1.9.4",
         "postcss": "^8.5.3",
-        "vite": "^6.2",
+        "vite": "^6.3",
         "vite-plugin-vuetify": "^2.1.1",
         "vue": "^3.5.13",
         "vue-o2c": "^0.1.26",
