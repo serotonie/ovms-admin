@@ -17,7 +17,7 @@
         "postcss": "^8.5.3",
         "vite": "^6.3",
         "vite-plugin-vuetify": "^2.1.1",
-        "vue": "^3.5.13",
+        "vue": "^3.5.14",
         "vue-o2c": "^0.1.26",
         "vuetify": "^3.8.3"
     },
