@@ -1,6 +1,8 @@
 persistence true
 persistence_location /var/lib/mosquitto/
 
+#test
+
 per_listener_settings true
 
 #####################################
