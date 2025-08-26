@@ -1,4 +1,4 @@
-name: Docker - build and push on new Release
+name: Laravel - build and push on new Release or Modif
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - 'main'
     tags:
       - "v*.*.*"
+    paths:
+      - laravel/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -76,48 +78,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-      - name: Docker meta mosquitto
-        id: meta_mosquitto
-        uses: docker/metadata-action@v5
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ghcr.io/serotonie/ovms-admin_mosquitto          
-            serotonie/ovms-admin_mosquitto          
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=raw, latest
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-      - name: Docker meta trips-recorder
-        id: meta_trips-recorder
-        uses: docker/metadata-action@v5
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ghcr.io/serotonie/ovms-admin_trips-recorder          
-            serotonie/ovms-admin_trips-recorder          
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=raw, latest
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}  
-      - name: Docker meta ha-coordinator
-        id: meta_ha-coordinator
-        uses: docker/metadata-action@v5
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ghcr.io/serotonie/ovms-admin_ha-coordinator          
-            serotonie/ovms-admin_ha-coordinator          
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=raw, latest
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}} 
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -137,15 +97,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push mosquitto-go-auth
-        uses: docker/build-push-action@v6
-        with:
-          context: mosquitto/mosquitto-go-auth
-          platforms: linux/amd64,linux/arm64
-          tags: serotonie/mosquitto-go-auth:latest
-          push: true
-          cache-from: type=registry,ref=serotonie/mosquitto-go-auth:latest
-          cache-to: type=inline
       - name: Build and push migrator
         uses: docker/build-push-action@v6
         with:
@@ -214,53 +165,3 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_frontend
-      - name: Build and push mosquitto
-        uses: docker/build-push-action@v6
-        with:
-          context: mosquitto
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta_mosquitto.outputs.tags }}
-          labels: ${{ steps.meta_mosquitto.outputs.labels }}
-          cache-from: type=registry,ref=${{ steps.meta_mosquitto.outputs.tags }}
-          cache-to: type=inline
-      - name: Update repo description mosquitto
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: serotonie/ovms-admin_mosquitto
-      - name: Build and push trips-recorder
-        uses: docker/build-push-action@v6
-        with:
-          context: python
-          target: trips_recorder
-          platforms: linux/amd64 #,linux/arm64
-          push: true
-          tags: ${{ steps.meta_trips-recorder.outputs.tags }}
-          labels: ${{ steps.meta_trips-recorder.outputs.labels }}
-          cache-from: type=registry,ref=${{ steps.meta_trips-recorder.outputs.tags }}
-          cache-to: type=inline
-      - name: Update repo description trips-recorder
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: serotonie/ovms-admin_trips-recorder
-      - name: Build and push ha-coordinator
-        uses: docker/build-push-action@v6
-        with:
-          context: python
-          target: ha_coordinator
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta_ha-coordinator.outputs.tags }}
-          labels: ${{ steps.meta_ha-coordinator.outputs.labels }}
-          cache-from: type=registry,ref=${{ steps.meta_ha-coordinator.outputs.tags }}
-          cache-to: type=inline
-      - name: Update repo description ha-coordinator
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: serotonie/ovms-admin_ha-coordinator
