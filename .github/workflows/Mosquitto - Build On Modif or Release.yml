@@ -1,4 +1,4 @@
-name: Docker - build and push on new Release
+name: Mosquitto - build and push on new Release or Modif
 
 on:
   push:
