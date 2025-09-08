@@ -95,6 +95,9 @@ jobs:
         with:
           context: mosquitto/mosquitto-go-auth
           platforms: linux/amd64,linux/arm64
+          build-args: |
+            LWS_VERSION=4.3.5
+            MOSQUITTO_VERSION=2.0.22
           push: true
           tags: serotonie/mosquitto-go-auth
           cache-from: serotonie/mosquitto-go-auth
