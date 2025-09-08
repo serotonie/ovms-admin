@@ -1,5 +1,5 @@
 # define envsubst version
-ARG ENVSUBST_VERSION=v1.4.2
+ARG ENVSUBST_VERSION=v1.4.3
 
 # Use golang:latest as a builder for a8m/envsubst
 FROM golang:latest AS envsubst_builder
