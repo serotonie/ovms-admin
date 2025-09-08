@@ -68,7 +68,10 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: mosquitto
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64          
+          build-args: |
+            LWS_VERSION=4.3.5
+            MOSQUITTO_VERSION=2.0.22
           push: true
           tags: ${{ steps.meta_mosquitto.outputs.tags }}
           labels: ${{ steps.meta_mosquitto.outputs.labels }}
