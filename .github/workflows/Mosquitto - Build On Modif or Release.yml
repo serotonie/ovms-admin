@@ -78,7 +78,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.meta_mosquitto.outputs.tags }}
           cache-to: type=inline
       - name: Update repo description mosquitto
-        uses: peter-evans/dockerhub-description@v4
+        uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
