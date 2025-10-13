@@ -17,56 +17,56 @@ jobs:
 
       - name: Docker Image mosquitto-go-auth Update Checker
         id: baseupdatecheck_mosquitto-go-auth
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: debian:stable-slim
           image: serotonie/mosquitto-go-auth:latest
           platforms: linux/amd64,linux/arm64
       - name: Docker Image migrator Update Checker
         id: baseupdatecheck_migrator
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: php
           image: serotonie/ovms-admin_migrator:latest
           platforms: linux/amd64,linux/arm64
       - name: Docker Image scheduler Update Checker
         id: baseupdatecheck_scheduler
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: php
           image: serotonie/ovms-admin_scheduler:latest
           platforms: linux/amd64,linux/arm64
       - name: Docker Image queue worker Update Checker
         id: baseupdatecheck_queue-worker
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: php
           image: serotonie/ovms-admin_queue-worker:latest
           platforms: linux/amd64,linux/arm64
       - name: Docker Image frontend Update Checker
         id: baseupdatecheck_frontend
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: php:fpm
           image: serotonie/ovms-admin_frontend:latest
           platforms: linux/amd64,linux/arm64
       - name: Docker Image mosquitto Update Checker
         id: baseupdatecheck_mosquitto
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: iegomez/mosquitto-go-auth
           image: serotonie/ovms-admin_mosquitto:latest
           platforms: linux/amd64,linux/arm64
       - name: Docker Image trips recorder Update Checker
         id: baseupdatecheck_trips-recorder
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: python:3
           image: serotonie/ovms-admin_trips-recorder:latest
           platforms: linux/amd64 #,linux/arm64
       - name: Docker Image ha-cordinator Update Checker
         id: baseupdatecheck_ha-cordinator
-        uses: lucacome/docker-image-update-checker@v2
+        uses: lucacome/docker-image-update-checker@v3
         with:
           base-image: python:3
           image: serotonie/ovms-admin_ha-coordinator:latest
