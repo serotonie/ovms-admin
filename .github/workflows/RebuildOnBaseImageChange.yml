@@ -21,7 +21,7 @@ jobs:
         with:
           base-image: debian:stable-slim
           image: serotonie/mosquitto-go-auth:latest
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
       - name: Docker Image migrator Update Checker
         id: baseupdatecheck_migrator
         uses: lucacome/docker-image-update-checker@v3
@@ -56,7 +56,7 @@ jobs:
         with:
           base-image: iegomez/mosquitto-go-auth
           image: serotonie/ovms-admin_mosquitto:latest
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
       - name: Docker Image trips recorder Update Checker
         id: baseupdatecheck_trips-recorder
         uses: lucacome/docker-image-update-checker@v3
@@ -94,7 +94,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: mosquitto/mosquitto-go-auth
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           build-args: |
             LWS_VERSION=4.3.5
             MOSQUITTO_VERSION=2.0.22
@@ -195,7 +195,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: mosquitto
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           push: true
           tags: |
             ghcr.io/serotonie/ovms-admin_mosquitto
