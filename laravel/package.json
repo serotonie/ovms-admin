@@ -19,7 +19,7 @@
         "vite-plugin-vuetify": "^2.1.2",
         "vue": "^3.5.22",
         "vue-o2c": "^0.1.26",
-        "vuetify": "^3.10.8"
+        "vuetify": "^3.10.9"
     },
     "dependencies": {
         "moment": "^2.30.1",
