@@ -7,7 +7,7 @@
         "lint": "eslint ./ -c .vue,.js,.cjs --fix --ignore-pattern .gitignore"
     },
     "devDependencies": {
-        "@inertiajs/vue3": "^2.2.18",
+        "@inertiajs/vue3": "^2.2.19",
         "@mdi/font": "^7.4.47",
         "@vitejs/plugin-vue": "^6.0.2",
         "@vue-leaflet/vue-leaflet": "^0.10.1",
