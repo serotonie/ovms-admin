@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push mosquitto-go-auth
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: mosquitto/mosquitto-go-auth
           platforms: linux/amd64,linux/arm64    
@@ -68,7 +68,7 @@ jobs:
           cache-to: type=inline
 
       - name: Build and push mosquitto
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: mosquitto
           platforms: linux/amd64,linux/arm64

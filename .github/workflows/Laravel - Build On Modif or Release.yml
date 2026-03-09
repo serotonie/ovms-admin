@@ -98,7 +98,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push migrator
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: migrator
@@ -115,7 +115,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_migrator
       - name: Build and push scheduler
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: scheduler
@@ -132,7 +132,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_scheduler
       - name: Build and push queue-worker
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: queue-worker
@@ -149,7 +149,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_queue-worker
       - name: Build and push frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: frontend

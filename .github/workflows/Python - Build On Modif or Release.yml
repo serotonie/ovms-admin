@@ -70,7 +70,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push trips-recorder
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: python
           target: trips_recorder
@@ -87,7 +87,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_trips-recorder
       - name: Build and push ha-coordinator
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: python
           target: ha_coordinator

@@ -91,7 +91,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push mosquitto-go-auth
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: mosquitto/mosquitto-go-auth
           platforms: linux/amd64 #,linux/arm64
@@ -104,7 +104,7 @@ jobs:
           cache-to: type=inline
         if: steps.baseupdatecheck_mosquitto-go-auth.outputs.needs-updating == 'true'
       - name: Build and push migrator
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: migrator
@@ -126,7 +126,7 @@ jobs:
 
 
       - name: Build and push scheduler
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: scheduler
@@ -148,7 +148,7 @@ jobs:
 
 
       - name: Build and push queue-worker
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: queue-worker
@@ -170,7 +170,7 @@ jobs:
 
 
       - name: Build and push frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: laravel
           target: frontend
@@ -192,7 +192,7 @@ jobs:
 
 
       - name: Build and push mosquitto
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: mosquitto
           platforms: linux/amd64 #,linux/arm64
@@ -213,7 +213,7 @@ jobs:
 
 
       - name: Build and push trips-recorder
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: python
           target: trips_recorder
@@ -234,7 +234,7 @@ jobs:
         if: steps.baseupdatecheck_trips-recorder.outputs.needs-updating == 'true'
 
       - name: Build and push ha-coordinator
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: python
           target: trips_recorder
