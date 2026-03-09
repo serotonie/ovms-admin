@@ -24,7 +24,7 @@ jobs:
 
       - name: Docker meta migrator
         id: meta_migrator
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to use as base name for tags
           images: |
@@ -38,7 +38,7 @@ jobs:
             type=semver,pattern={{major}}
       - name: Docker meta scheduler
         id: meta_scheduler
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to use as base name for tags
           images: |
@@ -52,7 +52,7 @@ jobs:
             type=semver,pattern={{major}}
       - name: Docker meta queue-worker
         id: meta_queue-worker
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to use as base name for tags
           images: |
@@ -66,7 +66,7 @@ jobs:
             type=semver,pattern={{major}}
       - name: Docker meta frontend
         id: meta_frontend
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to use as base name for tags
           images: |
