@@ -7,3 +7,4 @@ Dockerfile
 .vscode-server
 .python_history
 venv
+**/*.egg-info/

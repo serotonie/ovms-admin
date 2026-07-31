@@ -50,11 +50,9 @@ COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib/* ./venv/
 COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib64/* ./venv/lib64/
 
 RUN pip install --upgrade pip
-COPY --chown=$USERNAME:$USERNAME ./common/requirements.txt ./
-RUN pip install -r requirements.txt \
-    && rm requirements.txt
 
 COPY --chown=$USERNAME:$USERNAME ./common /common
+RUN pip install -e /common
 
 ENTRYPOINT [ "python", "-u", "main.py" ]
 

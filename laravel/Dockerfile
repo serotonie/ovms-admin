@@ -1,5 +1,5 @@
 ARG PHP_VERSION=8.4
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 FROM php:${PHP_VERSION} AS base_builder
 
@@ -27,14 +27,14 @@ WORKDIR /var/www/html
 USER www-data
 
 COPY --chown=www-data:www-data                      package.json \                    
-                                                    package-lock.json \
-                                                    vite.config.js \
-                                                    jsconfig.json                   ./ 
+    package-lock.json \
+    vite.config.js \
+    jsconfig.json                   ./ 
 RUN set -eux;   npm install
 
 COPY --chown=www-data:www-data                      composer.json \ 
-                                                    composer.lock \
-                                                    artisan                         ./
+    composer.lock \
+    artisan                         ./
 COPY --chown=www-data:www-data                      bootstrap                       ./bootstrap/
 COPY --chown=www-data:www-data                      routes                          ./routes/
 COPY --chown=www-data:www-data                      app                             ./app/

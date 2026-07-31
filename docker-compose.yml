@@ -74,7 +74,7 @@ services:
         restart: always
 
     redis:
-        image: 'valkey/valkey:7.2'
+        image: 'valkey/valkey'
         volumes:
             - './redis:/data'
         environment:

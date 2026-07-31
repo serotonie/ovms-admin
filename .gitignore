@@ -27,10 +27,11 @@ laravel/npm-debug.log
 laravel/yarn-error.log
 laravel/.fleet
 laravel/.idea
-laravel/framework/views
+laravel/framework/views/*
 
 python/*/**/__pycache__
 python/*/src/venv
 python/*/src/pyvenv.cfg
+**/*.egg-info/
 mosquitto/mosquitto.db
 redis

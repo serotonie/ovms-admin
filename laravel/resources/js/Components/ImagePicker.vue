@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
-import VuePictureCropper, { cropper } from 'vue-picture-cropper';
 
 const props = defineProps({
     defaultImage: {
@@ -35,19 +34,6 @@ function handleEdit() {
     isEditing.value = true;
 }
 
-function scale(x, y) {
-    cropper.scale(x, y)
-}
-
-function rotate(angle) {
-    cropper.rotate(angle);
-}
-
-async function crop() {
-    model.value = await cropper.getBlob()
-    isEditing.value = false
-}
-
 const emit = defineEmits(['beforeEditing', 'afterEditing'])
 
 watch(isEditing, (newValue) => {
@@ -63,23 +49,6 @@ watch(isEditing, (newValue) => {
 
 <template>
     <div v-if="isEditing">
-        <VuePictureCropper :boxStyle="{
-            width: '100%',
-            height: '100%',
-            backgroundColor: '#f8f8f8',
-            margin: 'auto',
-        }" :img="imageUrl" :options="{
-            viewMode: 1,
-            dragMode: 'crop',
-            aspectRatio: 16 / 9,
-        }" />
-        <div class="mb-5">
-            <v-btn prepend-icon="mdi-rotate-left" @click="rotate(-90)">-90°</v-btn>
-            <v-btn prepend-icon="mdi-rotate-right" @click="rotate(90)">90°</v-btn>
-            <v-btn prepend-icon="mdi-flip-horizontal" @click="scale(-1, 1)">Horizontal</v-btn>
-            <v-btn prepend-icon="mdi-flip-vertical" @click="scale(1, -1)">Vertical</v-btn>
-            <v-btn prepend-icon="mdi-content-save" @click="crop()">Save</v-btn>
-        </div>
     </div>
     <div v-else>
         <v-hover :disabled="false" v-slot="{ isHovering, props }">

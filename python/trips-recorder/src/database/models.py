@@ -13,6 +13,8 @@ from playhouse.signals import pre_save
 from utils.geocoder import geocoder
 
 from common.database.models import Base
+from common.database.models import Vehicle
+from common.database.models import User
 
 class Trip(Base):
     """Model of trip"""

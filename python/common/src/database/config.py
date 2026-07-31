@@ -1,8 +1,8 @@
 """Module to configure the databases used"""
 
 import os
+
 import valkey as redis
-from peewee import Model
 from playhouse.db_url import connect
 
 DB = connect(''.join((
@@ -16,8 +16,7 @@ DB = connect(''.join((
     ':',
     os.getenv('DB_PORT', '3306'),
     '/',
-    os.getenv('DB_DATABASE', 'ovms-admin')))
-)
+    os.getenv('DB_DATABASE', 'ovms-admin'))))
 
 REDIS = redis.Redis(
         os.getenv('REDIS_HOST', 'redis'),

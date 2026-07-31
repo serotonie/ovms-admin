@@ -2,6 +2,7 @@
 
 from resettabletimer import ResettableTimer
 
+
 class ResettableTimerDaemon(ResettableTimer):
     """Add Daemon to resettabletimer"""
     def _set(self):

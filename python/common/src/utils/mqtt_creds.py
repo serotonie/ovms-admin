@@ -3,9 +3,10 @@ import logging
 
 import bcrypt
 
-from common.utils.resettabletimer_daemon import ResettableTimerDaemon
-from common.database.config import REDIS
-from common.setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_CREDS_REFRESH
+from .resettabletimer_daemon import ResettableTimerDaemon
+from ..database.config import REDIS
+from ..setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_CREDS_REFRESH
+
 
 def set_creds():
     """Set the MQTT Creds in REDIS"""
@@ -19,6 +20,6 @@ def set_creds():
         ),
         MQTT_CREDS_REFRESH
     )
-    REDIS.set(MQTT_USERNAME+":su", "true", MQTT_CREDS_REFRESH*2)
+    REDIS.set(MQTT_USERNAME + ":su", "true", MQTT_CREDS_REFRESH * 2)
     timer = ResettableTimerDaemon(MQTT_CREDS_REFRESH, set_creds)
     timer.start()

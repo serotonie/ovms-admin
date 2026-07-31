@@ -2,6 +2,7 @@
 
 from functools import cache
 
+
 @cache
 def vhc_id_from_topic(topic):
     """Function to get the vehicle id from the topic"""
