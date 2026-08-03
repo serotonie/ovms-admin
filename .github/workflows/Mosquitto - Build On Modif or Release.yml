@@ -61,7 +61,7 @@ jobs:
           platforms: linux/amd64,linux/arm64    
           build-args: |
             LWS_VERSION=4.5.0
-            MOSQUITTO_VERSION=2.1.2
+            MOSQUITTO_VERSION=2.0.22
           tags: serotonie/mosquitto-go-auth:latest
           push: true
           cache-from: type=registry,ref=serotonie/mosquitto-go-auth:latest
