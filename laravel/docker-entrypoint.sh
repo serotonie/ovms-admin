@@ -14,7 +14,7 @@ su -s /bin/bash -c 'mkdir -p storage/framework/views storage/logs' www-data
 
 echo "[$ME] Setting environment variables from Docker secrets..."
 if [ -d /run/secrets ]; then
-    for f in $(find /run/secrets -type f); do
+    for f in $(find /run/secrets/toenv -type f); do
         key=$(basename "$f")
         value=$(cat "$f")
         export "$key=$value"
