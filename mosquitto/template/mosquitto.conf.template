@@ -53,6 +53,7 @@ auth_opt_redis_disable_superuser false
 auth_opt_redis_host ${REDIS_HOST:-redis}
 auth_opt_redis_post ${REDIS_PORT:-6379}
 auth_opt_redis_db ${REDIS_DB:-2}
+auth_opt_redis_password ${REDIS_PASSWORD}
 
 #####################################
 #       MQTTS for OVMS Modules      #
@@ -94,6 +95,7 @@ ${BROKER_NO_SSL:-}auth_opt_mysql_allow_native_passwords true
 ${BROKER_NO_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
 ${BROKER_NO_SSL:-}auth_opt_mysql_superquery SELECT COUNT(*) FROM vehicles WHERE (module_username = ?) and mqtt_superuser = 1 limit 1
 ${BROKER_NO_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE (username = ?) AND rw = ?
+
 
 #####################################
 #   WSS listener for Admin Client   #
