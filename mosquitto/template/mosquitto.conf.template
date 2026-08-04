@@ -53,7 +53,6 @@ auth_opt_redis_disable_superuser false
 auth_opt_redis_host ${REDIS_HOST:-redis}
 auth_opt_redis_post ${REDIS_PORT:-6379}
 auth_opt_redis_db ${REDIS_DB:-2}
-auth_opt_redis_password ${REDIS_PASSWORD}
 
 #####################################
 #       MQTTS for OVMS Modules      #
