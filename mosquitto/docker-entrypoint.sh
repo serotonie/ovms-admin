@@ -3,7 +3,7 @@ set -e
 
 ME=$(basename $0)
 
-if [ -f  "/mosquitto/certs/live/example.com/chain.pem" ]; then
+if [ -f  "/mosquitto/certs/live/${DOMAIN_NAME}/chain.pem" ]; then
     echo "[$ME] The broker certs exists."
     echo "[$ME] Let's enable SSL/TLS and listen on port 8883 for MQTTS"
     export BROKER_SSL="#"
