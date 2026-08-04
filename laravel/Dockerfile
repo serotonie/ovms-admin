@@ -151,5 +151,9 @@ ENTRYPOINT [    "/bin/bash", \
     chown -R www-data:www-data storage; \
     su -s /bin/bash -c 'mkdir -p storage/framework/views storage/logs' www-data; \
     su -s /bin/bash -c 'php artisan optimize' www-data; \
+    for f in $(find /run/secrets -type f) \
+    do \
+        export $(basename $f)=$(cat $f);
+    done \
     php-fpm -D; \
     nginx -g 'daemon off;'", "--" ]
