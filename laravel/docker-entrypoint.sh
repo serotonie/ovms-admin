@@ -10,7 +10,7 @@ fi
 
 echo "[$ME] Setting permissions..."
 chown -R www-data:www-data storage
-su -s /bin/bash -c 'mkdir -p storage/framework/views storage/logs' www-data
+mkdir -p storage/framework/views storage/logs
 
 echo "[$ME] Setting environment variables from Docker secrets..."
 if [ -d /run/secrets ]; then
@@ -22,6 +22,6 @@ if [ -d /run/secrets ]; then
 fi
 
 echo "[$ME] Running artisan optimize..."
-su -s /bin/bash -c 'php artisan optimize' www-data
+php artisan optimize
 
 exec "$@"
