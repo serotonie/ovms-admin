@@ -15,7 +15,7 @@ else
 fi
 
 echo "[$ME] loading env from secrets"
-for f in $(find /run/secrets -type f)
+for f in $(find /run/secrets/toenv -type f)
 do
     export $(basename $f)=$(cat $f)
 done
