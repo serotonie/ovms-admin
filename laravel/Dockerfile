@@ -66,6 +66,9 @@ RUN set -eux;   pecl install redis && \
     rm -rf /tmp/pear && \
     docker-php-ext-enable redis
 
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN set -eux;   chmod +x /docker-entrypoint.sh
+
 WORKDIR /var/www/html
 USER www-data
 
@@ -86,19 +89,22 @@ FROM base_runtime AS migrator
 
 COPY --chown=www-data:www-data                      database                        ./database
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan migrate --force", "--" ]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["php", "artisan", "migrate", "--force"]
 
 
 FROM base_runtime AS scheduler
 
 COPY --chown=www-data:www-data                      storage                         ./storage
 
-ENTRYPOINT [ "/bin/bash", "-c", "while true; do php artisan schedule:run; sleep 60; done;", "--" ]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bash", "-c", "while true; do php artisan schedule:run; sleep 60; done"]
 
 
 FROM scheduler AS queue-worker
 
-ENTRYPOINT [ "/bin/bash", "-c", "php artisan queue:work", "--" ]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["php", "artisan", "queue:work"]
 
 
 FROM php:${PHP_VERSION}-fpm AS frontend
@@ -137,6 +143,8 @@ COPY --chown=root:root                              ./nginx/nginx.conf          
 
 RUN set -eux;   rm -rf /var/www/html/*
 
+COPY --from=scheduler /docker-entrypoint.sh /docker-entrypoint.sh
+
 WORKDIR /var/www/html
 
 COPY --from=scheduler --chown=www-data:www-data     /var/www/html                   ../html/
@@ -145,15 +153,5 @@ COPY --chown=www-data:www-data                      public                      
 
 COPY --from=base_builder --chown=www-data:www-data  /var/www/html/public/build      ./public/build/
 
-ENTRYPOINT [    "/bin/bash", \
-    "-c", \
-    "/opt/generate-ssl-certs.sh; \
-    chown -R www-data:www-data storage; \
-    su -s /bin/bash -c 'mkdir -p storage/framework/views storage/logs' www-data; \
-    su -s /bin/bash -c 'php artisan optimize' www-data; \
-    for f in $(find /run/secrets -type f) \
-    do \
-        export $(basename $f)=$(cat $f);
-    done \
-    php-fpm -D; \
-    nginx -g 'daemon off;'", "--" ]
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bash", "-c", "php-fpm -D && nginx -g 'daemon off;'" ]
