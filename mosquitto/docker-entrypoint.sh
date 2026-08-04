@@ -14,6 +14,11 @@ else
     export BROKER_NO_SSL="#"
 fi
 
+echo "[$ME] loading env from secrets"
+for f in $(find /run/secrets -type f)
+do
+    export $(basename $f)=$(cat $f)
+done
 
 echo "[$ME] Creating mosquito conf from ENV"
 
