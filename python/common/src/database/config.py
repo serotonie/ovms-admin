@@ -7,7 +7,7 @@ from playhouse.db_url import connect
 
 DB_CONNECTION = os.getenv('DB_CONNECTION') or 'mariadb'
 DB_DRIVER = 'mysql' if DB_CONNECTION == 'mariadb' else DB_CONNECTION
-DB_USERNAME = os.getenv('DB_USERNAME') or ''
+DB_USERNAME = os.getenv('DB_USERNAME') or 'dbuser'
 DB_PASSWORD = os.getenv('DB_PASSWORD') or ''
 DB_HOST = os.getenv('DB_HOST') or 'mariadb'
 DB_PORT = os.getenv('DB_PORT') or '3306'
