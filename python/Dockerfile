@@ -54,7 +54,10 @@ RUN pip install --upgrade pip
 COPY --chown=$USERNAME:$USERNAME ./common /common
 RUN pip install -e /common
 
-ENTRYPOINT [ "python", "-u", "main.py" ]
+COPY --chown=$USERNAME:$USERNAME ./python/docker-entrypoint.sh /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD [ "python", "-u", "main.py" ]
 
 
 FROM base_prod AS trips_recorder
