@@ -54,7 +54,7 @@ RUN pip install --upgrade pip
 COPY --chown=$USERNAME:$USERNAME ./common /common
 RUN pip install -e /common
 
-COPY --chown=$USERNAME:$USERNAME ./python/docker-entrypoint.sh /docker-entrypoint.sh
+COPY --chown=$USERNAME:$USERNAME ./docker-entrypoint.sh /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD [ "python", "-u", "main.py" ]
