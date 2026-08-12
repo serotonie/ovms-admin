@@ -13,7 +13,7 @@ from playhouse.signals import pre_save
 from utils.geocoder import geocoder
 
 from common.database.models import Base
-from common.database.models import Vehicle
+from common.database.models import Vehicle as VehicleModel
 from common.database.models import User
 
 class Trip(Base):
@@ -36,7 +36,7 @@ class Trip(Base):
     stop_village = CharField(null=True)
     stop_postcode = CharField(null=True)
     stop_country = CharField(null=True)
-    vehicle_id = ForeignKeyField(field='id', model=Vehicle)
+    vehicle_id = ForeignKeyField(field='id', model=VehicleModel)
     user_id = ForeignKeyField(model=User, field='id')
 
     class Meta:

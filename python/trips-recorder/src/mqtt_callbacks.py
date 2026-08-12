@@ -6,7 +6,7 @@ from datetime import datetime
 from common.utils.mqtt_creds import set_creds
 from common.utils.topic import vhc_id_from_topic
 from classes import Vehicle
-from common.database.models import Vehicle as Vehicle_model
+from common.database.models import Vehicle as VehicleModel
 
 log = logging.getLogger('mqtt')
 
@@ -22,7 +22,7 @@ def on_connect_fail(client, userdata): # pylint: disable=unused-argument
 def on_message(client, vehicles, msg):
     """Default mqtt callback when a message is received"""
     vhc_id = vhc_id_from_topic(msg.topic)
-    if Vehicle_model.select().where(Vehicle_model.module_id == vhc_id).exists():
+    if VehicleModel.select().where(VehicleModel.module_id == vhc_id).exists():
         if not vhc_id in vehicles:
             vehicles = vehicles | {vhc_id_from_topic(msg.topic): Vehicle(vhc_id, client)}
             client.user_data_set(vehicles)
