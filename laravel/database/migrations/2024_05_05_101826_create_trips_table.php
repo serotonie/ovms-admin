@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('stop_postcode')->nullable();
             $table->string('stop_country')->nullable();
             $table->float('distance', 3)->nullable();
+            $table->foreignId('user_id')->constrained();
         });
     }
 
