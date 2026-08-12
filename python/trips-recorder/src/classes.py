@@ -1,6 +1,7 @@
 """Module defining the custom class use in main"""
 
 import logging
+import math
 
 from threading import Timer
 from datetime import datetime
@@ -13,7 +14,7 @@ from common.database.models import Vehicle as VehicleModel
 from database import models
 from common.utils.resettabletimer_daemon import ResettableTimerDaemon
 from utils.nested_iterator import iterate_all
-from setup.constants import WP_TIMEOUT
+from setup.constants import WP_TIMEOUT, WAYPOINT_MIN_DISTANCE_METERS
 
 class Vehicle():
 
@@ -217,6 +218,25 @@ class Waypoint():
         self.start_point_lat_to_upd = start_point_lat_to_upd
         self.start_point_long_to_upd = start_point_long_to_upd
 
+    @staticmethod
+    def _distance_meters(lat1, lon1, lat2, lon2):
+        """Return the distance in meters between two coordinates."""
+        if None in (lat1, lon1, lat2, lon2):
+            return float('inf')
+
+        earth_radius = 6371000.0
+        phi1 = math.radians(lat1)
+        phi2 = math.radians(lat2)
+        delta_phi = math.radians(lat2 - lat1)
+        delta_lambda = math.radians(lon2 - lon1)
+
+        a = (
+            math.sin(delta_phi / 2) ** 2
+            + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
+        )
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return earth_radius * c
+
     def __setattr__(self, name, value) -> None:
         match name:
             case 'utc':
@@ -224,6 +244,17 @@ class Waypoint():
             case 'trip':
                 object.__setattr__(self, name, value)
                 if self.trip_id != -1 and self.latitude != -1 and self.longitude != -1:
+                    if (
+                        self.last_waypoint is not None
+                        and self._distance_meters(
+                            self.latitude,
+                            self.longitude,
+                            self.last_waypoint.position_lat,
+                            self.last_waypoint.position_long,
+                        ) < WAYPOINT_MIN_DISTANCE_METERS
+                    ):
+                        self.log.debug('Skipping waypoint update: too close to previous one')
+                        return
 
                     current_waypoint = models.Waypoint.create(
                         timestamp = self.utc,
