@@ -46,7 +46,7 @@ ${BROKER_SSL:-}auth_opt_mysql_dbname ${DB_DATABASE:-ovms-admin}
 ${BROKER_SSL:-}auth_opt_mysql_allow_native_passwords true
 ${BROKER_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
 ${BROKER_SSL:-}auth_opt_mysql_superquery SELECT COUNT(*) FROM vehicles WHERE (module_username = ?) and mqtt_superuser = 1 limit 1
-${BROKER_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE (username = ?) AND rw = ?
+${BROKER_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE username = ? AND (rw & ?) > 0
 
 auth_opt_redis_register user, superuser
 auth_opt_redis_disable_superuser false
@@ -85,7 +85,7 @@ ${BROKER_NO_SSL:-}auth_opt_hasher_cost 12
 
 ${BROKER_NO_SSL:-}auth_opt_backends mysql
 
-${BROKER_NO_SSL:-}auth_opt_mysql_register user, superuser
+${BROKER_NO_SSL:-}auth_opt_mysql_register user, superuser, acl
 ${BROKER_NO_SSL:-}auth_opt_mysql_host ${DB_HOST:-mariadb}
 ${BROKER_NO_SSL:-}auth_opt_mysql_port ${DB_PORT:-3306}
 ${BROKER_NO_SSL:-}auth_opt_mysql_user ${DB_USERNAME}
@@ -94,7 +94,7 @@ ${BROKER_NO_SSL:-}auth_opt_mysql_dbname ${DB_DATABASE:-ovms-admin}
 ${BROKER_NO_SSL:-}auth_opt_mysql_allow_native_passwords true
 ${BROKER_NO_SSL:-}auth_opt_mysql_userquery SELECT module_pwd FROM vehicles WHERE module_username = ? limit 1
 ${BROKER_NO_SSL:-}auth_opt_mysql_superquery SELECT COUNT(*) FROM vehicles WHERE (module_username = ?) and mqtt_superuser = 1 limit 1
-${BROKER_NO_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE (username = ?) AND rw = ?
+${BROKER_NO_SSL:-}auth_opt_mysql_aclquery SELECT topic FROM mqtt_acls WHERE username = ? AND (rw & ?) > 0
 
 
 #####################################
