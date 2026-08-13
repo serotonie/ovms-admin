@@ -48,9 +48,8 @@ import moment from 'moment';
           <Link :href="route('admin.vehicles.edit', item.id)" as="button">
           <v-icon color="warning" icon="mdi-pencil" size="small" />
           </Link>
-          <v-icon class="ml-2" color="error" icon="mdi-delete" size="small" @click="deleteItem(item)"
-            v-if="can('vehicles all delete')" />
-          <v-icon class="ml-2" color="werning" icon="mdi-restore" size="small" @click="resetItem(item)" />
+          <v-icon class="ml-2" color="error" icon="mdi-delete" size="small" @click="deleteItem(item)"/>
+          <v-icon class="ml-2" color="warning" icon="mdi-restore" size="small" @click="resetItem(item)" />
         </template>
       </v-data-table-server>
     </v-card>
