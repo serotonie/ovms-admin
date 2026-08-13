@@ -18,6 +18,10 @@ const nextCursor = ref(props.trips.next_page_url)
 
 async function infiniteLoad({ done }) {
     try {
+        if (nextCursor.value === null) {
+            done('empty')
+            return
+        }
         const result = await axios.get(nextCursor.value)
         trips.value.push(...result.data.data)
         if (result.data.next_page_url === null) {
