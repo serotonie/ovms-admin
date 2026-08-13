@@ -12,7 +12,24 @@ const appName = import.meta.env.VITE_APP_NAME || 'OVMS Admin';
 
 const initializeInertia = () => {
     const appElement = document.getElementById('app');
-    const initialPage = appElement?.dataset.page ? JSON.parse(appElement.dataset.page) : null;
+    const pageScript = document.querySelector('script[data-page]');
+    let initialPage = null;
+
+    if (pageScript) {
+        try {
+            initialPage = JSON.parse(pageScript.textContent);
+        } catch (error) {
+            console.error('Unable to parse Inertia initial page payload.', error);
+        }
+    }
+
+    if (!initialPage && appElement?.dataset.page) {
+        try {
+            initialPage = JSON.parse(appElement.dataset.page);
+        } catch (error) {
+            console.error('Unable to parse Inertia initial page from app element.', error);
+        }
+    }
 
     if (!initialPage) {
         console.error('Inertia initial page was not found in the DOM.');
