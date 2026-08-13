@@ -19,6 +19,8 @@ export default defineConfig({
             },
         }),
         vuetify({ autoImport: { labs: true } }),
-        inertia(),
+        inertia({
+            ssr: false,
+        }),
     ]
 });
