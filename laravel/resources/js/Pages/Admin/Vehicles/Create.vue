@@ -37,6 +37,7 @@ const creation_success_dialog = ref(false);
 const submit = () => {
   form.post(route('admin.vehicles.store'), {
     preserveState: true,
+    forceFormData: true,
     onSuccess: () => {
       creation_success_dialog.value = true;
     }

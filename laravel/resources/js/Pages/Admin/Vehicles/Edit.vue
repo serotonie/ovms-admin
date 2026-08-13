@@ -33,6 +33,7 @@ Array.from(props.vehicle.users).forEach(e => {
 function submit() {
   form.post(route('admin.vehicles.update', props.vehicle.id),
     {
+      forceFormData: true,
       onSuccess: () => { router.visit(route('admin.vehicles.index')) }
     })
 }
