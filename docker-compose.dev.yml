@@ -24,8 +24,6 @@ services:
     mariadb:
         labels:
             - "com.centurylinklabs.watchtower.enable=false"
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
         volumes: !override
             - 'sail-mariadb:/var/lib/mysql'
 
@@ -81,7 +79,7 @@ services:
         image: phpmyadmin
         restart: always
         ports:
-            - 8002:80
+            - 8003:80
         environment:
             - PMA_HOST=${DB_HOST:-mariadb}
             - PMA_PORT=${DB_PORT:-3306}
