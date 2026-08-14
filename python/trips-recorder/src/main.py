@@ -3,7 +3,7 @@
 import logging
 
 import sys
-sys.path.insert(0, '../..')
+sys.path.insert(0, '.')
 
 import paho.mqtt.client as mqtt
 import mqtt_callbacks as callbacks

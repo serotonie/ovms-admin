@@ -32,8 +32,6 @@ RUN set -eux;   apt-get install -y --no-install-recommends \
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /usr/bin/bash
 
-RUN set -eux;   mkdir /common; \
-    chown -R $USERNAME:$USERNAME ./common 
 RUN set -eux;   mkdir /app; \
     chown -R $USERNAME:$USERNAME ./app
 
@@ -50,9 +48,6 @@ COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib/* ./venv/
 COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib64/* ./venv/lib64/
 
 RUN pip install --upgrade pip
-
-COPY --chown=$USERNAME:$USERNAME ./common /common
-RUN pip install -e /common
 
 COPY --chown=$USERNAME:$USERNAME ./docker-entrypoint.sh /docker-entrypoint.sh
 
