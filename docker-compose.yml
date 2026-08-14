@@ -129,18 +129,3 @@ services:
             migrator:
                 condition: service_completed_successfully
         restart: always
-
-    ha-coordinator:
-        image: 'serotonie/ovms-admin_ha-coordinator'
-        environment:
-            - REDIS_PASSWORD=${REDIS_PASSWORD}
-            - DB_USERNAME=${DB_USERNAME:-dbuser}
-            - DB_PASSWORD=${DB_PASSWORD}
-        depends_on:
-            redis:
-                condition: service_healthy
-            mosquitto:
-                condition: service_healthy
-            migrator:
-                condition: service_completed_successfully
-        restart: always
