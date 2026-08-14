@@ -21,6 +21,7 @@ def on_connect_fail(client, userdata): # pylint: disable=unused-argument
 
 def on_message(client, vehicles, msg):
     """Default mqtt callback when a message is received"""
+    log.debug("Received message on topic %s: %s", msg.topic, msg.payload)
     vhc_id = vhc_id_from_topic(msg.topic)
     if VehicleModel.select().where(VehicleModel.module_id == vhc_id).exists():
         if not vhc_id in vehicles:
@@ -47,6 +48,7 @@ def on_message(client, vehicles, msg):
 
 def on_command_response(client, vehicles, msg): # pylint: disable=unused-argument
     """Callback when receiving a response to a command"""
+    log.debug("Received command response on topic %s: %s", msg.topic, msg.payload)
     vhc_id = vhc_id_from_topic(msg.topic)
     command_id = msg.topic.split('/')[-1]
     exec(vehicles[vhc_id].command[command_id]['callback']) # pylint: disable=exec-used

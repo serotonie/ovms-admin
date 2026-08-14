@@ -10,6 +10,12 @@ import mqtt_callbacks as callbacks
 
 from common.utils.mqtt_creds import set_creds
 from common.setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, MQTT_PORT
+from setup.constants import LOG_LEVEL
+
+logging.basicConfig(
+    level=LOG_LEVEL,
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s'
+)
 
 set_creds()
 

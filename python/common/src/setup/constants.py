@@ -1,13 +1,18 @@
 """Module defining the constants for everything in common"""
 
-import os
 import logging
+import os
 
 from ..utils.random_generator import random_str
 
-logging.basicConfig(format='%(asctime)s %(name)-14s %(levelname)-8s %(message)s',
-                    level=logging.os.environ.get('LOG_LEVEL', 'INFO').upper(),
-                    datefmt='%Y-%m-%d %H:%M:%S')
+LOG_LEVEL_NAME = os.environ.get('LOG_LEVEL', 'INFO').upper()
+LOG_LEVEL = getattr(logging, LOG_LEVEL_NAME, logging.INFO)
+
+logging.basicConfig(
+    format='%(asctime)s %(name)-14s %(levelname)-8s %(message)s',
+    level=LOG_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 LOGGER = logging.getLogger()
 
