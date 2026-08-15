@@ -8,12 +8,14 @@
 	"service": "trips-recorder",
 	"workspaceFolder": "/app/src",
 	"remoteUser": "worker",
-	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash",
+	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash; python devtools/setup_mqtt_explorer.py",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"ms-python.python",
-				"ms-python.pylint"
+				"ms-python.pylint",
+				"ms-python.vscode-pylance",
+				"exaland.mqtt-explorer-vscode"
 			],
 			"settings": {
 				"pylint.lintOnChange": true
