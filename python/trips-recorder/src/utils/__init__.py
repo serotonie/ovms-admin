@@ -1,1 +1,1 @@
-"""Utility helpers used by the application."""
+"""Utility helpers for MQTT and vehicle handling."""

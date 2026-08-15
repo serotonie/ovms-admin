@@ -1,1 +1,1 @@
-"""Application setup and constants."""
+"""Application-wide constants."""

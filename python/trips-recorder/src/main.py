@@ -8,9 +8,8 @@ sys.path.insert(0, '.')
 import paho.mqtt.client as mqtt
 import mqtt_callbacks as callbacks
 
-from common.utils.mqtt_creds import set_creds
-from common.setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, MQTT_PORT
-from setup.constants import LOG_LEVEL
+from utils.mqtt_creds import set_creds
+from setup.constants import MQTT_USERNAME, MQTT_PASSWORD, MQTT_HOST, MQTT_PORT, LOG_LEVEL
 
 logging.basicConfig(
     level=LOG_LEVEL,

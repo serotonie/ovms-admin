@@ -3,17 +3,16 @@
 import logging
 from datetime import datetime
 
-from common.utils.mqtt_creds import set_creds
-from common.utils.topic import vhc_id_from_topic
+from utils.topic import vhc_id_from_topic
 from classes import Vehicle
-from common.database.models import Vehicle as VehicleModel
+from database.models import Vehicle as VehicleModel
 
 log = logging.getLogger('mqtt')
 
 def on_connect(client, userdata, flags, reason_code, properties): # pylint: disable=unused-argument
     """Mqtt Callback when client is connected"""
     log.info("Connected with result code %s", reason_code)
-    client.subscribe("ovms/+/+/event", 2)
+    client.subscribe("ovms/+/+/event/#", 2)
 
 def on_connect_fail(client, userdata): # pylint: disable=unused-argument
     """Mqtt Callback when client can't connect"""
@@ -37,10 +36,10 @@ def on_message(client, vehicles, msg):
                 'vehicle_state(msg.payload, vehicles[vhc_id])'
             )
 
-        if msg.payload == b'vehicle.on':
+        if msg.payload == b'vehicle.on' or msg.topic.endswith(b'vehicle/on'):
             vehicles[vhc_id].driving = 'yes'
 
-        if msg.payload == b'vehicle.off':
+        if msg.payload == b'vehicle.off' or msg.topic.endswith(b'vehicle/off'):
             vehicles[vhc_id].driving = 'no'
     else:
         if vhc_id in vehicles:

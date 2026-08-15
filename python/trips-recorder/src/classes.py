@@ -1,7 +1,6 @@
 """Module defining the custom class use in main"""
 
 import logging
-import math
 
 from threading import Timer
 from datetime import datetime
@@ -10,9 +9,9 @@ from nanoid import generate
 
 import mqtt_callbacks as callbacks
 
-from common.database.models import Vehicle as VehicleModel
+from database.models import Vehicle as VehicleModel
 from database import models
-from common.utils.resettabletimer_daemon import ResettableTimerDaemon
+from utils.resettabletimer_daemon import ResettableTimerDaemon
 from utils.nested_iterator import iterate_all
 from setup.constants import WP_TIMEOUT
 

@@ -1,1 +1,1 @@
-"""Database models for the application."""
+"""Database models and configuration for common utilities."""
