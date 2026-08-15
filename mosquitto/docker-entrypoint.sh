@@ -20,6 +20,13 @@ do
     export $(basename $f)=$(cat $f)
 done
 
+if env | grep -q "REDIS_PASSWORD"; then
+    echo "[$ME] REDIS_PASSWORD is set"
+else
+    echo "[$ME] REDIS_PASSWORD is not set, this is dangerous in production !"
+    export REDIS_PASSWORD_SET="#"
+fi
+
 echo "[$ME] Creating mosquito conf from ENV"
 
 for f in $(find ./template -name "*.template")
