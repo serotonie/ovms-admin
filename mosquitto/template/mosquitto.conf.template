@@ -63,9 +63,9 @@ ${REDIS_PASSWORD_SET:-}auth_opt_redis_password ${REDIS_PASSWORD}
 ${BROKER_NO_SSL:-}listener 8883
 ${BROKER_NO_SSL:-}allow_anonymous false
 
-${BROKER_NO_SSL:-}cafile /mosquitto/certs/live/example.com/chain.pem
-${BROKER_NO_SSL:-}certfile /mosquitto/certs/live/example.com/cert.pem
-${BROKER_NO_SSL:-}keyfile /mosquitto/certs/live/example.com/privkey.pem
+${BROKER_NO_SSL:-}cafile /mosquitto/certs/live/${DOMAIN_NAME}/chain.pem
+${BROKER_NO_SSL:-}certfile /mosquitto/certs/live/${DOMAIN_NAME}/cert.pem
+${BROKER_NO_SSL:-}keyfile /mosquitto/certs/live/${DOMAIN_NAME}/privkey.pem
 
 # Go Auth plugin for OVMS Modules
 #####################################
