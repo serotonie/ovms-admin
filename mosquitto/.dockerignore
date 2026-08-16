@@ -1,3 +1,10 @@
 .env
 .env.example
 Dockerfile
+.git
+.github
+README*
+*.md
+**/.DS_Store
+**/__pycache__
+**/*.log

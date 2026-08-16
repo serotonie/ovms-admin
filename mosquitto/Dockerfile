@@ -1,15 +1,15 @@
 # define envsubst version
 ARG ENVSUBST_VERSION=v1.4.3
+ARG GO_IMAGE_VERSION=1.26.6-trixie
 
-# Use golang:latest as a builder for a8m/envsubst
-FROM golang:latest AS envsubst_builder
+# Use a pinned Go image as a builder for a8m/envsubst.
+FROM golang:${GO_IMAGE_VERSION} AS envsubst_builder
 
 ARG ENVSUBST_VERSION
 
-WORKDIR /
+WORKDIR /src
 RUN set -ex; \
-  git clone https://github.com/a8m/envsubst.git --branch ${ENVSUBST_VERSION} envsubst
-WORKDIR /envsubst/cmd/envsubst
+  apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 
 ENV CGO_CFLAGS="-I/usr/local/include -fPIC"
 ENV CGO_LDFLAGS="-shared -Wl,-unresolved-symbols=ignore-all"
@@ -28,25 +28,27 @@ RUN set -ex; \
   if [ ! -z "$TARGETPLATFORM" ]; then \
   case "$TARGETPLATFORM" in \
   "linux/arm64") \
-  apt update && apt install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross \
+  apt-get update && apt-get install -y --no-install-recommends gcc-aarch64-linux-gnu libc6-dev-arm64-cross && rm -rf /var/lib/apt/lists/* \
   ;; \
   "linux/arm/v7") \
-  apt update && apt install -y gcc-arm-linux-gnueabihf libc6-dev-armhf-cross \
+  apt-get update && apt-get install -y --no-install-recommends gcc-arm-linux-gnueabihf libc6-dev-armhf-cross && rm -rf /var/lib/apt/lists/* \
   ;; \
   "linux/arm/v6") \
-  apt update && apt install -y gcc-arm-linux-gnueabihf libc6-dev-armel-cross libc6-dev-armhf-cross \
+  apt-get update && apt-get install -y --no-install-recommends gcc-arm-linux-gnueabihf libc6-dev-armel-cross libc6-dev-armhf-cross && rm -rf /var/lib/apt/lists/* \
   ;; \
   esac \
   fi
 
 RUN set -ex; \
-  go build -o ../../envsubst
+  mkdir -p /out && \
+  GOBIN=/out go install github.com/a8m/envsubst/cmd/envsubst@${ENVSUBST_VERSION}
 
 FROM serotonie/mosquitto-go-auth
-COPY --from=envsubst_builder /envsubst/envsubst /usr/local/bin
+COPY --from=envsubst_builder /out/envsubst /usr/local/bin/envsubst
 RUN chmod +x /usr/local/bin/envsubst
 COPY ./template ./template
 COPY docker-entrypoint.sh .
+RUN chmod +x /docker-entrypoint.sh
 
 RUN set -ex; \
   mkdir -p /mosquitto/config /mosquitto/data /mosquitto/log && \
