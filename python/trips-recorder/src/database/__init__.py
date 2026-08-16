@@ -1,1 +1,1 @@
-"""Database models and configuration for common utilities."""
+"""Database models and configuration for database."""
