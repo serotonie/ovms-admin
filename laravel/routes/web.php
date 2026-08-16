@@ -10,6 +10,10 @@ use Inertia\Inertia;
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 
+Route::get('/up', function () {
+    return response('ok', 200);
+});
+
 Route::middleware(['auth', 'verified'])
     ->group(function () {
         Route::get('', function () {
