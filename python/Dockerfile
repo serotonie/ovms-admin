@@ -1,21 +1,5 @@
 ARG PYTHON_IMAGE_VERSION=3.12-slim
 
-FROM python:${PYTHON_IMAGE_VERSION} AS psycopg2_builder
-
-RUN set -eux;    apt-get update &&\
-    apt-get install -y --no-install-recommends \
-    libpq-dev \
-    gcc \
-    python3-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-RUN pip install --upgrade pip
-RUN pip install psycopg2-binary
-
-
 FROM python:${PYTHON_IMAGE_VERSION} AS base_prod
 
 ARG USERNAME=worker
@@ -26,7 +10,8 @@ ENV VIRTUAL_ENV=${WORKDIR}/venv
 
 RUN set -eux;    apt-get update &&\
     apt-get install -y --no-install-recommends \
-    libpq-dev && \
+    gcc \
+    python3-dev && \
     rm -rf /var/lib/apt/lists/*
 
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -43,9 +28,6 @@ RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 WORKDIR ${WORKDIR}
-
-COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib/* ./venv/lib/
-COPY --from=psycopg2_builder --chown=$USERNAME:$USERNAME /opt/venv/lib64/* ./venv/lib64/
 
 RUN pip install --upgrade pip
 
