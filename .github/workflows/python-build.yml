@@ -1,22 +1,23 @@
-name: Python - build and push on new Release or Modif
+name: Python build and publish
 
 on:
   push:
     branches:
-      - 'main'
+      - main
     tags:
       - "v*.*.*"
     paths:
       - python/**
+      - .github/workflows/python-build.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:  
+jobs:
   docker:
     runs-on: ubuntu-latest
-    steps:    
+    steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
@@ -26,16 +27,14 @@ jobs:
         id: meta_trips-recorder
         uses: docker/metadata-action@v6
         with:
-          # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/serotonie/ovms-admin_trips-recorder          
-            serotonie/ovms-admin_trips-recorder          
-          # generate Docker tags based on the following events/attributes
+            ghcr.io/serotonie/ovms-admin_trips-recorder
+            serotonie/ovms-admin_trips-recorder
           tags: |
-            type=raw, latest
+            type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}  
+            type=semver,pattern={{major}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
@@ -72,4 +71,3 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: serotonie/ovms-admin_trips-recorder
-
