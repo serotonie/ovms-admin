@@ -7,19 +7,20 @@ ARG NODE_VERSION
 ENV NODE_VERSION=${NODE_VERSION}
 
 RUN set -eux;   apt-get update &&\
-    apt-get upgrade -y --no-install-recommends
-
-RUN set -eux;   apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
     zip \
-    unzip
+    unzip && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN set -eux;   docker-php-ext-install -j$(nproc) \
     exif
 
 COPY --from=composer:latest                         /usr/bin/composer               /usr/local/bin/composer
 
-RUN set -eux;   curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - 
-RUN set -eux;   apt-get install -y nodejs
+RUN set -eux;   curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN set -eux;   install -d -o www-data -g www-data /var/www/.npm
 
@@ -30,7 +31,7 @@ COPY --chown=www-data:www-data                      package.json \
     package-lock.json \
     vite.config.js \
     jsconfig.json                   ./ 
-RUN set -eux;   npm install
+RUN set -eux;   npm ci
 
 COPY --chown=www-data:www-data                      composer.json \ 
     composer.lock \
@@ -38,7 +39,7 @@ COPY --chown=www-data:www-data                      composer.json \
 COPY --chown=www-data:www-data                      bootstrap                       ./bootstrap/
 COPY --chown=www-data:www-data                      routes                          ./routes/
 COPY --chown=www-data:www-data                      app                             ./app/
-RUN set -eux;   composer install --no-dev
+RUN set -eux;   composer install --no-dev --no-interaction --prefer-dist --no-progress
 
 COPY --chown=www-data:www-data                      resources                       ./resources/
 
@@ -48,14 +49,13 @@ RUN set -eux;   npm run build
 FROM php:${PHP_VERSION} AS base_runtime
 
 RUN set -eux;   apt-get update && \
-    apt-get upgrade -y --no-install-recommends
-
-RUN set -eux;   apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
     jpegoptim \
     optipng \
     pngquant \
     gifsicle \
-    libavif-bin
+    libavif-bin && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN set -eux;   docker-php-ext-install -j$(nproc) \
     pdo \
@@ -110,15 +110,14 @@ CMD ["php", "artisan", "queue:work"]
 FROM php:${PHP_VERSION}-fpm AS frontend
 
 RUN set -eux;   apt-get update &&\
-    apt-get upgrade -y --no-install-recommends
-
-RUN set -eux;   apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
     nginx \
     jpegoptim \
     optipng \
     pngquant \
     gifsicle \
-    libavif-bin
+    libavif-bin && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN set -eux;   docker-php-ext-install -j$(nproc) \
     pdo \
