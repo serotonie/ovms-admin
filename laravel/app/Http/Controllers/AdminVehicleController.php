@@ -45,7 +45,7 @@ class AdminVehicleController extends Controller
         return Inertia::render('Admin/Vehicles/Create', [
             'system_users' => User::all('id', 'name'),
             'mqtt' => [
-                'hostname' => 'mqtt.host.name', //TODO add config
+                'hostname' => 'mqtt.host.name', // TODO add config
                 'tls' => true,
                 'port' => 8883,
             ],
@@ -89,7 +89,7 @@ class AdminVehicleController extends Controller
             $vehicle->syncMedia($picture, 'picture');
         }
 
-        //TODO acls granularity in real life
+        // TODO acls granularity in real life
         $topic_prefix = 'ovms/'.$validated['module_username'].'/'.$validated['module_id'];
         $topics = [
             1 => $topic_prefix.'/#',

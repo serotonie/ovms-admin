@@ -8,14 +8,14 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "fakerphp/faker": "^1.23",
         "inertiajs/inertia-laravel": "^3.0",
         "jmikola/geojson": "^1.2",
-        "laravel/framework": "^13.0",
+        "laravel/framework": "^13.25",
         "laravel/sanctum": "^4.0",
-        "plank/laravel-mediable": "^6.1",
-        "tightenco/ziggy": "^2.0"
+        "plank/laravel-mediable": "^7.0.0",
+        "tightenco/ziggy": "2.6.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^4.4",
@@ -72,6 +72,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

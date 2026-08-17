@@ -26,6 +26,7 @@ class Vehicle extends Model implements MediableInterface
         'module_pwd',
         'owner_id',
         'main_user_id',
+        'mqtt_superuser',
     ];
 
     /**

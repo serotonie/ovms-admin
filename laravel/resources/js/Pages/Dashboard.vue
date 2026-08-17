@@ -27,7 +27,7 @@ const props = defineProps({
       </v-card-text>
     </v-card>
     <v-card v-else>
-      Hello everyone
+      Hello everyone test
     </v-card>
   </AuthenticatedLayout>
 </template>
