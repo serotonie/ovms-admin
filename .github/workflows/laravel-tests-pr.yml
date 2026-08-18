@@ -1,4 +1,4 @@
-name: Laravel tests validation
+name: Laravel pull request tests validation
 
 on:
   pull_request:
