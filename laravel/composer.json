@@ -20,6 +20,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^4.4",
         "icanhazstring/composer-unused": "dev-main",
+        "laravel/boost": "^2.5",
         "laravel/breeze": "^2.0",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
