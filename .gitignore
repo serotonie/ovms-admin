@@ -29,6 +29,7 @@ laravel/.fleet
 laravel/.idea
 laravel/framework/views/*
 laravel/.cert/*
+laravel/logs/*
 
 python/*/**/__pycache__
 python/*/src/venv
@@ -36,3 +37,4 @@ python/*/src/pyvenv.cfg
 **/*.egg-info/
 mosquitto/mosquitto.db
 redis
+
