@@ -6,6 +6,7 @@ from datetime import datetime
 from utils.topic import vhc_id_from_topic
 from classes import Vehicle
 from database.models import Vehicle as VehicleModel
+from utils.last_seen import cache_last_seen
 
 log = logging.getLogger('mqtt')
 
@@ -27,8 +28,7 @@ def on_message(client, vehicles, msg):
             vehicles = vehicles | {vhc_id_from_topic(msg.topic): Vehicle(vhc_id, client)}
             client.user_data_set(vehicles)
 
-        vehicles[vhc_id].model.last_seen = datetime.now()
-        vehicles[vhc_id].model.save()
+        cache_last_seen(vhc_id, datetime.now())
 
         if b'clock' not in msg.payload and msg.payload != b'':
             vehicles[vhc_id].send_command(
@@ -61,6 +61,11 @@ def on_wp_update(client, vehicles, msg): # pylint: disable=unused-argument
 def current_wp_update(payload, vehicle, attr):
     """Update the current waypoint"""
     setattr(vehicle.current_waypoint, attr, payload.decode().strip().replace('km', ''))
+
+    if attr == 'utc':
+        timestamp = datetime.now()
+        vehicle.model.last_seen = timestamp
+        cache_last_seen(vehicle.model.module_id, timestamp)
 
 def vehicle_state(payload, vehicle):
     """Define the vehicle state (driving)"""
