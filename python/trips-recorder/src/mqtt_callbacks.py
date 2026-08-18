@@ -36,10 +36,10 @@ def on_message(client, vehicles, msg):
                 'vehicle_state(msg.payload, vehicles[vhc_id])'
             )
 
-        if msg.payload == b'vehicle.on' or msg.topic.endswith(b'vehicle/on'):
+        if msg.payload == b'vehicle.on' or msg.topic.endswith('vehicle/on'):
             vehicles[vhc_id].driving = 'yes'
 
-        if msg.payload == b'vehicle.off' or msg.topic.endswith(b'vehicle/off'):
+        if msg.payload == b'vehicle.off' or msg.topic.endswith('vehicle/off'):
             vehicles[vhc_id].driving = 'no'
     else:
         if vhc_id in vehicles:

@@ -32,6 +32,12 @@ export default {
         icon: 'mdi-car-cog',
         to: route('admin.vehicles.index'),
         permissions: 'users all read'
+      },
+      {
+        title: 'Home Assistant',
+        icon: 'mdi-home-assistant',
+        to: route('admin.home-assistant.index'),
+        permissions: 'users all read'
       }
     ],
     //config:[{}]

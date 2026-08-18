@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminHomeAssistantController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminVehicleController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,15 @@ Route::middleware(['auth', 'verified'])
 /*
 *   Admin Vehicles Route
 */
+
+Route::middleware(['auth', 'verified'])
+    ->controller(AdminHomeAssistantController::class)
+    ->prefix('admin/home-assistant')
+    ->name('admin.home-assistant.')
+    ->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::post('', 'store')->name('store');
+    });
 
 Route::middleware(['auth', 'verified'])
     ->controller(AdminVehicleController::class)
