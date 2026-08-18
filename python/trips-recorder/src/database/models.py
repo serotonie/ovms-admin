@@ -1,7 +1,6 @@
 """Module defining the peewee models"""
 
 from peewee import (
-    Model,
     BigAutoField,
     CharField,
     DateTimeField,
@@ -9,7 +8,7 @@ from peewee import (
     ForeignKeyField,
     IntegerField,
 )
-from playhouse.signals import pre_save
+from playhouse.signals import Model, pre_save
 
 from .config import DB
 from utils.geocoder import geocoder
