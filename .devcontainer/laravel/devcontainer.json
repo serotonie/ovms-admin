@@ -6,7 +6,8 @@
 		"../../docker-compose.rendered.yml"
 	],
 	"service": "laravel.test",
-	"workspaceFolder": "/var/www/html",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/laravel",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -29,7 +30,7 @@
 		}
 	},
 	"remoteUser": "sail",
-	"postCreateCommand": "php artisan optimize:clear; composer install; npm install; npm run build",
+	"postCreateCommand": "cd /workspaces/${localWorkspaceFolderBasename}/laravel && php artisan optimize:clear; composer install; npm install; npm run build",
 	"postAttachCommand": "/bin/bash"
 	// "forwardPorts": [],
 	// "runServices": [],

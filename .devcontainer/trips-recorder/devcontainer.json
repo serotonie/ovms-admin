@@ -6,9 +6,10 @@
 		"../../docker-compose.rendered.yml"
 	],
 	"service": "trips-recorder",
-	"workspaceFolder": "/app/src",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/python/trips-recorder",
 	"remoteUser": "worker",
-	"postAttachCommand": "python -m venv venv; source venv/bin/activate; pip install -r ../requirements.txt; /bin/bash; python devtools/setup_mqtt_explorer.py",
+	"postAttachCommand": "cd /workspaces/${localWorkspaceFolderBasename}/python/trips-recorder && python -m venv venv; source venv/bin/activate; pip install -r requirements.txt; /bin/bash; python devtools/setup_mqtt_explorer.py",
 	"customizations": {
 		"vscode": {
 			"extensions": [

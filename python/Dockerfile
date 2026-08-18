@@ -57,6 +57,7 @@ RUN set -eux;   apt-get update && apt-get install -y --no-install-recommends \
     git \
     gcc \
     python3-dev && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    git config --global --add safe.directory /workspaces/*
 
 USER ${USERNAME}
