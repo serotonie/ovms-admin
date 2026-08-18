@@ -25,6 +25,19 @@
 				"laravel-pint.enable": true,
 				"[php]": {
 					"editor.defaultFormatter": "open-southeners.laravel-pint"
+				},
+				"mcp": {
+					"servers": {
+						"laravel-boost": {
+							"type": "stdio",
+							"command": "php",
+							"args": [
+								"artisan",
+								"boost:mcp"
+							],
+							"cwd": "/workspaces/ovms-admin/laravel"
+						}
+					}
 				}
 			}
 		}
