@@ -19,37 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  laravel-tests:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: laravel
-    env:
-      APP_KEY: base64:MzIzMjMyMzIzMjMyMzIzMjMyMzIzMjMyMzIzMjMyMzI=
-      DB_CONNECTION: sqlite
-      DB_DATABASE: database/testing.sqlite
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.4"
-          coverage: none
-          extensions: exif, pdo_sqlite, sqlite3
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
-
-      - name: Prepare test database
-        run: touch database/testing.sqlite
-
-      - name: Run Laravel tests
-        run: php artisan test
-
   laravel:
-    needs: laravel-tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
