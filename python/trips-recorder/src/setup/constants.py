@@ -16,8 +16,8 @@ logging.basicConfig(
 
 LOGGER = logging.getLogger()
 
-MQTT_USERNAME = os.environ.get('MQTT_USERNAME',random_str())
-MQTT_PASSWORD = os.environ.get('MQTT_PASWORD',random_str())
+MQTT_USERNAME = os.environ.get('MQTT_USERNAME', random_str())
+MQTT_PASSWORD = os.environ.get('MQTT_PASWORD', random_str())
 
 MQTT_HOST = os.environ.get('MQTT_HOST', 'mosquitto')
 MQTT_PORT = int(os.environ.get('MQTT_PORT', '1883'))
