@@ -45,8 +45,11 @@ import moment from 'moment';
           <span>{{ item.last_seen ? moment(item.last_seen).fromNow() : 'never' }}</span>
         </template>
         <template #[`item.action`]="{ item }">
+          <Link :href="route('admin.vehicles.cli', item.id)" as="button">
+          <v-icon color="info" icon="mdi-console-line" size="small" />
+          </Link>
           <Link :href="route('admin.vehicles.edit', item.id)" as="button">
-          <v-icon color="warning" icon="mdi-pencil" size="small" />
+          <v-icon class="ml-2" color="warning" icon="mdi-pencil" size="small" />
           </Link>
           <v-icon class="ml-2" color="error" icon="mdi-delete" size="small" @click="deleteItem(item)"/>
           <v-icon class="ml-2" color="warning" icon="mdi-restore" size="small" @click="resetItem(item)" />

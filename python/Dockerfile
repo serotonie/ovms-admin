@@ -61,3 +61,13 @@ RUN set -eux;   apt-get update && apt-get install -y --no-install-recommends \
     git config --global --add safe.directory /workspaces/*
 
 USER ${USERNAME}
+
+FROM base_prod AS vehicle_simulator_dev
+
+COPY --chown=$USERNAME:$USERNAME ./vehicle-simulator/requirements.txt ./requirements.txt
+RUN pip install -r ./requirements.txt \
+    && rm requirements.txt
+
+COPY --chown=$USERNAME:$USERNAME ./vehicle-simulator/src ./
+
+USER ${USERNAME}

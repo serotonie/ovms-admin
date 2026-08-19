@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 use Plank\Mediable\Facades\MediaUploader;
 
@@ -104,11 +105,32 @@ class AdminVehicleController extends Controller
                 'topic' => $value,
             ]);
         }
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
+    public function cli(Vehicle $vehicle)
+    {
+        $frontendUsername = 'frontend-'.substr(bin2hex(random_bytes(6)), 0, 12);
+        $frontendPassword = substr(bin2hex(random_bytes(12)), 0, 24);
+        $topic_prefix = 'ovms/'.$vehicle->module_username.'/'.$vehicle->module_id;
+        $this->syncFrontendRedisAuth($frontendUsername, $frontendPassword, $topic_prefix);
+
+        return Inertia::render('Admin/Vehicles/Cli', [
+            'vehicle' => $vehicle,
+            'mqtt' => [
+                'username' => $frontendUsername,
+                'password' => $frontendPassword,
+                'host' => env('MQTT_FRONTEND_HOST', 'localhost'),
+                'port' => (int) env('MQTT_FRONTEND_PORT', 443),
+                'path' => env('MQTT_FRONTEND_PATH', '/mqtt'),
+                'protocol' => env('MQTT_FRONTEND_PROTOCOL', 'wss'),
+            ],
+        ]);
+    }
+
     public function edit(Vehicle $vehicle)
     {
         $picture = $vehicle->getMedia('picture')->first();
@@ -167,5 +189,25 @@ class AdminVehicleController extends Controller
         $media_to_delete = $vehicle->getMedia('picture')->first();
         $media_to_delete != null ? $media_to_delete->delete() : null;
         $vehicle->delete();
+    }
+
+    protected function syncFrontendRedisAuth(string $username, string $password, string $topicPrefix): void
+    {
+        $redisTtl = 60 * 60 * 24 * 7;
+        $mqttRedis = Redis::connection('mqtt');
+        $passwordHash = Hash::make($password);
+
+        $mqttRedis->set($username, $passwordHash, $redisTtl);
+
+        $publishTopic = $topicPrefix.'/client/+/command/+';
+        $subscribeTopic = $topicPrefix.'/client/+/response/+';
+        $responseReadTopic = $topicPrefix.'/client/+/response/+';
+
+        $mqttRedis->sadd($username.':wacls', $publishTopic);
+        $mqttRedis->sadd($username.':sacls', $subscribeTopic);
+        $mqttRedis->sadd($username.':racls', $responseReadTopic);
+        $mqttRedis->expire($username.':wacls', $redisTtl);
+        $mqttRedis->expire($username.':sacls', $redisTtl);
+        $mqttRedis->expire($username.':racls', $redisTtl);
     }
 }

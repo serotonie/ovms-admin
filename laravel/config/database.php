@@ -172,6 +172,7 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_MQTT_DB', '2'),
+            'prefix' => env('REDIS_MQTT_PREFIX', ''),
         ],
 
     ],
