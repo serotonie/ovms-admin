@@ -10,19 +10,16 @@ export default defineConfig({
         port: 5173,
         strictPort: true,
         cors: {
-            origin: [
-                'https://vehicules.theleders.family',
-                'http://localhost:5173',
-                'http://127.0.0.1:5173',
-                'http://localhost:8000',
-            ],
-            methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+            origin: true,
+            methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
             credentials: true,
+            allowedHeaders: ['*'],
         },
         hmr: {
             host: 'localhost',
             port: 5173,
             protocol: 'ws',
+            clientPort: 5173,
         },
     },
     plugins: [

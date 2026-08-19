@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class AdminVehicleControllerTest extends TestCase
@@ -78,6 +79,63 @@ class AdminVehicleControllerTest extends TestCase
             'rw' => 4,
             'topic' => 'ovms/roadster-admin/module-1/#',
         ]);
+    }
+
+    public function test_authenticated_user_can_view_the_vehicle_cli_interface(): void
+    {
+        $admin = User::factory()->create();
+        $vehicle = Vehicle::factory()->create([
+            'name' => 'CLI Vehicle',
+            'module_id' => 'module-cli',
+            'module_username' => 'cli-user',
+        ]);
+
+        $response = $this
+            ->actingAs($admin)
+            ->get(route('admin.vehicles.cli', $vehicle));
+
+        $response->assertOk();
+    }
+
+    public function test_vehicle_cli_page_exposes_separate_mqtt_frontend_credentials(): void
+    {
+        $admin = User::factory()->create();
+        $vehicle = Vehicle::factory()->create([
+            'name' => 'CLI Vehicle',
+            'module_id' => 'module-cli',
+            'module_username' => 'cli-user',
+        ]);
+
+        Redis::fake();
+        $mqttRedis = Redis::connection('mqtt');
+
+        $response = $this
+            ->actingAs($admin)
+            ->get(route('admin.vehicles.cli', $vehicle));
+
+        $response->assertOk();
+        $response->assertJsonPath('props.mqtt.username', $response->json('props.mqtt.username'));
+        $response->assertJsonPath('props.mqtt.password', $response->json('props.mqtt.password'));
+
+        Redis::shouldHaveReceived('connection')->with('mqtt');
+        $mqttRedis->shouldHaveReceived('set')->withArgs(function ($key, $value, $ttl) {
+            return str_starts_with($key, 'frontend-')
+                && ! empty($value)
+                && is_int($ttl);
+        });
+        $mqttRedis->shouldHaveReceived('sadd')->withArgs(function ($key, ...$topics) {
+            return str_starts_with($key, 'frontend-')
+                && str_ends_with($key, ':wacls')
+                && $topics === ['ovms/cli-user/module-cli/client/+/command/+'];
+        });
+        $mqttRedis->shouldHaveReceived('sadd')->withArgs(function ($key, ...$topics) {
+            return str_starts_with($key, 'frontend-')
+                && str_ends_with($key, ':sacls')
+                && $topics === ['ovms/cli-user/module-cli/client/+/response/+'];
+        });
+        $mqttRedis->shouldHaveReceived('expire')->withArgs(function ($key, $ttl) {
+            return str_starts_with($key, 'frontend-') && is_int($ttl);
+        });
     }
 
     public function test_authenticated_user_can_update_an_existing_vehicle(): void
