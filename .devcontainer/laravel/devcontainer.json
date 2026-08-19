@@ -6,6 +6,10 @@
 		"../../docker-compose.rendered.yml"
 	],
 	"service": "laravel.test",
+	"runServices": [
+		"laravel.test",
+		"vehicle-simulator"
+	],
 	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/laravel",
 	"customizations": {
@@ -25,6 +29,19 @@
 				"laravel-pint.enable": true,
 				"[php]": {
 					"editor.defaultFormatter": "open-southeners.laravel-pint"
+				},
+				"mcp": {
+					"servers": {
+						"laravel-boost": {
+							"type": "stdio",
+							"command": "php",
+							"args": [
+								"artisan",
+								"boost:mcp"
+							],
+							"cwd": "/workspaces/ovms-admin/laravel"
+						}
+					}
 				}
 			}
 		}

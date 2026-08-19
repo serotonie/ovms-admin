@@ -31,12 +31,29 @@ services:
         condition: service_healthy
       frontend:
         condition: service_started
+      vehicle-simulator:
+        condition: service_started
 
   frontend:
     volumes: !override
       - './laravel:/var/www/html:cached'
       - '.env:/var/www/html/.env:cached'
       #TODO - ./laravel/certs:/certs
+
+  vehicle-simulator:
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+      target: vehicle_simulator_dev
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   mailpit:
     image: 'axllent/mailpit:latest'

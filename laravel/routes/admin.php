@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])
 
         Route::get('', 'index')->name('index');
 
+        Route::get('{vehicle}/cli', 'cli')->name('cli');
         Route::get('{vehicle}/edit', 'edit')->name('edit');
         Route::match(['put', 'patch'], '/{vehicle}', 'update')->name('update');
 
