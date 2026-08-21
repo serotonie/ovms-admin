@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\VehicleController;
 use App\Models\Vehicle;
@@ -12,6 +13,12 @@ require __DIR__.'/admin.php';
 
 Route::get('/up', function () {
     return response('ok', 200);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 Route::middleware(['auth', 'verified'])
