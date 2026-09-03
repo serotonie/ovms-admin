@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import { useTheme } from "vuetify/lib/framework.mjs";
 import { LMap, LTileLayer, LPolyline, LCircleMarker } from "@vue-leaflet/vue-leaflet";
-import moment from "moment";
+import { formatDate, formatTime } from '@/Utils/date';
 
 const map = ref(null)
 
@@ -79,7 +79,7 @@ function addCategoryHandler() {
         <v-timeline-item height="160" dot-color="primary" size="x-small">
           <div class="mb-4">
             <div class="font-weight-normal">
-              <strong>{{ moment(trip.start_time).format('L') }}</strong> {{ moment(trip.start_time).format('LT') }}
+              <strong>{{ formatDate(trip.start_time) }}</strong> {{ formatTime(trip.start_time) }}
               <v-divider class="mb-4" />
               <p>{{ trip.start_road }} {{ trip.start_house_number }}</p>
               <p>{{ trip.start_postcode }} {{ trip.start_village }}</p>
@@ -90,7 +90,7 @@ function addCategoryHandler() {
         <v-timeline-item height="160" dot-color="secondary" size="x-small">
           <div class="mb-4">
             <div class="font-weight-normal">
-              <strong>{{ moment(trip.stop_time).format('L') }}</strong> {{ moment(trip.stop_time).format('LT') }}
+              <strong>{{ formatDate(trip.stop_time) }}</strong> {{ formatTime(trip.stop_time) }}
               <v-divider class="mb-4" />
               <p>{{ trip.stop_road }} {{ trip.stop_house_number }} </p>
               <p>

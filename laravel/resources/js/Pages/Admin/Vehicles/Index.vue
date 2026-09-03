@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link } from '@inertiajs/vue3'
-import moment from 'moment';
+import { formatDateTime } from '@/Utils/date'
 </script>
 
 <template>
@@ -42,7 +42,7 @@ import moment from 'moment';
           </v-chip-group>
         </template>
         <template #[`item.last_seen`]="{ item }">
-          <span>{{ item.last_seen ? moment(item.last_seen).fromNow() : 'never' }}</span>
+          <span>{{ item.last_seen ? formatDateTime(item.last_seen) : 'never' }}</span>
         </template>
         <template #[`item.action`]="{ item }">
           <Link :href="route('admin.vehicles.cli', item.id)" as="button">

@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 import { Head, Link } from '@inertiajs/vue3'
+import { formatDateTime } from '@/Utils/date'
 
 </script>
 
@@ -25,7 +26,7 @@ import { Head, Link } from '@inertiajs/vue3'
       <v-data-table-server :items="data.data" :items-length="data.total" :headers="headers" :search="search"
         class="elevation-0" :loading="isLoadingTable" @update:options="loadItems">
         <template #[`item.created_at`]="{ item }">
-          <span> {{ new Date(item.created_at).toLocaleString() }}</span>
+          <span>{{ formatDateTime(item.created_at) }}</span>
         </template>
         <template #[`item.role_name`]="{ item }">
           <v-chip :color="item.role_color" variant="flat">{{ item.role_name }}</v-chip>
