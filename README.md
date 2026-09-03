@@ -45,6 +45,15 @@ cd laravel
 php artisan test
 ```
 
+### Run tests with a dedicated Redis container
+```bash
+docker compose -f docker-compose.yml -f docker-compose.test.yml up -d redis-test
+export REDIS_HOST=127.0.0.1
+export REDIS_PORT=6380
+cd python/trips-recorder/src && pytest -q tests
+cd ../../laravel && php artisan test
+```
+
 ## CI
 
 The repository uses GitHub Actions workflows organized by purpose:

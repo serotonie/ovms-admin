@@ -1,0 +1,22 @@
+services:
+  redis-test:
+    image: valkey/valkey:7.2
+    container_name: ovms-admin-redis-test
+    ports:
+      - "${REDIS_TEST_PORT:-6380}:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - redis-test-data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "if [ -n \"$${REDIS_PASSWORD:-}\" ]; then redis-cli -a \"$${REDIS_PASSWORD:-}\" ping; else redis-cli ping; fi" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    command: >
+      /bin/sh -c 'if [ -n "$${REDIS_PASSWORD:-}" ]; then exec valkey-server --requirepass "$${REDIS_PASSWORD}" --save 60 1 --appendonly no; else exec valkey-server --save 60 1 --appendonly no; fi'
+    restart: unless-stopped
+
+volumes:
+  redis-test-data:

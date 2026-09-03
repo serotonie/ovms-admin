@@ -32,6 +32,11 @@ jobs:
           cache-dependency-path: |
             python/trips-recorder/requirements.txt
 
+      - name: Start Redis for tests
+        run: |
+          docker run -d --name ovms-admin-test-redis -p 6379:6379 valkey/valkey:7.2
+          until docker exec ovms-admin-test-redis redis-cli ping; do sleep 1; done
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -39,5 +44,9 @@ jobs:
           pip install pytest
 
       - name: Run Python tests
+        env:
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+          REDIS_DB: 2
         run: |
           pytest -q ./src/tests

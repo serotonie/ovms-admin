@@ -25,6 +25,9 @@ jobs:
       APP_KEY: base64:MzIzMjMyMzIzMjMyMzIzMjMyMzIzMjMyMzIzMjMyMzI=
       DB_CONNECTION: sqlite
       DB_DATABASE: database/testing.sqlite
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+      REDIS_DB: 0
     steps:
       - name: Checkout
         uses: actions/checkout@v7
