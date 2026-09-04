@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiTripIndexRequest;
 use App\Models\Trip;
 use App\Models\Vehicle;
+use Carbon\Carbon;
 
 class TripIndexController extends Controller
 {
@@ -13,6 +14,8 @@ class TripIndexController extends Controller
     {
         $validated = $request->validated();
         $user = $request->user();
+        $startAt = Carbon::parse($validated['start_at']);
+        $endAt = Carbon::parse($validated['end_at']);
 
         $accessibleVehicleIds = Vehicle::query()
             ->where(function ($query) use ($user) {
@@ -34,10 +37,10 @@ class TripIndexController extends Controller
             ->when(isset($validated['user_id']), function ($query) use ($validated) {
                 $query->where('user_id', $validated['user_id']);
             })
-            ->where('start_time', '<=', $validated['end_at'])
-            ->where(function ($query) use ($validated) {
+            ->where('start_time', '<=', $endAt)
+            ->where(function ($query) use ($startAt) {
                 $query->whereNull('stop_time')
-                    ->orWhere('stop_time', '>=', $validated['start_at']);
+                    ->orWhere('stop_time', '>=', $startAt);
             })
             ->orderBy('start_time')
             ->get();
